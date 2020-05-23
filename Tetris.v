@@ -62,20 +62,21 @@ wire write_en;
 wire [11:0] w_color;
 wire [7:0]address;
 wire [199:0]block_exist;
+wire [199:0]change_en;
 
 
 clock_divisor clk_wiz_0_inst(.clk(clk),.clk1(clk_25MHz),.clk22(clk_22),.clkBlockDown(clkBlockDown));
 pixel_gen pg (.vgaRed(vgaRed),.vgaGreen(vgaGreen),.vgaBlue(vgaBlue),.h_cnt(h_cnt),.v_cnt(v_cnt),.valid(valid),.color(color));
 vga_controller vga_inst(.pclk(clk_25MHz),.reset(rst),.hsync(hsync),.vsync(vsync),.valid(valid),.h_cnt(h_cnt),.v_cnt(v_cnt));
-BackGroundMemory bm (.color(color),.clk(clk),.rst(rst),.write_en(write_en),.address(address),.w_color(w_color),.block_exist(block_exist));
+BackGroundMemory bm (.color(color),.clk(clk),.rst(rst),.write_en(write_en),.address(address),.w_color(w_color),.block_exist(block_exist),.change_en(change_en));
 putBlock pb (.write_en(write_en),.address(address),.w_color(w_color),.block_exist(block_exist),.generate_block(generate_block),
              .block_type(`BLOCK_J),.block_status(`BLOCK_STATUS_0),.rst(rst),.clk(clk),.turn_right(op_btn_U),.turn_left(op_btn_D),
-             .shift_left(op_btn_L),.shift_right(op_btn_R),.clkBlockDown(clkBlockDown));
+             .shift_left(op_btn_L),.shift_right(op_btn_R),.clkBlockDown(clkBlockDown),.change_en(change_en));
 //putblock pb (.outBackground(),.blockType(),.R_rotate(),.L_rotate(),.blockState(),.rst(),.clk(),.background(),.clkBlockDown(),.start_position());
 
 endmodule
 
-module BackGroundMemory(color,clk,rst,write_en,address,w_color,block_exist);
+module BackGroundMemory(color,clk,rst,write_en,address,w_color,block_exist,change_en);
 output reg [2399:0]color;
 input clk;
 input rst;
@@ -83,211 +84,212 @@ input write_en;
 input [7:0]address;
 input [11:0]w_color;
 input [199:0]block_exist;
+input [199:0]change_en;
 reg [2399:0]tmp_color;
 
 always@(*)begin
     if(write_en)begin
         case(address)
-            0 : begin tmp_color[11:0] = w_color; end
-            1 : begin tmp_color[23:12] = w_color; end
-            2 : begin tmp_color[35:24] = w_color; end
-            3 : begin tmp_color[47:36] = (color[47:36]==12'h222)?w_color:12'hf00; end
-            4 : begin tmp_color[59:48] = w_color; end
-            5 : begin tmp_color[71:60] = 12'hf00; end
-            6 : begin tmp_color[83:72] = w_color; end
-            7 : begin tmp_color[95:84] = w_color; end
-            8 : begin tmp_color[107:96] = w_color; end
-            9 : begin tmp_color[119:108] = w_color; end
-            10 : begin tmp_color[131:120] = w_color; end
-            11 : begin tmp_color[143:132] = w_color; end
-            12 : begin tmp_color[155:144] = w_color; end
-            13 : begin tmp_color[167:156] = w_color; end
-            14 : begin tmp_color[179:168] = w_color; end
-            15 : begin tmp_color[191:180] = w_color; end
-            16 : begin tmp_color[203:192] = w_color; end
-            17 : begin tmp_color[215:204] = w_color; end
-            18 : begin tmp_color[227:216] = w_color; end
-            19 : begin tmp_color[239:228] = w_color; end
-            20 : begin tmp_color[251:240] = w_color; end
-            21 : begin tmp_color[263:252] = w_color; end
-            22 : begin tmp_color[275:264] = w_color; end
-            23 : begin tmp_color[287:276] = w_color; end
-            24 : begin tmp_color[299:288] = w_color; end
-            25 : begin tmp_color[311:300] = w_color; end
-            26 : begin tmp_color[323:312] = w_color; end
-            27 : begin tmp_color[335:324] = w_color; end
-            28 : begin tmp_color[347:336] = w_color; end
-            29 : begin tmp_color[359:348] = w_color; end
-            30 : begin tmp_color[371:360] = w_color; end
-            31 : begin tmp_color[383:372] = w_color; end
-            32 : begin tmp_color[395:384] = w_color; end
-            33 : begin tmp_color[407:396] = w_color; end
-            34 : begin tmp_color[419:408] = w_color; end
-            35 : begin tmp_color[431:420] = w_color; end
-            36 : begin tmp_color[443:432] = w_color; end
-            37 : begin tmp_color[455:444] = w_color; end
-            38 : begin tmp_color[467:456] = w_color; end
-            39 : begin tmp_color[479:468] = w_color; end
-            40 : begin tmp_color[491:480] = w_color; end
-            41 : begin tmp_color[503:492] = w_color; end
-            42 : begin tmp_color[515:504] = w_color; end
-            43 : begin tmp_color[527:516] = w_color; end
-            44 : begin tmp_color[539:528] = w_color; end
-            45 : begin tmp_color[551:540] = w_color; end
-            46 : begin tmp_color[563:552] = w_color; end
-            47 : begin tmp_color[575:564] = w_color; end
-            48 : begin tmp_color[587:576] = w_color; end
-            49 : begin tmp_color[599:588] = w_color; end
-            50 : begin tmp_color[611:600] = w_color; end
-            51 : begin tmp_color[623:612] = w_color; end
-            52 : begin tmp_color[635:624] = w_color; end
-            53 : begin tmp_color[647:636] = w_color; end
-            54 : begin tmp_color[659:648] = w_color; end
-            55 : begin tmp_color[671:660] = w_color; end
-            56 : begin tmp_color[683:672] = w_color; end
-            57 : begin tmp_color[695:684] = w_color; end
-            58 : begin tmp_color[707:696] = w_color; end
-            59 : begin tmp_color[719:708] = w_color; end
-            60 : begin tmp_color[731:720] = w_color; end
-            61 : begin tmp_color[743:732] = w_color; end
-            62 : begin tmp_color[755:744] = w_color; end
-            63 : begin tmp_color[767:756] = w_color; end
-            64 : begin tmp_color[779:768] = w_color; end
-            65 : begin tmp_color[791:780] = w_color; end
-            66 : begin tmp_color[803:792] = w_color; end
-            67 : begin tmp_color[815:804] = w_color; end
-            68 : begin tmp_color[827:816] = w_color; end
-            69 : begin tmp_color[839:828] = w_color; end
-            70 : begin tmp_color[851:840] = w_color; end
-            71 : begin tmp_color[863:852] = w_color; end
-            72 : begin tmp_color[875:864] = w_color; end
-            73 : begin tmp_color[887:876] = w_color; end
-            74 : begin tmp_color[899:888] = w_color; end
-            75 : begin tmp_color[911:900] = w_color; end
-            76 : begin tmp_color[923:912] = w_color; end
-            77 : begin tmp_color[935:924] = w_color; end
-            78 : begin tmp_color[947:936] = w_color; end
-            79 : begin tmp_color[959:948] = w_color; end
-            80 : begin tmp_color[971:960] = w_color; end
-            81 : begin tmp_color[983:972] = w_color; end
-            82 : begin tmp_color[995:984] = w_color; end
-            83 : begin tmp_color[1007:996] = w_color; end
-            84 : begin tmp_color[1019:1008] = w_color; end
-            85 : begin tmp_color[1031:1020] = w_color; end
-            86 : begin tmp_color[1043:1032] = w_color; end
-            87 : begin tmp_color[1055:1044] = w_color; end
-            88 : begin tmp_color[1067:1056] = w_color; end
-            89 : begin tmp_color[1079:1068] = w_color; end
-            90 : begin tmp_color[1091:1080] = w_color; end
-            91 : begin tmp_color[1103:1092] = w_color; end
-            92 : begin tmp_color[1115:1104] = w_color; end
-            93 : begin tmp_color[1127:1116] = w_color; end
-            94 : begin tmp_color[1139:1128] = w_color; end
-            95 : begin tmp_color[1151:1140] = w_color; end
-            96 : begin tmp_color[1163:1152] = w_color; end
-            97 : begin tmp_color[1175:1164] = w_color; end
-            98 : begin tmp_color[1187:1176] = w_color; end
-            99 : begin tmp_color[1199:1188] = w_color; end
-            100 : begin tmp_color[1211:1200] = w_color; end
-            101 : begin tmp_color[1223:1212] = w_color; end
-            102 : begin tmp_color[1235:1224] = w_color; end
-            103 : begin tmp_color[1247:1236] = w_color; end
-            104 : begin tmp_color[1259:1248] = w_color; end
-            105 : begin tmp_color[1271:1260] = w_color; end
-            106 : begin tmp_color[1283:1272] = w_color; end
-            107 : begin tmp_color[1295:1284] = w_color; end
-            108 : begin tmp_color[1307:1296] = w_color; end
-            109 : begin tmp_color[1319:1308] = w_color; end
-            110 : begin tmp_color[1331:1320] = w_color; end
-            111 : begin tmp_color[1343:1332] = w_color; end
-            112 : begin tmp_color[1355:1344] = w_color; end
-            113 : begin tmp_color[1367:1356] = w_color; end
-            114 : begin tmp_color[1379:1368] = w_color; end
-            115 : begin tmp_color[1391:1380] = w_color; end
-            116 : begin tmp_color[1403:1392] = w_color; end
-            117 : begin tmp_color[1415:1404] = w_color; end
-            118 : begin tmp_color[1427:1416] = w_color; end
-            119 : begin tmp_color[1439:1428] = w_color; end
-            120 : begin tmp_color[1451:1440] = w_color; end
-            121 : begin tmp_color[1463:1452] = w_color; end
-            122 : begin tmp_color[1475:1464] = w_color; end
-            123 : begin tmp_color[1487:1476] = w_color; end
-            124 : begin tmp_color[1499:1488] = w_color; end
-            125 : begin tmp_color[1511:1500] = w_color; end
-            126 : begin tmp_color[1523:1512] = w_color; end
-            127 : begin tmp_color[1535:1524] = w_color; end
-            128 : begin tmp_color[1547:1536] = w_color; end
-            129 : begin tmp_color[1559:1548] = w_color; end
-            130 : begin tmp_color[1571:1560] = w_color; end
-            131 : begin tmp_color[1583:1572] = w_color; end
-            132 : begin tmp_color[1595:1584] = w_color; end
-            133 : begin tmp_color[1607:1596] = w_color; end
-            134 : begin tmp_color[1619:1608] = w_color; end
-            135 : begin tmp_color[1631:1620] = w_color; end
-            136 : begin tmp_color[1643:1632] = w_color; end
-            137 : begin tmp_color[1655:1644] = w_color; end
-            138 : begin tmp_color[1667:1656] = w_color; end
-            139 : begin tmp_color[1679:1668] = w_color; end
-            140 : begin tmp_color[1691:1680] = w_color; end
-            141 : begin tmp_color[1703:1692] = w_color; end
-            142 : begin tmp_color[1715:1704] = w_color; end
-            143 : begin tmp_color[1727:1716] = w_color; end
-            144 : begin tmp_color[1739:1728] = w_color; end
-            145 : begin tmp_color[1751:1740] = w_color; end
-            146 : begin tmp_color[1763:1752] = w_color; end
-            147 : begin tmp_color[1775:1764] = w_color; end
-            148 : begin tmp_color[1787:1776] = w_color; end
-            149 : begin tmp_color[1799:1788] = w_color; end
-            150 : begin tmp_color[1811:1800] = w_color; end
-            151 : begin tmp_color[1823:1812] = w_color; end
-            152 : begin tmp_color[1835:1824] = w_color; end
-            153 : begin tmp_color[1847:1836] = w_color; end
-            154 : begin tmp_color[1859:1848] = w_color; end
-            155 : begin tmp_color[1871:1860] = w_color; end
-            156 : begin tmp_color[1883:1872] = w_color; end
-            157 : begin tmp_color[1895:1884] = w_color; end
-            158 : begin tmp_color[1907:1896] = w_color; end
-            159 : begin tmp_color[1919:1908] = w_color; end
-            160 : begin tmp_color[1931:1920] = w_color; end
-            161 : begin tmp_color[1943:1932] = w_color; end
-            162 : begin tmp_color[1955:1944] = w_color; end
-            163 : begin tmp_color[1967:1956] = w_color; end
-            164 : begin tmp_color[1979:1968] = w_color; end
-            165 : begin tmp_color[1991:1980] = w_color; end
-            166 : begin tmp_color[2003:1992] = w_color; end
-            167 : begin tmp_color[2015:2004] = w_color; end
-            168 : begin tmp_color[2027:2016] = w_color; end
-            169 : begin tmp_color[2039:2028] = w_color; end
-            170 : begin tmp_color[2051:2040] = w_color; end
-            171 : begin tmp_color[2063:2052] = w_color; end
-            172 : begin tmp_color[2075:2064] = w_color; end
-            173 : begin tmp_color[2087:2076] = w_color; end
-            174 : begin tmp_color[2099:2088] = w_color; end
-            175 : begin tmp_color[2111:2100] = w_color; end
-            176 : begin tmp_color[2123:2112] = w_color; end
-            177 : begin tmp_color[2135:2124] = w_color; end
-            178 : begin tmp_color[2147:2136] = w_color; end
-            179 : begin tmp_color[2159:2148] = w_color; end
-            180 : begin tmp_color[2171:2160] = w_color; end
-            181 : begin tmp_color[2183:2172] = w_color; end
-            182 : begin tmp_color[2195:2184] = w_color; end
-            183 : begin tmp_color[2207:2196] = w_color; end
-            184 : begin tmp_color[2219:2208] = w_color; end
-            185 : begin tmp_color[2231:2220] = w_color; end
-            186 : begin tmp_color[2243:2232] = w_color; end
-            187 : begin tmp_color[2255:2244] = w_color; end
-            188 : begin tmp_color[2267:2256] = w_color; end
-            189 : begin tmp_color[2279:2268] = w_color; end
-            190 : begin tmp_color[2291:2280] = w_color; end
-            191 : begin tmp_color[2303:2292] = w_color; end
-            192 : begin tmp_color[2315:2304] = w_color; end
-            193 : begin tmp_color[2327:2316] = w_color; end
-            194 : begin tmp_color[2339:2328] = w_color; end
-            195 : begin tmp_color[2351:2340] = w_color; end
-            196 : begin tmp_color[2363:2352] = w_color; end
-            197 : begin tmp_color[2375:2364] = w_color; end
-            198 : begin tmp_color[2387:2376] = w_color; end
-            199 : begin tmp_color[2399:2388] = w_color; end
+            0 : begin tmp_color[11:0] = (change_en[0])?w_color:color[11:0]; end
+1 : begin tmp_color[23:12] = (change_en[1])?w_color:color[23:12]; end
+2 : begin tmp_color[35:24] = (change_en[2])?w_color:color[35:24]; end
+3 : begin tmp_color[47:36] = (change_en[3])?w_color:color[47:36]; end
+4 : begin tmp_color[59:48] = (change_en[4])?w_color:color[59:48]; end
+5 : begin tmp_color[71:60] = (change_en[5])?w_color:color[71:60]; end
+6 : begin tmp_color[83:72] = (change_en[6])?w_color:color[83:72]; end
+7 : begin tmp_color[95:84] = (change_en[7])?w_color:color[95:84]; end
+8 : begin tmp_color[107:96] = (change_en[8])?w_color:color[107:96]; end
+9 : begin tmp_color[119:108] = (change_en[9])?w_color:color[119:108]; end
+10 : begin tmp_color[131:120] = (change_en[10])?w_color:color[131:120]; end
+11 : begin tmp_color[143:132] = (change_en[11])?w_color:color[143:132]; end
+12 : begin tmp_color[155:144] = (change_en[12])?w_color:color[155:144]; end
+13 : begin tmp_color[167:156] = (change_en[13])?w_color:color[167:156]; end
+14 : begin tmp_color[179:168] = (change_en[14])?w_color:color[179:168]; end
+15 : begin tmp_color[191:180] = (change_en[15])?w_color:color[191:180]; end
+16 : begin tmp_color[203:192] = (change_en[16])?w_color:color[203:192]; end
+17 : begin tmp_color[215:204] = (change_en[17])?w_color:color[215:204]; end
+18 : begin tmp_color[227:216] = (change_en[18])?w_color:color[227:216]; end
+19 : begin tmp_color[239:228] = (change_en[19])?w_color:color[239:228]; end
+20 : begin tmp_color[251:240] = (change_en[20])?w_color:color[251:240]; end
+21 : begin tmp_color[263:252] = (change_en[21])?w_color:color[263:252]; end
+22 : begin tmp_color[275:264] = (change_en[22])?w_color:color[275:264]; end
+23 : begin tmp_color[287:276] = (change_en[23])?w_color:color[287:276]; end
+24 : begin tmp_color[299:288] = (change_en[24])?w_color:color[299:288]; end
+25 : begin tmp_color[311:300] = (change_en[25])?w_color:color[311:300]; end
+26 : begin tmp_color[323:312] = (change_en[26])?w_color:color[323:312]; end
+27 : begin tmp_color[335:324] = (change_en[27])?w_color:color[335:324]; end
+28 : begin tmp_color[347:336] = (change_en[28])?w_color:color[347:336]; end
+29 : begin tmp_color[359:348] = (change_en[29])?w_color:color[359:348]; end
+30 : begin tmp_color[371:360] = (change_en[30])?w_color:color[371:360]; end
+31 : begin tmp_color[383:372] = (change_en[31])?w_color:color[383:372]; end
+32 : begin tmp_color[395:384] = (change_en[32])?w_color:color[395:384]; end
+33 : begin tmp_color[407:396] = (change_en[33])?w_color:color[407:396]; end
+34 : begin tmp_color[419:408] = (change_en[34])?w_color:color[419:408]; end
+35 : begin tmp_color[431:420] = (change_en[35])?w_color:color[431:420]; end
+36 : begin tmp_color[443:432] = (change_en[36])?w_color:color[443:432]; end
+37 : begin tmp_color[455:444] = (change_en[37])?w_color:color[455:444]; end
+38 : begin tmp_color[467:456] = (change_en[38])?w_color:color[467:456]; end
+39 : begin tmp_color[479:468] = (change_en[39])?w_color:color[479:468]; end
+40 : begin tmp_color[491:480] = (change_en[40])?w_color:color[491:480]; end
+41 : begin tmp_color[503:492] = (change_en[41])?w_color:color[503:492]; end
+42 : begin tmp_color[515:504] = (change_en[42])?w_color:color[515:504]; end
+43 : begin tmp_color[527:516] = (change_en[43])?w_color:color[527:516]; end
+44 : begin tmp_color[539:528] = (change_en[44])?w_color:color[539:528]; end
+45 : begin tmp_color[551:540] = (change_en[45])?w_color:color[551:540]; end
+46 : begin tmp_color[563:552] = (change_en[46])?w_color:color[563:552]; end
+47 : begin tmp_color[575:564] = (change_en[47])?w_color:color[575:564]; end
+48 : begin tmp_color[587:576] = (change_en[48])?w_color:color[587:576]; end
+49 : begin tmp_color[599:588] = (change_en[49])?w_color:color[599:588]; end
+50 : begin tmp_color[611:600] = (change_en[50])?w_color:color[611:600]; end
+51 : begin tmp_color[623:612] = (change_en[51])?w_color:color[623:612]; end
+52 : begin tmp_color[635:624] = (change_en[52])?w_color:color[635:624]; end
+53 : begin tmp_color[647:636] = (change_en[53])?w_color:color[647:636]; end
+54 : begin tmp_color[659:648] = (change_en[54])?w_color:color[659:648]; end
+55 : begin tmp_color[671:660] = (change_en[55])?w_color:color[671:660]; end
+56 : begin tmp_color[683:672] = (change_en[56])?w_color:color[683:672]; end
+57 : begin tmp_color[695:684] = (change_en[57])?w_color:color[695:684]; end
+58 : begin tmp_color[707:696] = (change_en[58])?w_color:color[707:696]; end
+59 : begin tmp_color[719:708] = (change_en[59])?w_color:color[719:708]; end
+60 : begin tmp_color[731:720] = (change_en[60])?w_color:color[731:720]; end
+61 : begin tmp_color[743:732] = (change_en[61])?w_color:color[743:732]; end
+62 : begin tmp_color[755:744] = (change_en[62])?w_color:color[755:744]; end
+63 : begin tmp_color[767:756] = (change_en[63])?w_color:color[767:756]; end
+64 : begin tmp_color[779:768] = (change_en[64])?w_color:color[779:768]; end
+65 : begin tmp_color[791:780] = (change_en[65])?w_color:color[791:780]; end
+66 : begin tmp_color[803:792] = (change_en[66])?w_color:color[803:792]; end
+67 : begin tmp_color[815:804] = (change_en[67])?w_color:color[815:804]; end
+68 : begin tmp_color[827:816] = (change_en[68])?w_color:color[827:816]; end
+69 : begin tmp_color[839:828] = (change_en[69])?w_color:color[839:828]; end
+70 : begin tmp_color[851:840] = (change_en[70])?w_color:color[851:840]; end
+71 : begin tmp_color[863:852] = (change_en[71])?w_color:color[863:852]; end
+72 : begin tmp_color[875:864] = (change_en[72])?w_color:color[875:864]; end
+73 : begin tmp_color[887:876] = (change_en[73])?w_color:color[887:876]; end
+74 : begin tmp_color[899:888] = (change_en[74])?w_color:color[899:888]; end
+75 : begin tmp_color[911:900] = (change_en[75])?w_color:color[911:900]; end
+76 : begin tmp_color[923:912] = (change_en[76])?w_color:color[923:912]; end
+77 : begin tmp_color[935:924] = (change_en[77])?w_color:color[935:924]; end
+78 : begin tmp_color[947:936] = (change_en[78])?w_color:color[947:936]; end
+79 : begin tmp_color[959:948] = (change_en[79])?w_color:color[959:948]; end
+80 : begin tmp_color[971:960] = (change_en[80])?w_color:color[971:960]; end
+81 : begin tmp_color[983:972] = (change_en[81])?w_color:color[983:972]; end
+82 : begin tmp_color[995:984] = (change_en[82])?w_color:color[995:984]; end
+83 : begin tmp_color[1007:996] = (change_en[83])?w_color:color[1007:996]; end
+84 : begin tmp_color[1019:1008] = (change_en[84])?w_color:color[1019:1008]; end
+85 : begin tmp_color[1031:1020] = (change_en[85])?w_color:color[1031:1020]; end
+86 : begin tmp_color[1043:1032] = (change_en[86])?w_color:color[1043:1032]; end
+87 : begin tmp_color[1055:1044] = (change_en[87])?w_color:color[1055:1044]; end
+88 : begin tmp_color[1067:1056] = (change_en[88])?w_color:color[1067:1056]; end
+89 : begin tmp_color[1079:1068] = (change_en[89])?w_color:color[1079:1068]; end
+90 : begin tmp_color[1091:1080] = (change_en[90])?w_color:color[1091:1080]; end
+91 : begin tmp_color[1103:1092] = (change_en[91])?w_color:color[1103:1092]; end
+92 : begin tmp_color[1115:1104] = (change_en[92])?w_color:color[1115:1104]; end
+93 : begin tmp_color[1127:1116] = (change_en[93])?w_color:color[1127:1116]; end
+94 : begin tmp_color[1139:1128] = (change_en[94])?w_color:color[1139:1128]; end
+95 : begin tmp_color[1151:1140] = (change_en[95])?w_color:color[1151:1140]; end
+96 : begin tmp_color[1163:1152] = (change_en[96])?w_color:color[1163:1152]; end
+97 : begin tmp_color[1175:1164] = (change_en[97])?w_color:color[1175:1164]; end
+98 : begin tmp_color[1187:1176] = (change_en[98])?w_color:color[1187:1176]; end
+99 : begin tmp_color[1199:1188] = (change_en[99])?w_color:color[1199:1188]; end
+100 : begin tmp_color[1211:1200] = (change_en[100])?w_color:color[1211:1200]; end
+101 : begin tmp_color[1223:1212] = (change_en[101])?w_color:color[1223:1212]; end
+102 : begin tmp_color[1235:1224] = (change_en[102])?w_color:color[1235:1224]; end
+103 : begin tmp_color[1247:1236] = (change_en[103])?w_color:color[1247:1236]; end
+104 : begin tmp_color[1259:1248] = (change_en[104])?w_color:color[1259:1248]; end
+105 : begin tmp_color[1271:1260] = (change_en[105])?w_color:color[1271:1260]; end
+106 : begin tmp_color[1283:1272] = (change_en[106])?w_color:color[1283:1272]; end
+107 : begin tmp_color[1295:1284] = (change_en[107])?w_color:color[1295:1284]; end
+108 : begin tmp_color[1307:1296] = (change_en[108])?w_color:color[1307:1296]; end
+109 : begin tmp_color[1319:1308] = (change_en[109])?w_color:color[1319:1308]; end
+110 : begin tmp_color[1331:1320] = (change_en[110])?w_color:color[1331:1320]; end
+111 : begin tmp_color[1343:1332] = (change_en[111])?w_color:color[1343:1332]; end
+112 : begin tmp_color[1355:1344] = (change_en[112])?w_color:color[1355:1344]; end
+113 : begin tmp_color[1367:1356] = (change_en[113])?w_color:color[1367:1356]; end
+114 : begin tmp_color[1379:1368] = (change_en[114])?w_color:color[1379:1368]; end
+115 : begin tmp_color[1391:1380] = (change_en[115])?w_color:color[1391:1380]; end
+116 : begin tmp_color[1403:1392] = (change_en[116])?w_color:color[1403:1392]; end
+117 : begin tmp_color[1415:1404] = (change_en[117])?w_color:color[1415:1404]; end
+118 : begin tmp_color[1427:1416] = (change_en[118])?w_color:color[1427:1416]; end
+119 : begin tmp_color[1439:1428] = (change_en[119])?w_color:color[1439:1428]; end
+120 : begin tmp_color[1451:1440] = (change_en[120])?w_color:color[1451:1440]; end
+121 : begin tmp_color[1463:1452] = (change_en[121])?w_color:color[1463:1452]; end
+122 : begin tmp_color[1475:1464] = (change_en[122])?w_color:color[1475:1464]; end
+123 : begin tmp_color[1487:1476] = (change_en[123])?w_color:color[1487:1476]; end
+124 : begin tmp_color[1499:1488] = (change_en[124])?w_color:color[1499:1488]; end
+125 : begin tmp_color[1511:1500] = (change_en[125])?w_color:color[1511:1500]; end
+126 : begin tmp_color[1523:1512] = (change_en[126])?w_color:color[1523:1512]; end
+127 : begin tmp_color[1535:1524] = (change_en[127])?w_color:color[1535:1524]; end
+128 : begin tmp_color[1547:1536] = (change_en[128])?w_color:color[1547:1536]; end
+129 : begin tmp_color[1559:1548] = (change_en[129])?w_color:color[1559:1548]; end
+130 : begin tmp_color[1571:1560] = (change_en[130])?w_color:color[1571:1560]; end
+131 : begin tmp_color[1583:1572] = (change_en[131])?w_color:color[1583:1572]; end
+132 : begin tmp_color[1595:1584] = (change_en[132])?w_color:color[1595:1584]; end
+133 : begin tmp_color[1607:1596] = (change_en[133])?w_color:color[1607:1596]; end
+134 : begin tmp_color[1619:1608] = (change_en[134])?w_color:color[1619:1608]; end
+135 : begin tmp_color[1631:1620] = (change_en[135])?w_color:color[1631:1620]; end
+136 : begin tmp_color[1643:1632] = (change_en[136])?w_color:color[1643:1632]; end
+137 : begin tmp_color[1655:1644] = (change_en[137])?w_color:color[1655:1644]; end
+138 : begin tmp_color[1667:1656] = (change_en[138])?w_color:color[1667:1656]; end
+139 : begin tmp_color[1679:1668] = (change_en[139])?w_color:color[1679:1668]; end
+140 : begin tmp_color[1691:1680] = (change_en[140])?w_color:color[1691:1680]; end
+141 : begin tmp_color[1703:1692] = (change_en[141])?w_color:color[1703:1692]; end
+142 : begin tmp_color[1715:1704] = (change_en[142])?w_color:color[1715:1704]; end
+143 : begin tmp_color[1727:1716] = (change_en[143])?w_color:color[1727:1716]; end
+144 : begin tmp_color[1739:1728] = (change_en[144])?w_color:color[1739:1728]; end
+145 : begin tmp_color[1751:1740] = (change_en[145])?w_color:color[1751:1740]; end
+146 : begin tmp_color[1763:1752] = (change_en[146])?w_color:color[1763:1752]; end
+147 : begin tmp_color[1775:1764] = (change_en[147])?w_color:color[1775:1764]; end
+148 : begin tmp_color[1787:1776] = (change_en[148])?w_color:color[1787:1776]; end
+149 : begin tmp_color[1799:1788] = (change_en[149])?w_color:color[1799:1788]; end
+150 : begin tmp_color[1811:1800] = (change_en[150])?w_color:color[1811:1800]; end
+151 : begin tmp_color[1823:1812] = (change_en[151])?w_color:color[1823:1812]; end
+152 : begin tmp_color[1835:1824] = (change_en[152])?w_color:color[1835:1824]; end
+153 : begin tmp_color[1847:1836] = (change_en[153])?w_color:color[1847:1836]; end
+154 : begin tmp_color[1859:1848] = (change_en[154])?w_color:color[1859:1848]; end
+155 : begin tmp_color[1871:1860] = (change_en[155])?w_color:color[1871:1860]; end
+156 : begin tmp_color[1883:1872] = (change_en[156])?w_color:color[1883:1872]; end
+157 : begin tmp_color[1895:1884] = (change_en[157])?w_color:color[1895:1884]; end
+158 : begin tmp_color[1907:1896] = (change_en[158])?w_color:color[1907:1896]; end
+159 : begin tmp_color[1919:1908] = (change_en[159])?w_color:color[1919:1908]; end
+160 : begin tmp_color[1931:1920] = (change_en[160])?w_color:color[1931:1920]; end
+161 : begin tmp_color[1943:1932] = (change_en[161])?w_color:color[1943:1932]; end
+162 : begin tmp_color[1955:1944] = (change_en[162])?w_color:color[1955:1944]; end
+163 : begin tmp_color[1967:1956] = (change_en[163])?w_color:color[1967:1956]; end
+164 : begin tmp_color[1979:1968] = (change_en[164])?w_color:color[1979:1968]; end
+165 : begin tmp_color[1991:1980] = (change_en[165])?w_color:color[1991:1980]; end
+166 : begin tmp_color[2003:1992] = (change_en[166])?w_color:color[2003:1992]; end
+167 : begin tmp_color[2015:2004] = (change_en[167])?w_color:color[2015:2004]; end
+168 : begin tmp_color[2027:2016] = (change_en[168])?w_color:color[2027:2016]; end
+169 : begin tmp_color[2039:2028] = (change_en[169])?w_color:color[2039:2028]; end
+170 : begin tmp_color[2051:2040] = (change_en[170])?w_color:color[2051:2040]; end
+171 : begin tmp_color[2063:2052] = (change_en[171])?w_color:color[2063:2052]; end
+172 : begin tmp_color[2075:2064] = (change_en[172])?w_color:color[2075:2064]; end
+173 : begin tmp_color[2087:2076] = (change_en[173])?w_color:color[2087:2076]; end
+174 : begin tmp_color[2099:2088] = (change_en[174])?w_color:color[2099:2088]; end
+175 : begin tmp_color[2111:2100] = (change_en[175])?w_color:color[2111:2100]; end
+176 : begin tmp_color[2123:2112] = (change_en[176])?w_color:color[2123:2112]; end
+177 : begin tmp_color[2135:2124] = (change_en[177])?w_color:color[2135:2124]; end
+178 : begin tmp_color[2147:2136] = (change_en[178])?w_color:color[2147:2136]; end
+179 : begin tmp_color[2159:2148] = (change_en[179])?w_color:color[2159:2148]; end
+180 : begin tmp_color[2171:2160] = (change_en[180])?w_color:color[2171:2160]; end
+181 : begin tmp_color[2183:2172] = (change_en[181])?w_color:color[2183:2172]; end
+182 : begin tmp_color[2195:2184] = (change_en[182])?w_color:color[2195:2184]; end
+183 : begin tmp_color[2207:2196] = (change_en[183])?w_color:color[2207:2196]; end
+184 : begin tmp_color[2219:2208] = (change_en[184])?w_color:color[2219:2208]; end
+185 : begin tmp_color[2231:2220] = (change_en[185])?w_color:color[2231:2220]; end
+186 : begin tmp_color[2243:2232] = (change_en[186])?w_color:color[2243:2232]; end
+187 : begin tmp_color[2255:2244] = (change_en[187])?w_color:color[2255:2244]; end
+188 : begin tmp_color[2267:2256] = (change_en[188])?w_color:color[2267:2256]; end
+189 : begin tmp_color[2279:2268] = (change_en[189])?w_color:color[2279:2268]; end
+190 : begin tmp_color[2291:2280] = (change_en[190])?w_color:color[2291:2280]; end
+191 : begin tmp_color[2303:2292] = (change_en[191])?w_color:color[2303:2292]; end
+192 : begin tmp_color[2315:2304] = (change_en[192])?w_color:color[2315:2304]; end
+193 : begin tmp_color[2327:2316] = (change_en[193])?w_color:color[2327:2316]; end
+194 : begin tmp_color[2339:2328] = (change_en[194])?w_color:color[2339:2328]; end
+195 : begin tmp_color[2351:2340] = (change_en[195])?w_color:color[2351:2340]; end
+196 : begin tmp_color[2363:2352] = (change_en[196])?w_color:color[2363:2352]; end
+197 : begin tmp_color[2375:2364] = (change_en[197])?w_color:color[2375:2364]; end
+198 : begin tmp_color[2387:2376] = (change_en[198])?w_color:color[2387:2376]; end
+199 : begin tmp_color[2399:2388] = (change_en[199])?w_color:color[2399:2388]; end
             default:begin end
         endcase
     end
@@ -1736,7 +1738,7 @@ end
 endmodule
 
 
-module putBlock(write_en,address,w_color,block_exist,generate_block,block_type,block_status,rst,clk,turn_right,turn_left,shift_left,shift_right,clkBlockDown);
+module putBlock(change_en,write_en,address,w_color,block_exist,generate_block,block_type,block_status,rst,clk,turn_right,turn_left,shift_left,shift_right,clkBlockDown);
 input generate_block;
 input rst;
 input clk;
@@ -1745,7 +1747,7 @@ input [1:0]block_status;
 input turn_right,turn_left;
 input shift_right,shift_left;
 input clkBlockDown;
-
+output reg[199:0]change_en;
 output reg write_en;
 output reg [7:0]address;
 output reg [11:0]w_color;
@@ -1780,16 +1782,28 @@ wire [7:0] last_pos2;
 wire [7:0] last_pos3;
 wire [7:0] last_pos4;
 
-reg [3:0]write_state;
+
 
 wire one_pulse_BlockDown;
 
 wire left_en,right_en,down_en;
 
 wire [15:0] rondom_num;
-wire [11:0] tmp_w_color;
+wire [11:0] block_color;
 
-reg write_complete;
+
+
+reg write_complete;                   
+reg [3:0]write_state;
+
+reg [199:0]tmp_block_exist;
+reg [11:0] tmp_w_color;
+reg [7:0]tmp_address;
+reg [3:0]tmp_write_state;
+reg tmp_write_en;
+reg tmp_write_complete;
+
+
 parameter [3:0] WAIT_WRITE = 4'b0000;
 parameter [3:0] WRITE_POS1 = 4'b0001;
 parameter [3:0] WRITE_POS2 = 4'b0010;
@@ -1804,7 +1818,7 @@ parameter [3:0] TEST_STATE_2 = 4'b1001;
 parameter [3:0] TEST_STATE_3 = 4'b1010;
 parameter [3:0] TEST_STATE_4 = 4'b1011;
 
-shape s_now  (.w_color(tmp_w_color),.color_pos1(color_pos1),.color_pos2(color_pos2),.color_pos3(color_pos3),
+shape s_now  (.w_color(block_color),.color_pos1(color_pos1),.color_pos2(color_pos2),.color_pos3(color_pos3),
               .color_pos4(color_pos4),.block(block),.status(status),.pos_x(pos_x),.pos_y(pos_y));
 shape s_last (.w_color(last_w_color),.color_pos1(last_pos1),.color_pos2(last_pos2),.color_pos3(last_pos3),
               .color_pos4(last_pos4),.block(block),.status(status),.pos_x(last_pos_x),.pos_y(last_pos_y));
@@ -1958,12 +1972,122 @@ always@(*)begin
                 tmp_last_pos_y = last_pos_y; 
                 tmp_block_settle = 0;    
                 tmp_write_new_block = 0;
-            end
         end
         default:begin
         end
     endcase
 end
+/*always@(posedge clk or posedge rst)begin
+    if(rst)begin
+        write_state <= WAIT_WRITE;                    
+        write_en <= 0;
+        address <= 0;
+        block_exist <= 0;
+        w_color <= 0;
+        write_complete<=0;
+    end
+    else begin
+        write_state <= tmp_write_state;                    
+        write_en <= tmp_write_en;
+        address <= tmp_address;
+        block_exist <= tmp_block_exist;
+        w_color <= tmp_w_color;
+        write_complete<=tmp_write_complete;
+    end
+end
+always@(*)begin
+    tmp_write_state = write_state;                    
+    tmp_write_en = write_en;
+    tmp_address = address;
+    tmp_block_exist = block_exist;
+    tmp_w_color = w_color;
+    tmp_write_complete =write_complete;
+    case(write_state)
+        WAIT_WRITE:begin
+            if(start_write)begin
+                tmp_write_state = SET_BLOCK_EXIST1;
+                tmp_write_en = 0;
+                tmp_address = 0;
+                tmp_w_color = 0;
+                tmp_write_complete = 0;
+            end
+            else if (write_new_block)begin
+                tmp_write_state = SET_BLOCK_EXIST2;
+                tmp_write_en = 0;
+                tmp_address = 0;
+                tmp_w_color = 0;
+                tmp_write_complete = 0;
+            end
+            else begin
+                tmp_write_state = WAIT_WRITE;
+                tmp_write_en = 0;
+                tmp_address = 0;
+                tmp_w_color = 0;
+                tmp_write_complete = 0;
+            end
+        end
+        SET_BLOCK_EXIST1:begin
+            tmp_write_state = WRITE_POS1;
+            tmp_block_exist[last_pos1] =  0;
+            tmp_block_exist[last_pos2] =  0;
+            tmp_block_exist[last_pos3] =  0;
+            tmp_block_exist[last_pos4] =  0;
+            tmp_block_exist[color_pos1] = 1;
+            tmp_block_exist[color_pos2] = 1;
+            tmp_block_exist[color_pos3] = 1;
+            tmp_block_exist[color_pos4] = 1;
+        end
+        SET_BLOCK_EXIST2:begin
+            tmp_write_state = WRITE_POS1;
+            tmp_block_exist[last_pos1] =  1;
+            tmp_block_exist[last_pos2] =  1;
+            tmp_block_exist[last_pos3] =  1;
+            tmp_block_exist[last_pos4] =  1;
+            tmp_block_exist[color_pos1] = 1;
+            tmp_block_exist[color_pos2] = 1;
+            tmp_block_exist[color_pos3] = 1;
+            tmp_block_exist[color_pos4] = 1;
+        end
+        WRITE_POS1:begin
+            tmp_write_state = WRITE_POS2;
+            tmp_write_en = 1;
+            tmp_address = color_pos1;
+            tmp_w_color = block_color;
+            tmp_write_complete = 0;
+        end
+        WRITE_POS2:begin
+            tmp_write_state = WRITE_POS3;
+            tmp_write_en = 1;
+            tmp_address = color_pos2;
+            tmp_w_color = block_color;
+            tmp_write_complete = 0;
+        end
+        WRITE_POS3:begin
+            tmp_write_state = WRITE_POS4;
+            tmp_write_en = 1;
+            tmp_address = color_pos3;
+            tmp_w_color = block_color;
+            tmp_write_complete = 0;
+        end
+        WRITE_POS4:begin
+            tmp_write_state = WRITE_COMPLETE;
+            tmp_write_en = 1;
+            tmp_address = color_pos4;
+            tmp_w_color = block_color;
+            tmp_write_complete = 0;
+        end
+        WRITE_COMPLETE:begin
+            tmp_write_state = WAIT_WRITE;
+            tmp_write_en = 0;
+            tmp_address = 0;
+            tmp_w_color = 0;
+            tmp_write_complete = 1;
+        end
+        default:begin
+            
+        end
+    endcase
+end*/
 always@(posedge clk or posedge rst)begin
     if(rst)begin
         write_state <= WAIT_WRITE;                    
@@ -1972,7 +2096,8 @@ always@(posedge clk or posedge rst)begin
         block_exist <= 0;
         w_color <= 0;
         write_complete<=0;
-        
+        change_en <= 0;
+
     end
     else begin
         write_state <= write_state;
@@ -1981,6 +2106,7 @@ always@(posedge clk or posedge rst)begin
         block_exist <= block_exist;
         w_color <= w_color;
         write_complete <= write_complete;
+        change_en <= change_en;
         case(write_state)
             WAIT_WRITE:begin
                 if(start_write)begin
@@ -2006,7 +2132,7 @@ always@(posedge clk or posedge rst)begin
                 end      
             end
             SET_BLOCK_EXIST1:begin
-                write_state <= WRITE_POS1;
+                write_state <= TEST_STATE_1;
                 block_exist[last_pos1] <=  0;
                 block_exist[last_pos2] <=  0;
                 block_exist[last_pos3] <=  0;
@@ -2018,10 +2144,10 @@ always@(posedge clk or posedge rst)begin
             end
             SET_BLOCK_EXIST2:begin
                 write_state <= TEST_STATE_1;
-                block_exist[last_pos1] <=  1;
-                block_exist[last_pos2] <=  1;
-                block_exist[last_pos3] <=  1;
-                block_exist[last_pos4] <=  1;
+                block_exist[last_pos1] <=  0;
+                block_exist[last_pos2] <=  0;
+                block_exist[last_pos3] <=  0;
+                block_exist[last_pos4] <=  0;
                 block_exist[color_pos1] <= 1;
                 block_exist[color_pos2] <= 1;
                 block_exist[color_pos3] <= 1;
@@ -2030,52 +2156,60 @@ always@(posedge clk or posedge rst)begin
             TEST_STATE_1:begin
                 write_state <= WRITE_POS1;
                 write_en<=0;
+                change_en[color_pos1] <= 1;
                 address <= color_pos1;
             end
             WRITE_POS1:begin
                 write_state <= TEST_STATE_2;
                 write_en <= 1;
                // address <= color_pos1;
-                w_color <=tmp_w_color;
+                w_color <= block_color;
                 write_complete <= 0;
             end
             TEST_STATE_2:begin
                 write_state <= WRITE_POS2;
                 write_en<=0;
+                change_en[color_pos1] <= 0;
+                change_en[color_pos2] <= 1;
                 address <= color_pos2;
             end
             WRITE_POS2:begin
                 write_state <= TEST_STATE_3;
                 write_en <= 1;
                 //address <= color_pos2;
-                w_color <=tmp_w_color;
+                w_color <=block_color;
                 write_complete <= 0;
             end
             TEST_STATE_3:begin
                 write_state <= WRITE_POS3;
-                write_en<=0
+                write_en<=0;
+                change_en[color_pos2] <= 0;
+                change_en[color_pos3] <= 1;
                 address <= color_pos3;
             end
             WRITE_POS3:begin
                 write_state <= TEST_STATE_4;
                 write_en <= 1;
                 //address <= color_pos3;
-                w_color <=tmp_w_color;
+                w_color <=block_color;
                 write_complete <= 0;
             end
             TEST_STATE_4:begin
                 write_state <= WRITE_POS4;
-                write_en<=0
+                write_en<=0;
+                change_en[color_pos3] <= 0;
+                change_en[color_pos4] <= 1;
                 address <= color_pos4;
             end
             WRITE_POS4:begin
                 write_state <= WRITE_COMPLETE;
                 write_en <= 1;
                 //address <= color_pos4;
-                w_color <=tmp_w_color;
+                w_color <=block_color;
                 write_complete <= 0;
             end
             WRITE_COMPLETE:begin
+                change_en[color_pos4] <= 0;
                 write_state <= WAIT_WRITE;
                 write_en <= 0;
                 address <= 0;
