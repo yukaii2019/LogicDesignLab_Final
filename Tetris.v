@@ -70,7 +70,7 @@ vga_controller vga_inst(.pclk(clk_25MHz),.reset(rst),.hsync(hsync),.vsync(vsync)
 BackGroundMemory bm (.color(color),.clk(clk),.rst(rst),.write_en(write_en),.address(address),.w_color(w_color),.block_exist(block_exist));
 putBlock pb (.write_en(write_en),.address(address),.w_color(w_color),.block_exist(block_exist),.generate_block(generate_block),
              .block_type(`BLOCK_J),.block_status(`BLOCK_STATUS_0),.rst(rst),.clk(clk),.turn_right(op_btn_U),.turn_left(op_btn_D),
-             .shift_left(op_btn_L),.shift_right(op_btn_R));
+             .shift_left(op_btn_L),.shift_right(op_btn_R),.clkBlockDown(clkBlockDown));
 //putblock pb (.outBackground(),.blockType(),.R_rotate(),.L_rotate(),.blockState(),.rst(),.clk(),.background(),.clkBlockDown(),.start_position());
 
 endmodule
@@ -88,211 +88,410 @@ reg [2399:0]tmp_color;
 always@(*)begin
     if(write_en)begin
         case(address)
-            0 : begin tmp_color[11:0] = (block_exist[0])? w_color:12'h000; end
-            1 : begin tmp_color[23:12] = (block_exist[1])? w_color:12'h222; end
-            2 : begin tmp_color[35:24] = (block_exist[2])? w_color:12'h000; end
-            3 : begin tmp_color[47:36] = (block_exist[3])? w_color:12'h222; end
-            4 : begin tmp_color[59:48] = (block_exist[4])? w_color:12'h000; end
-            5 : begin tmp_color[71:60] = (block_exist[5])? w_color:12'h222; end
-            6 : begin tmp_color[83:72] = (block_exist[6])? w_color:12'h000; end
-            7 : begin tmp_color[95:84] = (block_exist[7])? w_color:12'h222; end
-            8 : begin tmp_color[107:96] = (block_exist[8])? w_color:12'h000; end
-            9 : begin tmp_color[119:108] = (block_exist[9])? w_color:12'h222; end
-            10 : begin tmp_color[131:120] = (block_exist[10])? w_color:12'h222; end
-            11 : begin tmp_color[143:132] = (block_exist[11])? w_color:12'h000; end
-            12 : begin tmp_color[155:144] = (block_exist[12])? w_color:12'h222; end
-            13 : begin tmp_color[167:156] = (block_exist[13])? w_color:12'h000; end
-            14 : begin tmp_color[179:168] = (block_exist[14])? w_color:12'h222; end
-            15 : begin tmp_color[191:180] = (block_exist[15])? w_color:12'h000; end
-            16 : begin tmp_color[203:192] = (block_exist[16])? w_color:12'h222; end
-            17 : begin tmp_color[215:204] = (block_exist[17])? w_color:12'h000; end
-            18 : begin tmp_color[227:216] = (block_exist[18])? w_color:12'h222; end
-            19 : begin tmp_color[239:228] = (block_exist[19])? w_color:12'h000; end
-            20 : begin tmp_color[251:240] = (block_exist[20])? w_color:12'h000; end
-            21 : begin tmp_color[263:252] = (block_exist[21])? w_color:12'h222; end
-            22 : begin tmp_color[275:264] = (block_exist[22])? w_color:12'h000; end
-            23 : begin tmp_color[287:276] = (block_exist[23])? w_color:12'h222; end
-            24 : begin tmp_color[299:288] = (block_exist[24])? w_color:12'h000; end
-            25 : begin tmp_color[311:300] = (block_exist[25])? w_color:12'h222; end
-            26 : begin tmp_color[323:312] = (block_exist[26])? w_color:12'h000; end
-            27 : begin tmp_color[335:324] = (block_exist[27])? w_color:12'h222; end
-            28 : begin tmp_color[347:336] = (block_exist[28])? w_color:12'h000; end
-            29 : begin tmp_color[359:348] = (block_exist[29])? w_color:12'h222; end
-            30 : begin tmp_color[371:360] = (block_exist[30])? w_color:12'h222; end
-            31 : begin tmp_color[383:372] = (block_exist[31])? w_color:12'h000; end
-            32 : begin tmp_color[395:384] = (block_exist[32])? w_color:12'h222; end
-            33 : begin tmp_color[407:396] = (block_exist[33])? w_color:12'h000; end
-            34 : begin tmp_color[419:408] = (block_exist[34])? w_color:12'h222; end
-            35 : begin tmp_color[431:420] = (block_exist[35])? w_color:12'h000; end
-            36 : begin tmp_color[443:432] = (block_exist[36])? w_color:12'h222; end
-            37 : begin tmp_color[455:444] = (block_exist[37])? w_color:12'h000; end
-            38 : begin tmp_color[467:456] = (block_exist[38])? w_color:12'h222; end
-            39 : begin tmp_color[479:468] = (block_exist[39])? w_color:12'h000; end
-            40 : begin tmp_color[491:480] = (block_exist[40])? w_color:12'h000; end
-            41 : begin tmp_color[503:492] = (block_exist[41])? w_color:12'h222; end
-            42 : begin tmp_color[515:504] = (block_exist[42])? w_color:12'h000; end
-            43 : begin tmp_color[527:516] = (block_exist[43])? w_color:12'h222; end
-            44 : begin tmp_color[539:528] = (block_exist[44])? w_color:12'h000; end
-            45 : begin tmp_color[551:540] = (block_exist[45])? w_color:12'h222; end
-            46 : begin tmp_color[563:552] = (block_exist[46])? w_color:12'h000; end
-            47 : begin tmp_color[575:564] = (block_exist[47])? w_color:12'h222; end
-            48 : begin tmp_color[587:576] = (block_exist[48])? w_color:12'h000; end
-            49 : begin tmp_color[599:588] = (block_exist[49])? w_color:12'h222; end
-            50 : begin tmp_color[611:600] = (block_exist[50])? w_color:12'h222; end
-            51 : begin tmp_color[623:612] = (block_exist[51])? w_color:12'h000; end
-            52 : begin tmp_color[635:624] = (block_exist[52])? w_color:12'h222; end
-            53 : begin tmp_color[647:636] = (block_exist[53])? w_color:12'h000; end
-            54 : begin tmp_color[659:648] = (block_exist[54])? w_color:12'h222; end
-            55 : begin tmp_color[671:660] = (block_exist[55])? w_color:12'h000; end
-            56 : begin tmp_color[683:672] = (block_exist[56])? w_color:12'h222; end
-            57 : begin tmp_color[695:684] = (block_exist[57])? w_color:12'h000; end
-            58 : begin tmp_color[707:696] = (block_exist[58])? w_color:12'h222; end
-            59 : begin tmp_color[719:708] = (block_exist[59])? w_color:12'h000; end
-            60 : begin tmp_color[731:720] = (block_exist[60])? w_color:12'h000; end
-            61 : begin tmp_color[743:732] = (block_exist[61])? w_color:12'h222; end
-            62 : begin tmp_color[755:744] = (block_exist[62])? w_color:12'h000; end
-            63 : begin tmp_color[767:756] = (block_exist[63])? w_color:12'h222; end
-            64 : begin tmp_color[779:768] = (block_exist[64])? w_color:12'h000; end
-            65 : begin tmp_color[791:780] = (block_exist[65])? w_color:12'h222; end
-            66 : begin tmp_color[803:792] = (block_exist[66])? w_color:12'h000; end
-            67 : begin tmp_color[815:804] = (block_exist[67])? w_color:12'h222; end
-            68 : begin tmp_color[827:816] = (block_exist[68])? w_color:12'h000; end
-            69 : begin tmp_color[839:828] = (block_exist[69])? w_color:12'h222; end
-            70 : begin tmp_color[851:840] = (block_exist[70])? w_color:12'h222; end
-            71 : begin tmp_color[863:852] = (block_exist[71])? w_color:12'h000; end
-            72 : begin tmp_color[875:864] = (block_exist[72])? w_color:12'h222; end
-            73 : begin tmp_color[887:876] = (block_exist[73])? w_color:12'h000; end
-            74 : begin tmp_color[899:888] = (block_exist[74])? w_color:12'h222; end
-            75 : begin tmp_color[911:900] = (block_exist[75])? w_color:12'h000; end
-            76 : begin tmp_color[923:912] = (block_exist[76])? w_color:12'h222; end
-            77 : begin tmp_color[935:924] = (block_exist[77])? w_color:12'h000; end
-            78 : begin tmp_color[947:936] = (block_exist[78])? w_color:12'h222; end
-            79 : begin tmp_color[959:948] = (block_exist[79])? w_color:12'h000; end
-            80 : begin tmp_color[971:960] = (block_exist[80])? w_color:12'h000; end
-            81 : begin tmp_color[983:972] = (block_exist[81])? w_color:12'h222; end
-            82 : begin tmp_color[995:984] = (block_exist[82])? w_color:12'h000; end
-            83 : begin tmp_color[1007:996] = (block_exist[83])? w_color:12'h222; end
-            84 : begin tmp_color[1019:1008] = (block_exist[84])? w_color:12'h000; end
-            85 : begin tmp_color[1031:1020] = (block_exist[85])? w_color:12'h222; end
-            86 : begin tmp_color[1043:1032] = (block_exist[86])? w_color:12'h000; end
-            87 : begin tmp_color[1055:1044] = (block_exist[87])? w_color:12'h222; end
-            88 : begin tmp_color[1067:1056] = (block_exist[88])? w_color:12'h000; end
-            89 : begin tmp_color[1079:1068] = (block_exist[89])? w_color:12'h222; end
-            90 : begin tmp_color[1091:1080] = (block_exist[90])? w_color:12'h222; end
-            91 : begin tmp_color[1103:1092] = (block_exist[91])? w_color:12'h000; end
-            92 : begin tmp_color[1115:1104] = (block_exist[92])? w_color:12'h222; end
-            93 : begin tmp_color[1127:1116] = (block_exist[93])? w_color:12'h000; end
-            94 : begin tmp_color[1139:1128] = (block_exist[94])? w_color:12'h222; end
-            95 : begin tmp_color[1151:1140] = (block_exist[95])? w_color:12'h000; end
-            96 : begin tmp_color[1163:1152] = (block_exist[96])? w_color:12'h222; end
-            97 : begin tmp_color[1175:1164] = (block_exist[97])? w_color:12'h000; end
-            98 : begin tmp_color[1187:1176] = (block_exist[98])? w_color:12'h222; end
-            99 : begin tmp_color[1199:1188] = (block_exist[99])? w_color:12'h000; end
-            100 : begin tmp_color[1211:1200] = (block_exist[100])? w_color:12'h000; end
-            101 : begin tmp_color[1223:1212] = (block_exist[101])? w_color:12'h222; end
-            102 : begin tmp_color[1235:1224] = (block_exist[102])? w_color:12'h000; end
-            103 : begin tmp_color[1247:1236] = (block_exist[103])? w_color:12'h222; end
-            104 : begin tmp_color[1259:1248] = (block_exist[104])? w_color:12'h000; end
-            105 : begin tmp_color[1271:1260] = (block_exist[105])? w_color:12'h222; end
-            106 : begin tmp_color[1283:1272] = (block_exist[106])? w_color:12'h000; end
-            107 : begin tmp_color[1295:1284] = (block_exist[107])? w_color:12'h222; end
-            108 : begin tmp_color[1307:1296] = (block_exist[108])? w_color:12'h000; end
-            109 : begin tmp_color[1319:1308] = (block_exist[109])? w_color:12'h222; end
-            110 : begin tmp_color[1331:1320] = (block_exist[110])? w_color:12'h222; end
-            111 : begin tmp_color[1343:1332] = (block_exist[111])? w_color:12'h000; end
-            112 : begin tmp_color[1355:1344] = (block_exist[112])? w_color:12'h222; end
-            113 : begin tmp_color[1367:1356] = (block_exist[113])? w_color:12'h000; end
-            114 : begin tmp_color[1379:1368] = (block_exist[114])? w_color:12'h222; end
-            115 : begin tmp_color[1391:1380] = (block_exist[115])? w_color:12'h000; end
-            116 : begin tmp_color[1403:1392] = (block_exist[116])? w_color:12'h222; end
-            117 : begin tmp_color[1415:1404] = (block_exist[117])? w_color:12'h000; end
-            118 : begin tmp_color[1427:1416] = (block_exist[118])? w_color:12'h222; end
-            119 : begin tmp_color[1439:1428] = (block_exist[119])? w_color:12'h000; end
-            120 : begin tmp_color[1451:1440] = (block_exist[120])? w_color:12'h000; end
-            121 : begin tmp_color[1463:1452] = (block_exist[121])? w_color:12'h222; end
-            122 : begin tmp_color[1475:1464] = (block_exist[122])? w_color:12'h000; end
-            123 : begin tmp_color[1487:1476] = (block_exist[123])? w_color:12'h222; end
-            124 : begin tmp_color[1499:1488] = (block_exist[124])? w_color:12'h000; end
-            125 : begin tmp_color[1511:1500] = (block_exist[125])? w_color:12'h222; end
-            126 : begin tmp_color[1523:1512] = (block_exist[126])? w_color:12'h000; end
-            127 : begin tmp_color[1535:1524] = (block_exist[127])? w_color:12'h222; end
-            128 : begin tmp_color[1547:1536] = (block_exist[128])? w_color:12'h000; end
-            129 : begin tmp_color[1559:1548] = (block_exist[129])? w_color:12'h222; end
-            130 : begin tmp_color[1571:1560] = (block_exist[130])? w_color:12'h222; end
-            131 : begin tmp_color[1583:1572] = (block_exist[131])? w_color:12'h000; end
-            132 : begin tmp_color[1595:1584] = (block_exist[132])? w_color:12'h222; end
-            133 : begin tmp_color[1607:1596] = (block_exist[133])? w_color:12'h000; end
-            134 : begin tmp_color[1619:1608] = (block_exist[134])? w_color:12'h222; end
-            135 : begin tmp_color[1631:1620] = (block_exist[135])? w_color:12'h000; end
-            136 : begin tmp_color[1643:1632] = (block_exist[136])? w_color:12'h222; end
-            137 : begin tmp_color[1655:1644] = (block_exist[137])? w_color:12'h000; end
-            138 : begin tmp_color[1667:1656] = (block_exist[138])? w_color:12'h222; end
-            139 : begin tmp_color[1679:1668] = (block_exist[139])? w_color:12'h000; end
-            140 : begin tmp_color[1691:1680] = (block_exist[140])? w_color:12'h000; end
-            141 : begin tmp_color[1703:1692] = (block_exist[141])? w_color:12'h222; end
-            142 : begin tmp_color[1715:1704] = (block_exist[142])? w_color:12'h000; end
-            143 : begin tmp_color[1727:1716] = (block_exist[143])? w_color:12'h222; end
-            144 : begin tmp_color[1739:1728] = (block_exist[144])? w_color:12'h000; end
-            145 : begin tmp_color[1751:1740] = (block_exist[145])? w_color:12'h222; end
-            146 : begin tmp_color[1763:1752] = (block_exist[146])? w_color:12'h000; end
-            147 : begin tmp_color[1775:1764] = (block_exist[147])? w_color:12'h222; end
-            148 : begin tmp_color[1787:1776] = (block_exist[148])? w_color:12'h000; end
-            149 : begin tmp_color[1799:1788] = (block_exist[149])? w_color:12'h222; end
-            150 : begin tmp_color[1811:1800] = (block_exist[150])? w_color:12'h222; end
-            151 : begin tmp_color[1823:1812] = (block_exist[151])? w_color:12'h000; end
-            152 : begin tmp_color[1835:1824] = (block_exist[152])? w_color:12'h222; end
-            153 : begin tmp_color[1847:1836] = (block_exist[153])? w_color:12'h000; end
-            154 : begin tmp_color[1859:1848] = (block_exist[154])? w_color:12'h222; end
-            155 : begin tmp_color[1871:1860] = (block_exist[155])? w_color:12'h000; end
-            156 : begin tmp_color[1883:1872] = (block_exist[156])? w_color:12'h222; end
-            157 : begin tmp_color[1895:1884] = (block_exist[157])? w_color:12'h000; end
-            158 : begin tmp_color[1907:1896] = (block_exist[158])? w_color:12'h222; end
-            159 : begin tmp_color[1919:1908] = (block_exist[159])? w_color:12'h000; end
-            160 : begin tmp_color[1931:1920] = (block_exist[160])? w_color:12'h000; end
-            161 : begin tmp_color[1943:1932] = (block_exist[161])? w_color:12'h222; end
-            162 : begin tmp_color[1955:1944] = (block_exist[162])? w_color:12'h000; end
-            163 : begin tmp_color[1967:1956] = (block_exist[163])? w_color:12'h222; end
-            164 : begin tmp_color[1979:1968] = (block_exist[164])? w_color:12'h000; end
-            165 : begin tmp_color[1991:1980] = (block_exist[165])? w_color:12'h222; end
-            166 : begin tmp_color[2003:1992] = (block_exist[166])? w_color:12'h000; end
-            167 : begin tmp_color[2015:2004] = (block_exist[167])? w_color:12'h222; end
-            168 : begin tmp_color[2027:2016] = (block_exist[168])? w_color:12'h000; end
-            169 : begin tmp_color[2039:2028] = (block_exist[169])? w_color:12'h222; end
-            170 : begin tmp_color[2051:2040] = (block_exist[170])? w_color:12'h222; end
-            171 : begin tmp_color[2063:2052] = (block_exist[171])? w_color:12'h000; end
-            172 : begin tmp_color[2075:2064] = (block_exist[172])? w_color:12'h222; end
-            173 : begin tmp_color[2087:2076] = (block_exist[173])? w_color:12'h000; end
-            174 : begin tmp_color[2099:2088] = (block_exist[174])? w_color:12'h222; end
-            175 : begin tmp_color[2111:2100] = (block_exist[175])? w_color:12'h000; end
-            176 : begin tmp_color[2123:2112] = (block_exist[176])? w_color:12'h222; end
-            177 : begin tmp_color[2135:2124] = (block_exist[177])? w_color:12'h000; end
-            178 : begin tmp_color[2147:2136] = (block_exist[178])? w_color:12'h222; end
-            179 : begin tmp_color[2159:2148] = (block_exist[179])? w_color:12'h000; end
-            180 : begin tmp_color[2171:2160] = (block_exist[180])? w_color:12'h000; end
-            181 : begin tmp_color[2183:2172] = (block_exist[181])? w_color:12'h222; end
-            182 : begin tmp_color[2195:2184] = (block_exist[182])? w_color:12'h000; end
-            183 : begin tmp_color[2207:2196] = (block_exist[183])? w_color:12'h222; end
-            184 : begin tmp_color[2219:2208] = (block_exist[184])? w_color:12'h000; end
-            185 : begin tmp_color[2231:2220] = (block_exist[185])? w_color:12'h222; end
-            186 : begin tmp_color[2243:2232] = (block_exist[186])? w_color:12'h000; end
-            187 : begin tmp_color[2255:2244] = (block_exist[187])? w_color:12'h222; end
-            188 : begin tmp_color[2267:2256] = (block_exist[188])? w_color:12'h000; end
-            189 : begin tmp_color[2279:2268] = (block_exist[189])? w_color:12'h222; end
-            190 : begin tmp_color[2291:2280] = (block_exist[190])? w_color:12'h222; end
-            191 : begin tmp_color[2303:2292] = (block_exist[191])? w_color:12'h000; end
-            192 : begin tmp_color[2315:2304] = (block_exist[192])? w_color:12'h222; end
-            193 : begin tmp_color[2327:2316] = (block_exist[193])? w_color:12'h000; end
-            194 : begin tmp_color[2339:2328] = (block_exist[194])? w_color:12'h222; end
-            195 : begin tmp_color[2351:2340] = (block_exist[195])? w_color:12'h000; end
-            196 : begin tmp_color[2363:2352] = (block_exist[196])? w_color:12'h222; end
-            197 : begin tmp_color[2375:2364] = (block_exist[197])? w_color:12'h000; end
-            198 : begin tmp_color[2387:2376] = (block_exist[198])? w_color:12'h222; end
-            199 : begin tmp_color[2399:2388] = (block_exist[199])? w_color:12'h000; end
+            0 : begin tmp_color[11:0] = w_color; end
+            1 : begin tmp_color[23:12] = w_color; end
+            2 : begin tmp_color[35:24] = w_color; end
+            3 : begin tmp_color[47:36] = (color[47:36]==12'h222)?w_color:12'hf00; end
+            4 : begin tmp_color[59:48] = w_color; end
+            5 : begin tmp_color[71:60] = 12'hf00; end
+            6 : begin tmp_color[83:72] = w_color; end
+            7 : begin tmp_color[95:84] = w_color; end
+            8 : begin tmp_color[107:96] = w_color; end
+            9 : begin tmp_color[119:108] = w_color; end
+            10 : begin tmp_color[131:120] = w_color; end
+            11 : begin tmp_color[143:132] = w_color; end
+            12 : begin tmp_color[155:144] = w_color; end
+            13 : begin tmp_color[167:156] = w_color; end
+            14 : begin tmp_color[179:168] = w_color; end
+            15 : begin tmp_color[191:180] = w_color; end
+            16 : begin tmp_color[203:192] = w_color; end
+            17 : begin tmp_color[215:204] = w_color; end
+            18 : begin tmp_color[227:216] = w_color; end
+            19 : begin tmp_color[239:228] = w_color; end
+            20 : begin tmp_color[251:240] = w_color; end
+            21 : begin tmp_color[263:252] = w_color; end
+            22 : begin tmp_color[275:264] = w_color; end
+            23 : begin tmp_color[287:276] = w_color; end
+            24 : begin tmp_color[299:288] = w_color; end
+            25 : begin tmp_color[311:300] = w_color; end
+            26 : begin tmp_color[323:312] = w_color; end
+            27 : begin tmp_color[335:324] = w_color; end
+            28 : begin tmp_color[347:336] = w_color; end
+            29 : begin tmp_color[359:348] = w_color; end
+            30 : begin tmp_color[371:360] = w_color; end
+            31 : begin tmp_color[383:372] = w_color; end
+            32 : begin tmp_color[395:384] = w_color; end
+            33 : begin tmp_color[407:396] = w_color; end
+            34 : begin tmp_color[419:408] = w_color; end
+            35 : begin tmp_color[431:420] = w_color; end
+            36 : begin tmp_color[443:432] = w_color; end
+            37 : begin tmp_color[455:444] = w_color; end
+            38 : begin tmp_color[467:456] = w_color; end
+            39 : begin tmp_color[479:468] = w_color; end
+            40 : begin tmp_color[491:480] = w_color; end
+            41 : begin tmp_color[503:492] = w_color; end
+            42 : begin tmp_color[515:504] = w_color; end
+            43 : begin tmp_color[527:516] = w_color; end
+            44 : begin tmp_color[539:528] = w_color; end
+            45 : begin tmp_color[551:540] = w_color; end
+            46 : begin tmp_color[563:552] = w_color; end
+            47 : begin tmp_color[575:564] = w_color; end
+            48 : begin tmp_color[587:576] = w_color; end
+            49 : begin tmp_color[599:588] = w_color; end
+            50 : begin tmp_color[611:600] = w_color; end
+            51 : begin tmp_color[623:612] = w_color; end
+            52 : begin tmp_color[635:624] = w_color; end
+            53 : begin tmp_color[647:636] = w_color; end
+            54 : begin tmp_color[659:648] = w_color; end
+            55 : begin tmp_color[671:660] = w_color; end
+            56 : begin tmp_color[683:672] = w_color; end
+            57 : begin tmp_color[695:684] = w_color; end
+            58 : begin tmp_color[707:696] = w_color; end
+            59 : begin tmp_color[719:708] = w_color; end
+            60 : begin tmp_color[731:720] = w_color; end
+            61 : begin tmp_color[743:732] = w_color; end
+            62 : begin tmp_color[755:744] = w_color; end
+            63 : begin tmp_color[767:756] = w_color; end
+            64 : begin tmp_color[779:768] = w_color; end
+            65 : begin tmp_color[791:780] = w_color; end
+            66 : begin tmp_color[803:792] = w_color; end
+            67 : begin tmp_color[815:804] = w_color; end
+            68 : begin tmp_color[827:816] = w_color; end
+            69 : begin tmp_color[839:828] = w_color; end
+            70 : begin tmp_color[851:840] = w_color; end
+            71 : begin tmp_color[863:852] = w_color; end
+            72 : begin tmp_color[875:864] = w_color; end
+            73 : begin tmp_color[887:876] = w_color; end
+            74 : begin tmp_color[899:888] = w_color; end
+            75 : begin tmp_color[911:900] = w_color; end
+            76 : begin tmp_color[923:912] = w_color; end
+            77 : begin tmp_color[935:924] = w_color; end
+            78 : begin tmp_color[947:936] = w_color; end
+            79 : begin tmp_color[959:948] = w_color; end
+            80 : begin tmp_color[971:960] = w_color; end
+            81 : begin tmp_color[983:972] = w_color; end
+            82 : begin tmp_color[995:984] = w_color; end
+            83 : begin tmp_color[1007:996] = w_color; end
+            84 : begin tmp_color[1019:1008] = w_color; end
+            85 : begin tmp_color[1031:1020] = w_color; end
+            86 : begin tmp_color[1043:1032] = w_color; end
+            87 : begin tmp_color[1055:1044] = w_color; end
+            88 : begin tmp_color[1067:1056] = w_color; end
+            89 : begin tmp_color[1079:1068] = w_color; end
+            90 : begin tmp_color[1091:1080] = w_color; end
+            91 : begin tmp_color[1103:1092] = w_color; end
+            92 : begin tmp_color[1115:1104] = w_color; end
+            93 : begin tmp_color[1127:1116] = w_color; end
+            94 : begin tmp_color[1139:1128] = w_color; end
+            95 : begin tmp_color[1151:1140] = w_color; end
+            96 : begin tmp_color[1163:1152] = w_color; end
+            97 : begin tmp_color[1175:1164] = w_color; end
+            98 : begin tmp_color[1187:1176] = w_color; end
+            99 : begin tmp_color[1199:1188] = w_color; end
+            100 : begin tmp_color[1211:1200] = w_color; end
+            101 : begin tmp_color[1223:1212] = w_color; end
+            102 : begin tmp_color[1235:1224] = w_color; end
+            103 : begin tmp_color[1247:1236] = w_color; end
+            104 : begin tmp_color[1259:1248] = w_color; end
+            105 : begin tmp_color[1271:1260] = w_color; end
+            106 : begin tmp_color[1283:1272] = w_color; end
+            107 : begin tmp_color[1295:1284] = w_color; end
+            108 : begin tmp_color[1307:1296] = w_color; end
+            109 : begin tmp_color[1319:1308] = w_color; end
+            110 : begin tmp_color[1331:1320] = w_color; end
+            111 : begin tmp_color[1343:1332] = w_color; end
+            112 : begin tmp_color[1355:1344] = w_color; end
+            113 : begin tmp_color[1367:1356] = w_color; end
+            114 : begin tmp_color[1379:1368] = w_color; end
+            115 : begin tmp_color[1391:1380] = w_color; end
+            116 : begin tmp_color[1403:1392] = w_color; end
+            117 : begin tmp_color[1415:1404] = w_color; end
+            118 : begin tmp_color[1427:1416] = w_color; end
+            119 : begin tmp_color[1439:1428] = w_color; end
+            120 : begin tmp_color[1451:1440] = w_color; end
+            121 : begin tmp_color[1463:1452] = w_color; end
+            122 : begin tmp_color[1475:1464] = w_color; end
+            123 : begin tmp_color[1487:1476] = w_color; end
+            124 : begin tmp_color[1499:1488] = w_color; end
+            125 : begin tmp_color[1511:1500] = w_color; end
+            126 : begin tmp_color[1523:1512] = w_color; end
+            127 : begin tmp_color[1535:1524] = w_color; end
+            128 : begin tmp_color[1547:1536] = w_color; end
+            129 : begin tmp_color[1559:1548] = w_color; end
+            130 : begin tmp_color[1571:1560] = w_color; end
+            131 : begin tmp_color[1583:1572] = w_color; end
+            132 : begin tmp_color[1595:1584] = w_color; end
+            133 : begin tmp_color[1607:1596] = w_color; end
+            134 : begin tmp_color[1619:1608] = w_color; end
+            135 : begin tmp_color[1631:1620] = w_color; end
+            136 : begin tmp_color[1643:1632] = w_color; end
+            137 : begin tmp_color[1655:1644] = w_color; end
+            138 : begin tmp_color[1667:1656] = w_color; end
+            139 : begin tmp_color[1679:1668] = w_color; end
+            140 : begin tmp_color[1691:1680] = w_color; end
+            141 : begin tmp_color[1703:1692] = w_color; end
+            142 : begin tmp_color[1715:1704] = w_color; end
+            143 : begin tmp_color[1727:1716] = w_color; end
+            144 : begin tmp_color[1739:1728] = w_color; end
+            145 : begin tmp_color[1751:1740] = w_color; end
+            146 : begin tmp_color[1763:1752] = w_color; end
+            147 : begin tmp_color[1775:1764] = w_color; end
+            148 : begin tmp_color[1787:1776] = w_color; end
+            149 : begin tmp_color[1799:1788] = w_color; end
+            150 : begin tmp_color[1811:1800] = w_color; end
+            151 : begin tmp_color[1823:1812] = w_color; end
+            152 : begin tmp_color[1835:1824] = w_color; end
+            153 : begin tmp_color[1847:1836] = w_color; end
+            154 : begin tmp_color[1859:1848] = w_color; end
+            155 : begin tmp_color[1871:1860] = w_color; end
+            156 : begin tmp_color[1883:1872] = w_color; end
+            157 : begin tmp_color[1895:1884] = w_color; end
+            158 : begin tmp_color[1907:1896] = w_color; end
+            159 : begin tmp_color[1919:1908] = w_color; end
+            160 : begin tmp_color[1931:1920] = w_color; end
+            161 : begin tmp_color[1943:1932] = w_color; end
+            162 : begin tmp_color[1955:1944] = w_color; end
+            163 : begin tmp_color[1967:1956] = w_color; end
+            164 : begin tmp_color[1979:1968] = w_color; end
+            165 : begin tmp_color[1991:1980] = w_color; end
+            166 : begin tmp_color[2003:1992] = w_color; end
+            167 : begin tmp_color[2015:2004] = w_color; end
+            168 : begin tmp_color[2027:2016] = w_color; end
+            169 : begin tmp_color[2039:2028] = w_color; end
+            170 : begin tmp_color[2051:2040] = w_color; end
+            171 : begin tmp_color[2063:2052] = w_color; end
+            172 : begin tmp_color[2075:2064] = w_color; end
+            173 : begin tmp_color[2087:2076] = w_color; end
+            174 : begin tmp_color[2099:2088] = w_color; end
+            175 : begin tmp_color[2111:2100] = w_color; end
+            176 : begin tmp_color[2123:2112] = w_color; end
+            177 : begin tmp_color[2135:2124] = w_color; end
+            178 : begin tmp_color[2147:2136] = w_color; end
+            179 : begin tmp_color[2159:2148] = w_color; end
+            180 : begin tmp_color[2171:2160] = w_color; end
+            181 : begin tmp_color[2183:2172] = w_color; end
+            182 : begin tmp_color[2195:2184] = w_color; end
+            183 : begin tmp_color[2207:2196] = w_color; end
+            184 : begin tmp_color[2219:2208] = w_color; end
+            185 : begin tmp_color[2231:2220] = w_color; end
+            186 : begin tmp_color[2243:2232] = w_color; end
+            187 : begin tmp_color[2255:2244] = w_color; end
+            188 : begin tmp_color[2267:2256] = w_color; end
+            189 : begin tmp_color[2279:2268] = w_color; end
+            190 : begin tmp_color[2291:2280] = w_color; end
+            191 : begin tmp_color[2303:2292] = w_color; end
+            192 : begin tmp_color[2315:2304] = w_color; end
+            193 : begin tmp_color[2327:2316] = w_color; end
+            194 : begin tmp_color[2339:2328] = w_color; end
+            195 : begin tmp_color[2351:2340] = w_color; end
+            196 : begin tmp_color[2363:2352] = w_color; end
+            197 : begin tmp_color[2375:2364] = w_color; end
+            198 : begin tmp_color[2387:2376] = w_color; end
+            199 : begin tmp_color[2399:2388] = w_color; end
             default:begin end
         endcase
     end
     else begin
-            tmp_color[2399:0] = color[2399:0];
+            tmp_color[11:0] = (block_exist[0])?color[11:0]:12'h000;
+            tmp_color[23:12] = (block_exist[1])?color[23:12]:12'h222;
+            tmp_color[35:24] = (block_exist[2])?color[35:24]:12'h000;
+            tmp_color[47:36] = (block_exist[3])?color[47:36]:12'h222;
+            tmp_color[59:48] = (block_exist[4])?color[59:48]:12'h000;
+            tmp_color[71:60] = (block_exist[5])?color[71:60]:12'h222;
+            tmp_color[83:72] = (block_exist[6])?color[83:72]:12'h000;
+            tmp_color[95:84] = (block_exist[7])?color[95:84]:12'h222;
+            tmp_color[107:96] = (block_exist[8])?color[107:96]:12'h000;
+            tmp_color[119:108] = (block_exist[9])?color[119:108]:12'h222;
+            tmp_color[131:120] = (block_exist[10])?color[131:120]:12'h222;
+            tmp_color[143:132] = (block_exist[11])?color[143:132]:12'h000;
+            tmp_color[155:144] = (block_exist[12])?color[155:144]:12'h222;
+            tmp_color[167:156] = (block_exist[13])?color[167:156]:12'h000;
+            tmp_color[179:168] = (block_exist[14])?color[179:168]:12'h222;
+            tmp_color[191:180] = (block_exist[15])?color[191:180]:12'h000;
+            tmp_color[203:192] = (block_exist[16])?color[203:192]:12'h222;
+            tmp_color[215:204] = (block_exist[17])?color[215:204]:12'h000;
+            tmp_color[227:216] = (block_exist[18])?color[227:216]:12'h222;
+            tmp_color[239:228] = (block_exist[19])?color[239:228]:12'h000;
+            tmp_color[251:240] = (block_exist[20])?color[251:240]:12'h000;
+            tmp_color[263:252] = (block_exist[21])?color[263:252]:12'h222;
+            tmp_color[275:264] = (block_exist[22])?color[275:264]:12'h000;
+            tmp_color[287:276] = (block_exist[23])?color[287:276]:12'h222;
+            tmp_color[299:288] = (block_exist[24])?color[299:288]:12'h000;
+            tmp_color[311:300] = (block_exist[25])?color[311:300]:12'h222;
+            tmp_color[323:312] = (block_exist[26])?color[323:312]:12'h000;
+            tmp_color[335:324] = (block_exist[27])?color[335:324]:12'h222;
+            tmp_color[347:336] = (block_exist[28])?color[347:336]:12'h000;
+            tmp_color[359:348] = (block_exist[29])?color[359:348]:12'h222;
+            tmp_color[371:360] = (block_exist[30])?color[371:360]:12'h222;
+            tmp_color[383:372] = (block_exist[31])?color[383:372]:12'h000;
+            tmp_color[395:384] = (block_exist[32])?color[395:384]:12'h222;
+            tmp_color[407:396] = (block_exist[33])?color[407:396]:12'h000;
+            tmp_color[419:408] = (block_exist[34])?color[419:408]:12'h222;
+            tmp_color[431:420] = (block_exist[35])?color[431:420]:12'h000;
+            tmp_color[443:432] = (block_exist[36])?color[443:432]:12'h222;
+            tmp_color[455:444] = (block_exist[37])?color[455:444]:12'h000;
+            tmp_color[467:456] = (block_exist[38])?color[467:456]:12'h222;
+            tmp_color[479:468] = (block_exist[39])?color[479:468]:12'h000;
+            tmp_color[491:480] = (block_exist[40])?color[491:480]:12'h000;
+            tmp_color[503:492] = (block_exist[41])?color[503:492]:12'h222;
+            tmp_color[515:504] = (block_exist[42])?color[515:504]:12'h000;
+            tmp_color[527:516] = (block_exist[43])?color[527:516]:12'h222;
+            tmp_color[539:528] = (block_exist[44])?color[539:528]:12'h000;
+            tmp_color[551:540] = (block_exist[45])?color[551:540]:12'h222;
+            tmp_color[563:552] = (block_exist[46])?color[563:552]:12'h000;
+            tmp_color[575:564] = (block_exist[47])?color[575:564]:12'h222;
+            tmp_color[587:576] = (block_exist[48])?color[587:576]:12'h000;
+            tmp_color[599:588] = (block_exist[49])?color[599:588]:12'h222;
+            tmp_color[611:600] = (block_exist[50])?color[611:600]:12'h222;
+            tmp_color[623:612] = (block_exist[51])?color[623:612]:12'h000;
+            tmp_color[635:624] = (block_exist[52])?color[635:624]:12'h222;
+            tmp_color[647:636] = (block_exist[53])?color[647:636]:12'h000;
+            tmp_color[659:648] = (block_exist[54])?color[659:648]:12'h222;
+            tmp_color[671:660] = (block_exist[55])?color[671:660]:12'h000;
+            tmp_color[683:672] = (block_exist[56])?color[683:672]:12'h222;
+            tmp_color[695:684] = (block_exist[57])?color[695:684]:12'h000;
+            tmp_color[707:696] = (block_exist[58])?color[707:696]:12'h222;
+            tmp_color[719:708] = (block_exist[59])?color[719:708]:12'h000;
+            tmp_color[731:720] = (block_exist[60])?color[731:720]:12'h000;
+            tmp_color[743:732] = (block_exist[61])?color[743:732]:12'h222;
+            tmp_color[755:744] = (block_exist[62])?color[755:744]:12'h000;
+            tmp_color[767:756] = (block_exist[63])?color[767:756]:12'h222;
+            tmp_color[779:768] = (block_exist[64])?color[779:768]:12'h000;
+            tmp_color[791:780] = (block_exist[65])?color[791:780]:12'h222;
+            tmp_color[803:792] = (block_exist[66])?color[803:792]:12'h000;
+            tmp_color[815:804] = (block_exist[67])?color[815:804]:12'h222;
+            tmp_color[827:816] = (block_exist[68])?color[827:816]:12'h000;
+            tmp_color[839:828] = (block_exist[69])?color[839:828]:12'h222;
+            tmp_color[851:840] = (block_exist[70])?color[851:840]:12'h222;
+            tmp_color[863:852] = (block_exist[71])?color[863:852]:12'h000;
+            tmp_color[875:864] = (block_exist[72])?color[875:864]:12'h222;
+            tmp_color[887:876] = (block_exist[73])?color[887:876]:12'h000;
+            tmp_color[899:888] = (block_exist[74])?color[899:888]:12'h222;
+            tmp_color[911:900] = (block_exist[75])?color[911:900]:12'h000;
+            tmp_color[923:912] = (block_exist[76])?color[923:912]:12'h222;
+            tmp_color[935:924] = (block_exist[77])?color[935:924]:12'h000;
+            tmp_color[947:936] = (block_exist[78])?color[947:936]:12'h222;
+            tmp_color[959:948] = (block_exist[79])?color[959:948]:12'h000;
+            tmp_color[971:960] = (block_exist[80])?color[971:960]:12'h000;
+            tmp_color[983:972] = (block_exist[81])?color[983:972]:12'h222;
+            tmp_color[995:984] = (block_exist[82])?color[995:984]:12'h000;
+            tmp_color[1007:996] = (block_exist[83])?color[1007:996]:12'h222; 
+            tmp_color[1019:1008] = (block_exist[84])?color[1019:1008]:12'h000;
+            tmp_color[1031:1020] = (block_exist[85])?color[1031:1020]:12'h222;
+            tmp_color[1043:1032] = (block_exist[86])?color[1043:1032]:12'h000;
+            tmp_color[1055:1044] = (block_exist[87])?color[1055:1044]:12'h222;
+            tmp_color[1067:1056] = (block_exist[88])?color[1067:1056]:12'h000;
+            tmp_color[1079:1068] = (block_exist[89])?color[1079:1068]:12'h222;
+            tmp_color[1091:1080] = (block_exist[90])?color[1091:1080]:12'h222;
+            tmp_color[1103:1092] = (block_exist[91])?color[1103:1092]:12'h000;
+            tmp_color[1115:1104] = (block_exist[92])?color[1115:1104]:12'h222;
+            tmp_color[1127:1116] = (block_exist[93])?color[1127:1116]:12'h000;
+            tmp_color[1139:1128] = (block_exist[94])?color[1139:1128]:12'h222;
+            tmp_color[1151:1140] = (block_exist[95])?color[1151:1140]:12'h000;
+            tmp_color[1163:1152] = (block_exist[96])?color[1163:1152]:12'h222;
+            tmp_color[1175:1164] = (block_exist[97])?color[1175:1164]:12'h000;
+            tmp_color[1187:1176] = (block_exist[98])?color[1187:1176]:12'h222;
+            tmp_color[1199:1188] = (block_exist[99])?color[1199:1188]:12'h000;
+            tmp_color[1211:1200] = (block_exist[100])?color[1211:1200]:12'h000;
+            tmp_color[1223:1212] = (block_exist[101])?color[1223:1212]:12'h222;
+            tmp_color[1235:1224] = (block_exist[102])?color[1235:1224]:12'h000;
+            tmp_color[1247:1236] = (block_exist[103])?color[1247:1236]:12'h222;
+            tmp_color[1259:1248] = (block_exist[104])?color[1259:1248]:12'h000;
+            tmp_color[1271:1260] = (block_exist[105])?color[1271:1260]:12'h222;
+            tmp_color[1283:1272] = (block_exist[106])?color[1283:1272]:12'h000;
+            tmp_color[1295:1284] = (block_exist[107])?color[1295:1284]:12'h222;
+            tmp_color[1307:1296] = (block_exist[108])?color[1307:1296]:12'h000;
+            tmp_color[1319:1308] = (block_exist[109])?color[1319:1308]:12'h222;
+            tmp_color[1331:1320] = (block_exist[110])?color[1331:1320]:12'h222;
+            tmp_color[1343:1332] = (block_exist[111])?color[1343:1332]:12'h000;
+            tmp_color[1355:1344] = (block_exist[112])?color[1355:1344]:12'h222;
+            tmp_color[1367:1356] = (block_exist[113])?color[1367:1356]:12'h000;
+            tmp_color[1379:1368] = (block_exist[114])?color[1379:1368]:12'h222;
+            tmp_color[1391:1380] = (block_exist[115])?color[1391:1380]:12'h000;
+            tmp_color[1403:1392] = (block_exist[116])?color[1403:1392]:12'h222;
+            tmp_color[1415:1404] = (block_exist[117])?color[1415:1404]:12'h000;
+            tmp_color[1427:1416] = (block_exist[118])?color[1427:1416]:12'h222;
+            tmp_color[1439:1428] = (block_exist[119])?color[1439:1428]:12'h000;
+            tmp_color[1451:1440] = (block_exist[120])?color[1451:1440]:12'h000;
+            tmp_color[1463:1452] = (block_exist[121])?color[1463:1452]:12'h222;
+            tmp_color[1475:1464] = (block_exist[122])?color[1475:1464]:12'h000;
+            tmp_color[1487:1476] = (block_exist[123])?color[1487:1476]:12'h222;
+            tmp_color[1499:1488] = (block_exist[124])?color[1499:1488]:12'h000;
+            tmp_color[1511:1500] = (block_exist[125])?color[1511:1500]:12'h222;
+            tmp_color[1523:1512] = (block_exist[126])?color[1523:1512]:12'h000;
+            tmp_color[1535:1524] = (block_exist[127])?color[1535:1524]:12'h222;
+            tmp_color[1547:1536] = (block_exist[128])?color[1547:1536]:12'h000;
+            tmp_color[1559:1548] = (block_exist[129])?color[1559:1548]:12'h222;
+            tmp_color[1571:1560] = (block_exist[130])?color[1571:1560]:12'h222;
+            tmp_color[1583:1572] = (block_exist[131])?color[1583:1572]:12'h000;
+            tmp_color[1595:1584] = (block_exist[132])?color[1595:1584]:12'h222;
+            tmp_color[1607:1596] = (block_exist[133])?color[1607:1596]:12'h000;
+            tmp_color[1619:1608] = (block_exist[134])?color[1619:1608]:12'h222;
+            tmp_color[1631:1620] = (block_exist[135])?color[1631:1620]:12'h000;
+            tmp_color[1643:1632] = (block_exist[136])?color[1643:1632]:12'h222;
+            tmp_color[1655:1644] = (block_exist[137])?color[1655:1644]:12'h000;
+            tmp_color[1667:1656] = (block_exist[138])?color[1667:1656]:12'h222;
+            tmp_color[1679:1668] = (block_exist[139])?color[1679:1668]:12'h000;
+            tmp_color[1691:1680] = (block_exist[140])?color[1691:1680]:12'h000;
+            tmp_color[1703:1692] = (block_exist[141])?color[1703:1692]:12'h222;
+            tmp_color[1715:1704] = (block_exist[142])?color[1715:1704]:12'h000;
+            tmp_color[1727:1716] = (block_exist[143])?color[1727:1716]:12'h222;
+            tmp_color[1739:1728] = (block_exist[144])?color[1739:1728]:12'h000;
+            tmp_color[1751:1740] = (block_exist[145])?color[1751:1740]:12'h222;
+            tmp_color[1763:1752] = (block_exist[146])?color[1763:1752]:12'h000;
+            tmp_color[1775:1764] = (block_exist[147])?color[1775:1764]:12'h222;
+            tmp_color[1787:1776] = (block_exist[148])?color[1787:1776]:12'h000;
+            tmp_color[1799:1788] = (block_exist[149])?color[1799:1788]:12'h222;
+            tmp_color[1811:1800] = (block_exist[150])?color[1811:1800]:12'h222;
+            tmp_color[1823:1812] = (block_exist[151])?color[1823:1812]:12'h000;
+            tmp_color[1835:1824] = (block_exist[152])?color[1835:1824]:12'h222;
+            tmp_color[1847:1836] = (block_exist[153])?color[1847:1836]:12'h000;
+            tmp_color[1859:1848] = (block_exist[154])?color[1859:1848]:12'h222;
+            tmp_color[1871:1860] = (block_exist[155])?color[1871:1860]:12'h000;
+            tmp_color[1883:1872] = (block_exist[156])?color[1883:1872]:12'h222;
+            tmp_color[1895:1884] = (block_exist[157])?color[1895:1884]:12'h000;
+            tmp_color[1907:1896] = (block_exist[158])?color[1907:1896]:12'h222;
+            tmp_color[1919:1908] = (block_exist[159])?color[1919:1908]:12'h000;
+            tmp_color[1931:1920] = (block_exist[160])?color[1931:1920]:12'h000;
+            tmp_color[1943:1932] = (block_exist[161])?color[1943:1932]:12'h222;
+            tmp_color[1955:1944] = (block_exist[162])?color[1955:1944]:12'h000;
+            tmp_color[1967:1956] = (block_exist[163])?color[1967:1956]:12'h222;
+            tmp_color[1979:1968] = (block_exist[164])?color[1979:1968]:12'h000;
+            tmp_color[1991:1980] = (block_exist[165])?color[1991:1980]:12'h222;
+            tmp_color[2003:1992] = (block_exist[166])?color[2003:1992]:12'h000;
+            tmp_color[2015:2004] = (block_exist[167])?color[2015:2004]:12'h222;
+            tmp_color[2027:2016] = (block_exist[168])?color[2027:2016]:12'h000;
+            tmp_color[2039:2028] = (block_exist[169])?color[2039:2028]:12'h222;
+            tmp_color[2051:2040] = (block_exist[170])?color[2051:2040]:12'h222;
+            tmp_color[2063:2052] = (block_exist[171])?color[2063:2052]:12'h000;
+            tmp_color[2075:2064] = (block_exist[172])?color[2075:2064]:12'h222;
+            tmp_color[2087:2076] = (block_exist[173])?color[2087:2076]:12'h000;
+            tmp_color[2099:2088] = (block_exist[174])?color[2099:2088]:12'h222;
+            tmp_color[2111:2100] = (block_exist[175])?color[2111:2100]:12'h000;
+            tmp_color[2123:2112] = (block_exist[176])?color[2123:2112]:12'h222;
+            tmp_color[2135:2124] = (block_exist[177])?color[2135:2124]:12'h000;
+            tmp_color[2147:2136] = (block_exist[178])?color[2147:2136]:12'h222;
+            tmp_color[2159:2148] = (block_exist[179])?color[2159:2148]:12'h000;
+            tmp_color[2171:2160] = (block_exist[180])?color[2171:2160]:12'h000;
+            tmp_color[2183:2172] = (block_exist[181])?color[2183:2172]:12'h222;
+            tmp_color[2195:2184] = (block_exist[182])?color[2195:2184]:12'h000;
+            tmp_color[2207:2196] = (block_exist[183])?color[2207:2196]:12'h222;
+            tmp_color[2219:2208] = (block_exist[184])?color[2219:2208]:12'h000;
+            tmp_color[2231:2220] = (block_exist[185])?color[2231:2220]:12'h222;
+            tmp_color[2243:2232] = (block_exist[186])?color[2243:2232]:12'h000;
+            tmp_color[2255:2244] = (block_exist[187])?color[2255:2244]:12'h222;
+            tmp_color[2267:2256] = (block_exist[188])?color[2267:2256]:12'h000;
+            tmp_color[2279:2268] = (block_exist[189])?color[2279:2268]:12'h222;
+            tmp_color[2291:2280] = (block_exist[190])?color[2291:2280]:12'h222;
+            tmp_color[2303:2292] = (block_exist[191])?color[2303:2292]:12'h000;
+            tmp_color[2315:2304] = (block_exist[192])?color[2315:2304]:12'h222;
+            tmp_color[2327:2316] = (block_exist[193])?color[2327:2316]:12'h000;
+            tmp_color[2339:2328] = (block_exist[194])?color[2339:2328]:12'h222;
+            tmp_color[2351:2340] = (block_exist[195])?color[2351:2340]:12'h000;
+            tmp_color[2363:2352] = (block_exist[196])?color[2363:2352]:12'h222;
+            tmp_color[2375:2364] = (block_exist[197])?color[2375:2364]:12'h000;
+            tmp_color[2387:2376] = (block_exist[198])?color[2387:2376]:12'h222;
+            tmp_color[2399:2388] = (block_exist[199])?color[2399:2388]:12'h000;
     end
 end
 always@(posedge clk or posedge rst)begin
@@ -773,27 +972,771 @@ always@(*)begin
         end
         `BLOCK_S:begin
             w_color = `COLOR_S;
+            case(status)
+                `BLOCK_STATUS_0:begin 
+                    color_pos1 = (pos_y  )*10+pos_x  ;  //center
+                    color_pos2 = (pos_y+1)*10+pos_x  ; 
+                    color_pos3 = (pos_y+1)*10+pos_x+1;
+                    color_pos4 = (pos_y  )*10+pos_x-1;
+                end 
+                `BLOCK_STATUS_R:begin 
+                    color_pos1 = (pos_y  )*10+pos_x  ;
+                    color_pos2 = (pos_y+1)*10+pos_x  ;
+                    color_pos3 = (pos_y  )*10+pos_x+1;
+                    color_pos4 = (pos_y-1)*10+pos_x+1;
+                end
+                `BLOCK_STATUS_2:begin 
+                    color_pos1 = (pos_y  )*10+pos_x  ;
+                    color_pos2 = (pos_y  )*10+pos_x+1;
+                    color_pos3 = (pos_y-1)*10+pos_x-1;
+                    color_pos4 = (pos_y-1)*10+pos_x  ;
+                end
+                `BLOCK_STATUS_L:begin 
+                    color_pos1 = (pos_y  )*10+pos_x  ;
+                    color_pos2 = (pos_y+1)*10+pos_x-1;
+                    color_pos3 = (pos_y  )*10+pos_x-1;
+                    color_pos4 = (pos_y-1)*10+pos_x  ;
+                end
+            endcase
         end
         `BLOCK_T:begin
             w_color = `COLOR_T;
+            case(status)
+                `BLOCK_STATUS_0:begin 
+                    color_pos1 = (pos_y  )*10+pos_x  ;  //center
+                    color_pos2 = (pos_y+1)*10+pos_x  ; 
+                    color_pos3 = (pos_y  )*10+pos_x-1;
+                    color_pos4 = (pos_y  )*10+pos_x+1;
+                end 
+                `BLOCK_STATUS_R:begin 
+                    color_pos1 = (pos_y  )*10+pos_x  ;
+                    color_pos2 = (pos_y+1)*10+pos_x  ;
+                    color_pos3 = (pos_y  )*10+pos_x+1;
+                    color_pos4 = (pos_y-1)*10+pos_x  ;
+                end
+                `BLOCK_STATUS_2:begin 
+                    color_pos1 = (pos_y  )*10+pos_x  ;
+                    color_pos2 = (pos_y  )*10+pos_x-1;
+                    color_pos3 = (pos_y  )*10+pos_x+1;
+                    color_pos4 = (pos_y-1)*10+pos_x  ;
+                end
+                `BLOCK_STATUS_L:begin 
+                    color_pos1 = (pos_y  )*10+pos_x  ;
+                    color_pos2 = (pos_y+1)*10+pos_x  ;
+                    color_pos3 = (pos_y  )*10+pos_x-1;
+                    color_pos4 = (pos_y-1)*10+pos_x  ;
+                end
+            endcase
         end
         `BLOCK_Z:begin
             w_color = `COLOR_Z;
+            case(status)
+                `BLOCK_STATUS_0:begin 
+                    color_pos1 = (pos_y  )*10+pos_x  ;  //center
+                    color_pos2 = (pos_y+1)*10+pos_x-1; 
+                    color_pos3 = (pos_y+1)*10+pos_x  ;
+                    color_pos4 = (pos_y  )*10+pos_x+1;
+                end 
+                `BLOCK_STATUS_R:begin 
+                    color_pos1 = (pos_y  )*10+pos_x  ;
+                    color_pos2 = (pos_y+1)*10+pos_x+1;
+                    color_pos3 = (pos_y  )*10+pos_x+1;
+                    color_pos4 = (pos_y-1)*10+pos_x  ;
+                end
+                `BLOCK_STATUS_2:begin 
+                    color_pos1 = (pos_y  )*10+pos_x  ;
+                    color_pos2 = (pos_y  )*10+pos_x-1;
+                    color_pos3 = (pos_y-1)*10+pos_x  ;
+                    color_pos4 = (pos_y-1)*10+pos_x+1;
+                end
+                `BLOCK_STATUS_L:begin 
+                    color_pos1 = (pos_y  )*10+pos_x  ;
+                    color_pos2 = (pos_y+1)*10+pos_x  ;
+                    color_pos3 = (pos_y  )*10+pos_x-1;
+                    color_pos4 = (pos_y-1)*10+pos_x-1;
+                end
+            endcase
         end
         `BLOCK_I:begin
             w_color = `COLOR_I;
+            case(status)
+                `BLOCK_STATUS_0:begin 
+                    color_pos1 = (pos_y  )*10+pos_x  ;  //center
+                    color_pos2 = (pos_y  )*10+pos_x-1; 
+                    color_pos3 = (pos_y  )*10+pos_x+1;
+                    color_pos4 = (pos_y  )*10+pos_x+2;
+                end 
+                `BLOCK_STATUS_R:begin 
+                    color_pos1 = (pos_y  )*10+pos_x  ;
+                    color_pos2 = (pos_y+1)*10+pos_x  ;
+                    color_pos3 = (pos_y-1)*10+pos_x  ;
+                    color_pos4 = (pos_y-2)*10+pos_x  ;
+                end
+                `BLOCK_STATUS_2:begin 
+                    color_pos1 = (pos_y  )*10+pos_x  ;
+                    color_pos2 = (pos_y  )*10+pos_x-2;
+                    color_pos3 = (pos_y  )*10+pos_x-1;
+                    color_pos4 = (pos_y  )*10+pos_x+1;
+                end
+                `BLOCK_STATUS_L:begin 
+                    color_pos1 = (pos_y  )*10+pos_x  ;
+                    color_pos2 = (pos_y+2)*10+pos_x  ;
+                    color_pos3 = (pos_y+1)*10+pos_x  ;
+                    color_pos4 = (pos_y-1)*10+pos_x  ;
+                end
+            endcase
         end
         `BLOCK_O:begin
             w_color = `COLOR_O;
+            case(status)
+                `BLOCK_STATUS_0:begin 
+                    color_pos1 = (pos_y  )*10+pos_x  ;  //center
+                    color_pos2 = (pos_y+1)*10+pos_x  ; 
+                    color_pos3 = (pos_y+1)*10+pos_x+1;
+                    color_pos4 = (pos_y  )*10+pos_x+1;
+                end 
+                `BLOCK_STATUS_R:begin 
+                    color_pos1 = (pos_y  )*10+pos_x  ;
+                    color_pos2 = (pos_y  )*10+pos_x+1;
+                    color_pos3 = (pos_y-1)*10+pos_x  ;
+                    color_pos4 = (pos_y-1)*10+pos_x+1;
+                end
+                `BLOCK_STATUS_2:begin 
+                    color_pos1 = (pos_y  )*10+pos_x  ;
+                    color_pos2 = (pos_y  )*10+pos_x-1;
+                    color_pos3 = (pos_y-1)*10+pos_x-1;
+                    color_pos4 = (pos_y-1)*10+pos_x  ;
+                end
+                `BLOCK_STATUS_L:begin 
+                    color_pos1 = (pos_y  )*10+pos_x  ;
+                    color_pos2 = (pos_y+1)*10+pos_x-1;
+                    color_pos3 = (pos_y+1)*10+pos_x  ;
+                    color_pos4 = (pos_y  )*10+pos_x-1;
+                end
+            endcase
         end
         default:begin end
     endcase
 end
 endmodule
+module setting_touch_point(d1,d2,d3,d4,l1,l2,l3,l4,r1,r2,r3,r4,block,status,pos_x,pos_y);
+input [2:0]block;
+input [1:0]status;
+input [4:0]pos_x,pos_y;
+output reg [7:0]d1,d2,d3,d4,l1,l2,l3,l4,r1,r2,r3,r4;
+always@(*)begin
+    case(block)
+        `BLOCK_J:begin
+            case(status)
+                `BLOCK_STATUS_0:begin
+                    d1 = (pos_y-1)*10+pos_x-1;
+                    d2 = (pos_y-1)*10+pos_x  ;
+                    d3 = (pos_y-1)*10+pos_x+1;
+                    d4 = 255;//redundant
+                    l1 = (pos_y  )*10+pos_x-2;
+                    l2 = (pos_y+1)*10+pos_x-2;
+                    l3 = 255;
+                    l4 = 255;
+                    r1 = (pos_y  )*10+pos_x+2;
+                    r2 = (pos_y+1)*10+pos_x  ;
+                    r3 = 255;
+                    r4 = 255;
+                end 
+                `BLOCK_STATUS_R:begin 
+                    d1 = (pos_y-2)*10+pos_x  ;
+                    d2 = (pos_y  )*10+pos_x+1;
+                    d3 = 255;
+                    d4 = 255;
+                    l1 = (pos_y  )*10+pos_x-1;
+                    l2 = (pos_y+1)*10+pos_x-1;
+                    l3 = (pos_y-1)*10+pos_x-1;
+                    l4 = 255;
+                    r1 = (pos_y+1)*10+pos_x+2;
+                    r2 = (pos_y  )*10+pos_x+1;
+                    r3 = (pos_y-1)*10+pos_x+1;
+                    r4 = 255;
+                end
+                `BLOCK_STATUS_2:begin 
+                    d1 = (pos_y-1)*10+pos_x  ;
+                    d2 = (pos_y-1)*10+pos_x-1;
+                    d3 = (pos_y-2)*10+pos_x+1;
+                    d4 = 255;
+                    l1 = (pos_y  )*10+pos_x-2;
+                    l2 = (pos_y-1)*10+pos_x  ;
+                    l3 = 255;
+                    l4 = 255;
+                    r1 = (pos_y  )*10+pos_x+2;
+                    r2 = (pos_y-1)*10+pos_x+2;
+                    r3 = 255;
+                    r4 = 255;
+                end
+                `BLOCK_STATUS_L:begin 
+                    d1 = (pos_y-2)*10+pos_x  ;
+                    d2 = (pos_y-2)*10+pos_x-1;
+                    d3 = 255;
+                    d4 = 255;
+                    l1 = (pos_y  )*10+pos_x-1;
+                    l2 = (pos_y-1)*10+pos_x-2;
+                    l3 = (pos_y+1)*10+pos_x-1;
+                    l4 = 255;
+                    r1 = (pos_y+1)*10+pos_x+1;
+                    r2 = (pos_y  )*10+pos_x+1;
+                    r3 = (pos_y-1)*10+pos_x+1;
+                    r4 = 255;
+                end
+                default:begin end
+            endcase
+        end
+        `BLOCK_L:begin
+            case(status)
+                `BLOCK_STATUS_0:begin 
+                    d1 = (pos_y-1)*10+pos_x-1;
+                    d2 = (pos_y-1)*10+pos_x  ;
+                    d3 = (pos_y-1)*10+pos_x+1;
+                    d4 = 255;
+                    l1 = (pos_y+1)*10+pos_x  ;
+                    l2 = (pos_y  )*10+pos_x-2;
+                    l3 = 255;
+                    l4 = 255;
+                    r1 = (pos_y+1)*10+pos_x+2;
+                    r2 = (pos_y  )*10+pos_x+2;
+                    r3 = 255;
+                    r4 = 255;
+                end 
+                `BLOCK_STATUS_R:begin 
+                    d1 = (pos_y-2)*10+pos_x  ;
+                    d2 = (pos_y-2)*10+pos_x+1;
+                    d3 = 255;
+                    d4 = 255;
+                    l1 = (pos_y+1)*10+pos_x-1;
+                    l2 = (pos_y  )*10+pos_x-1;
+                    l3 = (pos_y-1)*10+pos_x-1;
+                    l4 = 255;
+                    r1 = (pos_y+1)*10+pos_x+1;
+                    r2 = (pos_y  )*10+pos_x+1;
+                    r3 = (pos_y-1)*10+pos_x+2;
+                    r4 = 255;
+                end
+                `BLOCK_STATUS_2:begin 
+                    d1 = (pos_y-2)*10+pos_x-1;
+                    d2 = (pos_y-1)*10+pos_x  ;
+                    d3 = (pos_y-1)*10+pos_x+1;
+                    d4 = 255;
+                    l1 = (pos_y  )*10+pos_x-2;
+                    l2 = (pos_y-1)*10+pos_x-2;
+                    l3 = 255;
+                    l4 = 255;
+                    r1 = (pos_y  )*10+pos_x+2;
+                    r2 = (pos_y-1)*10+pos_x  ;
+                    r3 = 255;
+                    r4 = 255;
+                end
+                `BLOCK_STATUS_L:begin 
+                    d1 = (pos_y  )*10+pos_x-1;
+                    d2 = (pos_y-2)*10+pos_x  ;
+                    d3 = 255;
+                    d4 = 255;
+                    l1 = (pos_y+1)*10+pos_x-2;
+                    l2 = (pos_y  )*10+pos_x-1;
+                    l3 = (pos_y-1)*10+pos_x-1;
+                    l4 = 255;
+                    r1 = (pos_y+1)*10+pos_x+1;
+                    r2 = (pos_y  )*10+pos_x+1;
+                    r3 = (pos_y-1)*10+pos_x+1;
+                    r4 = 255;
+                end
+                default:begin end
+            endcase
+        end
+        `BLOCK_S:begin
+            case(status)
+                `BLOCK_STATUS_0:begin 
+                    d1 = (pos_y-1)*10+pos_x-1;
+                    d2 = (pos_y-1)*10+pos_x  ;
+                    d3 = (pos_y  )*10+pos_x+1;
+                    d4 = 255;
+                    l1 = (pos_y+1)*10+pos_x-1;
+                    l2 = (pos_y  )*10+pos_x-2;
+                    l3 = 255;
+                    l4 = 255;
+                    r1 = (pos_y+1)*10+pos_x+2;
+                    r2 = (pos_y  )*10+pos_x+1;
+                    r3 = 255;
+                    r4 = 255;
+                end 
+                `BLOCK_STATUS_R:begin 
+                    d1 = (pos_y-1)*10+pos_x  ;
+                    d2 = (pos_y-2)*10+pos_x+1;
+                    d3 = 255;
+                    d4 = 255;
+                    l1 = (pos_y+1)*10+pos_x-1;
+                    l2 = (pos_y  )*10+pos_x-1;
+                    l3 = (pos_y-1)*10+pos_x  ;
+                    l4 = 255;
+                    r1 = (pos_y+1)*10+pos_x+1;
+                    r2 = (pos_y  )*10+pos_x+2;
+                    r3 = (pos_y-1)*10+pos_x+2;
+                    r4 = 255;
+                end
+                `BLOCK_STATUS_2:begin 
+                    d1 = (pos_y-2)*10+pos_x-1;
+                    d2 = (pos_y-2)*10+pos_x  ;
+                    d3 = (pos_y-1)*10+pos_x+1;
+                    d4 = 255;
+                    l1 = (pos_y  )*10+pos_x-1;
+                    l2 = (pos_y-1)*10+pos_x-2;
+                    l3 = 255;
+                    l4 = 255;
+                    r1 = (pos_y  )*10+pos_x+2;
+                    r2 = (pos_y-1)*10+pos_x+1;
+                    r3 = 255;
+                    r4 = 255;
+                end
+                `BLOCK_STATUS_L:begin 
+                    d1 = (pos_y-1)*10+pos_x-1;
+                    d2 = (pos_y-2)*10+pos_x  ;
+                    d3 = 255;
+                    d4 = 255;
+                    l1 = (pos_y+1)*10+pos_x-2;
+                    l2 = (pos_y  )*10+pos_x-2;
+                    l3 = (pos_y-1)*10+pos_x-1;
+                    l4 = 255;
+                    r1 = (pos_y+1)*10+pos_x  ;
+                    r2 = (pos_y  )*10+pos_x+1;
+                    r3 = (pos_y-1)*10+pos_x+1;
+                    r4 = 255;
+                end
+                default:begin end
+            endcase
+        end
+        `BLOCK_T:begin
+            case(status)
+                `BLOCK_STATUS_0:begin 
+                    d1 = (pos_y-1)*10+pos_x-1;
+                    d2 = (pos_y-1)*10+pos_x  ;
+                    d3 = (pos_y-1)*10+pos_x+1;
+                    d4 = 255;
+                    l1 = (pos_y+1)*10+pos_x-1;
+                    l2 = (pos_y  )*10+pos_x-2;
+                    l3 = 255;
+                    l4 = 255;
+                    r1 = (pos_y+1)*10+pos_x+1;
+                    r2 = (pos_y  )*10+pos_x+2;
+                    r3 = 255;
+                    r4 = 255;
+                end 
+                `BLOCK_STATUS_R:begin
+                    d1 = (pos_y-2)*10+pos_x  ;
+                    d2 = (pos_y-1)*10+pos_x+1;
+                    d3 = 255;
+                    d4 = 255;
+                    l1 = (pos_y+1)*10+pos_x-1;
+                    l2 = (pos_y  )*10+pos_x-1;
+                    l3 = (pos_y-1)*10+pos_x-1;
+                    l4 = 255;
+                    r1 = (pos_y+1)*10+pos_x+1;
+                    r2 = (pos_y  )*10+pos_x+2;
+                    r3 = (pos_y-1)*10+pos_x+1;
+                    r4 = 255; 
+                end
+                `BLOCK_STATUS_2:begin 
+                    d1 = (pos_y-1)*10+pos_x-1;
+                    d2 = (pos_y-2)*10+pos_x  ;
+                    d3 = (pos_y-1)*10+pos_x+1;
+                    d4 = 255;
+                    l1 = (pos_y  )*10+pos_x-2;
+                    l2 = (pos_y-1)*10+pos_x-1;
+                    l3 = 255;
+                    l4 = 255;
+                    r1 = (pos_y  )*10+pos_x+2;
+                    r2 = (pos_y-1)*10+pos_x+1;
+                    r3 = 255;
+                    r4 = 255;
+                end
+                `BLOCK_STATUS_L:begin 
+                    d1 = (pos_y-1)*10+pos_x-1;
+                    d2 = (pos_y-2)*10+pos_x  ;
+                    d3 = 255;
+                    d4 = 255;
+                    l1 = (pos_y+1)*10+pos_x-1;
+                    l2 = (pos_y  )*10+pos_x-2;
+                    l3 = (pos_y-1)*10+pos_x-1;
+                    l4 = 255;
+                    r1 = (pos_y+1)*10+pos_x+1;
+                    r2 = (pos_y  )*10+pos_x+1;
+                    r3 = (pos_y-1)*10+pos_x+1;
+                    r4 = 255;
+                end
+                default:begin end
+            endcase
+        end
+        `BLOCK_Z:begin
+            case(status)
+                `BLOCK_STATUS_0:begin 
+                    d1 = (pos_y  )*10+pos_x-1;
+                    d2 = (pos_y-1)*10+pos_x  ;
+                    d3 = (pos_y-1)*10+pos_x+1;
+                    d4 = 255;
+                    l1 = (pos_y+1)*10+pos_x-2;
+                    l2 = (pos_y  )*10+pos_x-1;
+                    l3 = 255;
+                    l4 = 255;
+                    r1 = (pos_y+1)*10+pos_x+1;
+                    r2 = (pos_y  )*10+pos_x+2;
+                    r3 = 255;
+                    r4 = 255;
+                end 
+                `BLOCK_STATUS_R:begin 
+                    d1 = (pos_y-2)*10+pos_x  ;
+                    d2 = (pos_y-1)*10+pos_x+1;
+                    d3 = 255;
+                    d4 = 255;
+                    l1 = (pos_y+1)*10+pos_x  ;
+                    l2 = (pos_y  )*10+pos_x-1;
+                    l3 = (pos_y-1)*10+pos_x-1;
+                    l4 = 255;
+                    r1 = (pos_y+1)*10+pos_x+2;
+                    r2 = (pos_y  )*10+pos_x+2;
+                    r3 = (pos_y-1)*10+pos_x+1;
+                    r4 = 255;
+                end
+                `BLOCK_STATUS_2:begin 
+                    d1 = (pos_y-1)*10+pos_x-1;
+                    d2 = (pos_y-2)*10+pos_x  ;
+                    d3 = (pos_y-2)*10+pos_x+1;
+                    d4 = 255;
+                    l1 = (pos_y  )*10+pos_x-2;
+                    l2 = (pos_y-1)*10+pos_x-1;
+                    l3 = 255;
+                    l4 = 255;
+                    r1 = (pos_y  )*10+pos_x+1;
+                    r2 = (pos_y-1)*10+pos_x+2;
+                    r3 = 255;
+                    r4 = 255;
+                end
+                `BLOCK_STATUS_L:begin 
+                    d1 = (pos_y-2)*10+pos_x-1;
+                    d2 = (pos_y-1)*10+pos_x  ;
+                    d3 = 255;
+                    d4 = 255;
+                    l1 = (pos_y+1)*10+pos_x-1;
+                    l2 = (pos_y  )*10+pos_x-2;
+                    l3 = (pos_y-1)*10+pos_x-2;
+                    l4 = 255;
+                    r1 = (pos_y+1)*10+pos_x+1;
+                    r2 = (pos_y  )*10+pos_x+1;
+                    r3 = (pos_y-1)*10+pos_x  ;
+                    r4 = 255;
+                end
+                default:begin end
+            endcase
+        end
+        `BLOCK_I:begin
+            case(status)
+                `BLOCK_STATUS_0:begin 
+                    d1 = (pos_y-1)*10+pos_x-1;
+                    d2 = (pos_y-1)*10+pos_x  ;
+                    d3 = (pos_y-1)*10+pos_x+1;
+                    d4 = (pos_y-1)*10+pos_x+2;
+                    l1 = (pos_y  )*10+pos_x-2;
+                    l2 = 255;
+                    l3 = 255;
+                    l4 = 255;
+                    r1 = (pos_y  )*10+pos_x+3;
+                    r2 = 255;
+                    r3 = 255;
+                    r4 = 255;
+                end 
+                `BLOCK_STATUS_R:begin 
+                    d1 = (pos_y-3)*10+pos_x  ;
+                    d2 = 255;
+                    d3 = 255;
+                    d4 = 255;
+                    l1 = (pos_y+1)*10+pos_x-1;
+                    l2 = (pos_y  )*10+pos_x-1;
+                    l3 = (pos_y-1)*10+pos_x-1;
+                    l4 = (pos_y-2)*10+pos_x-1;
+                    r1 = (pos_y+1)*10+pos_x+1;
+                    r2 = (pos_y  )*10+pos_x+1;
+                    r3 = (pos_y-1)*10+pos_x+1;
+                    r4 = (pos_y-2)*10+pos_x+1;
+                end
+                `BLOCK_STATUS_2:begin
+                    d1 = (pos_y-1)*10+pos_x-2;
+                    d2 = (pos_y-1)*10+pos_x-1;
+                    d3 = (pos_y-1)*10+pos_x  ;
+                    d4 = (pos_y-1)*10+pos_x+1;
+                    l1 = (pos_y  )*10+pos_x-3;
+                    l2 = 255;
+                    l3 = 255;
+                    l4 = 255;
+                    r1 = (pos_y  )*10+pos_x+2;
+                    r2 = 255;
+                    r3 = 255;
+                    r4 = 255;
+                end
+                `BLOCK_STATUS_L:begin 
+                    d1 = (pos_y-2)*10+pos_x  ;
+                    d2 = 255;
+                    d3 = 255;
+                    d4 = 255;
+                    l1 = (pos_y+2)*10+pos_x-1;
+                    l2 = (pos_y+1)*10+pos_x-1;
+                    l3 = (pos_y  )*10+pos_x-1;
+                    l4 = (pos_y-1)*10+pos_x-1;
+                    r1 = (pos_y+2)*10+pos_x+1;
+                    r2 = (pos_y+1)*10+pos_x+1;
+                    r3 = (pos_y  )*10+pos_x+1;
+                    r4 = (pos_y-1)*10+pos_x+1;
+                end
+                default:begin end
+            endcase
+        end
+        `BLOCK_O:begin
+            case(status)
+                `BLOCK_STATUS_0:begin 
+                    d1 = (pos_y-1)*10+pos_x  ;
+                    d2 = (pos_y-1)*10+pos_x+1;
+                    d3 = 255;
+                    d4 = 255;
+                    l1 = (pos_y+1)*10+pos_x-1;
+                    l2 = (pos_y  )*10+pos_x-1;
+                    l3 = 255;
+                    l4 = 255;
+                    r1 = (pos_y+1)*10+pos_x+2;
+                    r2 = (pos_y  )*10+pos_x+2;
+                    r3 = 255;
+                    r4 = 255;
+                end 
+                `BLOCK_STATUS_R:begin 
+                    d1 = (pos_y-2)*10+pos_x  ;
+                    d2 = (pos_y-2)*10+pos_x+1;
+                    d3 = 255;
+                    d4 = 255;
+                    l1 = (pos_y  )*10+pos_x-1;
+                    l2 = (pos_y-1)*10+pos_x-1;
+                    l3 = 255;
+                    l4 = 255;
+                    r1 = (pos_y  )*10+pos_x+2;
+                    r2 = (pos_y-1)*10+pos_x+2;
+                    r3 = 255;
+                    r4 = 255;
+                end
+                `BLOCK_STATUS_2:begin 
+                    d1 = (pos_y-2)*10+pos_x-1;
+                    d2 = (pos_y-2)*10+pos_x  ;
+                    d3 = 255;
+                    d4 = 255;
+                    l1 = (pos_y  )*10+pos_x-2;
+                    l2 = (pos_y-1)*10+pos_x-2;
+                    l3 = 255;
+                    l4 = 255;
+                    r1 = (pos_y  )*10+pos_x+1;
+                    r2 = (pos_y-1)*10+pos_x+1;
+                    r3 = 255;
+                    r4 = 255;
+                end
+                `BLOCK_STATUS_L:begin 
+                    d1 = (pos_y-1)*10+pos_x-1;
+                    d2 = (pos_y-1)*10+pos_x  ;
+                    d3 = 255;
+                    d4 = 255;
+                    l1 = (pos_y+1)*10+pos_x-2;
+                    l2 = (pos_y  )*10+pos_x-2;
+                    l3 = 255;
+                    l4 = 255;
+                    r1 = (pos_y+1)*10+pos_x+1;
+                    r2 = (pos_y  )*10+pos_x+1;
+                    r3 = 255;
+                    r4 = 255;
+                end
+                default:begin end
+            endcase
+        end
+        default:begin end
+    endcase
+end
+
+endmodule
+module judgeIFContinueShift(left_en,right_en,down_en,block,status,pos_x,pos_y,block_exist);
+input [2:0]block;
+input [1:0]status;
+input [4:0]pos_x,pos_y;
+input [199:0]block_exist;
+output reg down_en;
+output reg left_en;
+output reg right_en;
+wire [7:0] d1,d2,d3,d4,l1,l2,l3,l4,r1,r2,r3,r4;
+setting_touch_point stp (.d1(d1),.d2(d2),.d3(d3),.d4(d4),.l1(l1),.l2(l2),.l3(l3),.l4(l4),
+                         .r1(r1),.r2(r2),.r3(r3),.r4(r4),.block(block),.status(status),.pos_x(pos_x),.pos_y(pos_y));
+always@(*)begin
+    case(block)
+        `BLOCK_I:begin
+            case(status)
+                `BLOCK_STATUS_0:begin 
+                    down_en = (pos_y == 0)?0:(!block_exist[d1]&&!block_exist[d2]&&!block_exist[d3]&&!block_exist[d4])?1:0;
+                    left_en = (pos_x == 1)?0:(!block_exist[l1])?1:0;
+                    right_en = (pos_x == 7)?0:(!block_exist[r1])?1:0;
+                end 
+                `BLOCK_STATUS_R:begin 
+                    down_en = (pos_y == 2)?0:(!block_exist[d1])?1:0;
+                    left_en = (pos_x == 0)?0:(!block_exist[l1]&&!block_exist[l2]&&!block_exist[l3]&&!block_exist[l4])?1:0;
+                    right_en = (pos_x == 9)?0:(!block_exist[r1]&&!block_exist[r2]&&!block_exist[r3]&&!block_exist[r4])?1:0;
+                end
+                `BLOCK_STATUS_2:begin
+                    down_en = (pos_y == 0)?0:(!block_exist[d1]&&!block_exist[d2]&&!block_exist[d3]&&!block_exist[d4])?1:0;
+                    left_en = (pos_x == 2)?0:(!block_exist[l1])?1:0;
+                    right_en = (pos_x == 8)?0:(!block_exist[r1])?1:0; 
+                end
+                `BLOCK_STATUS_L:begin 
+                    down_en = (pos_y == 1)?0:(!block_exist[d1])?1:0;
+                    left_en = (pos_x == 0)?0:(!block_exist[l1]&&!block_exist[l2]&&!block_exist[l3]&&!block_exist[l4])?1:0;
+                    right_en = (pos_x == 9)?0:(!block_exist[r1]&&!block_exist[r2]&&!block_exist[r3]&&!block_exist[r4])?1:0;
+                end
+                default :begin end
+            endcase
+        end
+        `BLOCK_O:begin
+            case(status)
+                `BLOCK_STATUS_0:begin 
+                    down_en = (pos_y == 0)?0:(!block_exist[d1]&&!block_exist[d2])?1:0;
+                    left_en = (pos_x == 0)?0:(!block_exist[l1]&&!block_exist[l2])?1:0;
+                    right_en = (pos_x == 8)?0:(!block_exist[r1]&&!block_exist[r2])?1:0;
+                end 
+                `BLOCK_STATUS_R:begin 
+                    down_en = (pos_y == 1)?0:(!block_exist[d1]&&!block_exist[d2])?1:0;
+                    left_en = (pos_x == 0)?0:(!block_exist[l1]&&!block_exist[l2])?1:0;
+                    right_en = (pos_x == 8)?0:(!block_exist[r1]&&!block_exist[r2])?1:0;
+                end
+                `BLOCK_STATUS_2:begin 
+                    down_en = (pos_y == 1)?0:(!block_exist[d1]&&!block_exist[d2])?1:0;
+                    left_en = (pos_x == 1)?0:(!block_exist[l1]&&!block_exist[l2])?1:0;
+                    right_en = (pos_x == 9)?0:(!block_exist[r1]&&!block_exist[r2])?1:0;
+                end
+                `BLOCK_STATUS_L:begin 
+                    down_en = (pos_y == 0)?0:(!block_exist[d1]&&!block_exist[d2])?1:0;
+                    left_en = (pos_x == 1)?0:(!block_exist[l1]&&!block_exist[l2])?1:0;
+                    right_en = (pos_x == 9)?0:(!block_exist[r1]&&!block_exist[r2])?1:0;
+                end
+                default :begin end
+            endcase
+        end
+        default:begin 
+            case(status)
+                `BLOCK_STATUS_0:begin
+                    down_en = (pos_y == 0)?0:(!block_exist[d1]&&!block_exist[d2]&&!block_exist[d3])?1:0;
+                    left_en = (pos_x == 1)?0:(!block_exist[l1]&&!block_exist[l2])?1:0;
+                    right_en = (pos_x == 8)?0:(!block_exist[r1]&&!block_exist[r2])?1:0;
+                end 
+                `BLOCK_STATUS_R:begin 
+                    down_en = (pos_y == 1)?0:(!block_exist[d1]&&!block_exist[d2])?1:0;
+                    left_en = (pos_x == 0)?0:(!block_exist[l1]&&!block_exist[l2]&&!block_exist[l3])?1:0;
+                    right_en = (pos_x == 8)?0:(!block_exist[r1]&&!block_exist[r2]&&!block_exist[r3])?1:0;
+                end
+                `BLOCK_STATUS_2:begin 
+                    down_en = (pos_y == 1)?0:(!block_exist[d1]&&!block_exist[d2]&&!block_exist[d3])?1:0;
+                    left_en = (pos_x == 1)?0:(!block_exist[l1]&&!block_exist[l2])?1:0;
+                    right_en = (pos_x == 8)?0:(!block_exist[r1]&&!block_exist[r2])?1:0;
+                end
+                `BLOCK_STATUS_L:begin 
+                    down_en = (pos_y == 1)?0:(!block_exist[d1]&&!block_exist[d2])?1:0;
+                    left_en = (pos_x == 1)?0:(!block_exist[l1]&&!block_exist[l2]&&!block_exist[l3])?1:0;
+                    right_en = (pos_x == 9)?0:(!block_exist[r1]&&!block_exist[r2]&&!block_exist[r3])?1:0;
+                end
+                default :begin end
+            endcase     
+        end
+    endcase
+end
+
+endmodule
+module find_rows_should_be_earsed(row,block_exist);
+output reg [19:0]row;
+input [199:0]block_exist;
+always@(*)begin
+    row[0] = block_exist[0]&&block_exist[1]&&block_exist[2]&&block_exist[3]&&block_exist[4]&&block_exist[5]&&block_exist[6]&&block_exist[7]&&block_exist[8]&&block_exist[9];
+    row[1] = block_exist[10]&&block_exist[11]&&block_exist[12]&&block_exist[13]&&block_exist[14]&&block_exist[15]&&block_exist[16]&&block_exist[17]&&block_exist[18]&&block_exist[19];
+    row[2] = block_exist[20]&&block_exist[21]&&block_exist[22]&&block_exist[23]&&block_exist[24]&&block_exist[25]&&block_exist[26]&&block_exist[27]&&block_exist[28]&&block_exist[29];
+    row[3] = block_exist[30]&&block_exist[31]&&block_exist[32]&&block_exist[33]&&block_exist[34]&&block_exist[35]&&block_exist[36]&&block_exist[37]&&block_exist[38]&&block_exist[39];
+    row[4] = block_exist[40]&&block_exist[41]&&block_exist[42]&&block_exist[43]&&block_exist[44]&&block_exist[45]&&block_exist[46]&&block_exist[47]&&block_exist[48]&&block_exist[49];
+    row[5] = block_exist[50]&&block_exist[51]&&block_exist[52]&&block_exist[53]&&block_exist[54]&&block_exist[55]&&block_exist[56]&&block_exist[57]&&block_exist[58]&&block_exist[59];
+    row[6] = block_exist[60]&&block_exist[61]&&block_exist[62]&&block_exist[63]&&block_exist[64]&&block_exist[65]&&block_exist[66]&&block_exist[67]&&block_exist[68]&&block_exist[69];
+    row[7] = block_exist[70]&&block_exist[71]&&block_exist[72]&&block_exist[73]&&block_exist[74]&&block_exist[75]&&block_exist[76]&&block_exist[77]&&block_exist[78]&&block_exist[79];
+    row[8] = block_exist[80]&&block_exist[81]&&block_exist[82]&&block_exist[83]&&block_exist[84]&&block_exist[85]&&block_exist[86]&&block_exist[87]&&block_exist[88]&&block_exist[89];
+    row[9] = block_exist[90]&&block_exist[91]&&block_exist[92]&&block_exist[93]&&block_exist[94]&&block_exist[95]&&block_exist[96]&&block_exist[97]&&block_exist[98]&&block_exist[99];
+    row[10] = block_exist[100]&&block_exist[101]&&block_exist[102]&&block_exist[103]&&block_exist[104]&&block_exist[105]&&block_exist[106]&&block_exist[107]&&block_exist[108]&&block_exist[109];
+    row[11] = block_exist[110]&&block_exist[111]&&block_exist[112]&&block_exist[113]&&block_exist[114]&&block_exist[115]&&block_exist[116]&&block_exist[117]&&block_exist[118]&&block_exist[119];
+    row[12] = block_exist[120]&&block_exist[121]&&block_exist[122]&&block_exist[123]&&block_exist[124]&&block_exist[125]&&block_exist[126]&&block_exist[127]&&block_exist[128]&&block_exist[129];
+    row[13] = block_exist[130]&&block_exist[131]&&block_exist[132]&&block_exist[133]&&block_exist[134]&&block_exist[135]&&block_exist[136]&&block_exist[137]&&block_exist[138]&&block_exist[139];
+    row[14] = block_exist[140]&&block_exist[141]&&block_exist[142]&&block_exist[143]&&block_exist[144]&&block_exist[145]&&block_exist[146]&&block_exist[147]&&block_exist[148]&&block_exist[149];
+    row[15] = block_exist[150]&&block_exist[151]&&block_exist[152]&&block_exist[153]&&block_exist[154]&&block_exist[155]&&block_exist[156]&&block_exist[157]&&block_exist[158]&&block_exist[159];
+    row[16] = block_exist[160]&&block_exist[161]&&block_exist[162]&&block_exist[163]&&block_exist[164]&&block_exist[165]&&block_exist[166]&&block_exist[167]&&block_exist[168]&&block_exist[169];
+    row[17] = block_exist[170]&&block_exist[171]&&block_exist[172]&&block_exist[173]&&block_exist[174]&&block_exist[175]&&block_exist[176]&&block_exist[177]&&block_exist[178]&&block_exist[179];
+    row[18] = block_exist[180]&&block_exist[181]&&block_exist[182]&&block_exist[183]&&block_exist[184]&&block_exist[185]&&block_exist[186]&&block_exist[187]&&block_exist[188]&&block_exist[189];
+    row[19] = block_exist[190]&&block_exist[191]&&block_exist[192]&&block_exist[193]&&block_exist[194]&&block_exist[195]&&block_exist[196]&&block_exist[197]&&block_exist[198]&&block_exist[199];
+end
+endmodule
+
+module eraseROW(generate_block,eraseROW_en,block_exist,clk,rst);
+input rst;
+input clk;
+input [199:0]block_exist;
+input eraseROW_en;
+output generate_block;
+
+wire [19:0] row;
+
+reg [4:0]state;
+reg [2:0]count;
+parameter [4:0] CHECK_ROW1 = 5'b00000;
+parameter [4:0] CHECK_ROW2 = 5'b00001;
+parameter [4:0] CHECK_ROW3 = 5'b00010;
+parameter [4:0] CHECK_ROW4 = 5'b00011;
+parameter [4:0] CHECK_ROW5 = 5'b00100;
+parameter [4:0] CHECK_ROW6 = 5'b00101;
+parameter [4:0] CHECK_ROW7 = 5'b00110;
+parameter [4:0] CHECK_ROW8 = 5'b00111;
+parameter [4:0] CHECK_ROW9 = 5'b01000;
+parameter [4:0] CHECK_ROW10 = 5'b01001;
+parameter [4:0] CHECK_ROW11 = 5'b01010;
+parameter [4:0] CHECK_ROW12 = 5'b01011;
+parameter [4:0] CHECK_ROW13 = 5'b01100;
+parameter [4:0] CHECK_ROW14 = 5'b01101;
+parameter [4:0] CHECK_ROW15 = 5'b01110;
+parameter [4:0] CHECK_ROW16 = 5'b01111;
+parameter [4:0] CHECK_ROW17 = 5'b10000;
+parameter [4:0] CHECK_ROW18 = 5'b10001;
+parameter [4:0] CHECK_ROW19 = 5'b10010;
+parameter [4:0] CHECK_ROW20 = 5'b10011;
+parameter [4:0] INIT = 5'b10100; 
+
+find_rows_should_be_earsed frsbe (.row(row),.block_exist(block_exist));
+
+always@(posedge clk or posedge rst)begin
+    if(rst)begin
+        state <= INIT;
+        count <= 0;
+    end
+    else begin
+        state <= state;
+        count <= count;
+        case(state)
+            INIT:begin
+                count <= 0;
+            end
+            CHECK_ROW1:begin
+                state <= CHECK_ROW1;
+                count <= (row[0]==1)?count+1:count;
+
+            end
+            default: begin end
+        endcase
+    end
+end
+endmodule
 
 
-
-module putBlock(write_en,address,w_color,block_exist,generate_block,block_type,block_status,rst,clk,turn_right,turn_left,shift_left,shift_right);
+module putBlock(write_en,address,w_color,block_exist,generate_block,block_type,block_status,rst,clk,turn_right,turn_left,shift_left,shift_right,clkBlockDown);
 input generate_block;
 input rst;
 input clk;
@@ -801,10 +1744,11 @@ input [2:0]block_type;
 input [1:0]block_status;
 input turn_right,turn_left;
 input shift_right,shift_left;
+input clkBlockDown;
 
 output reg write_en;
 output reg [7:0]address;
-output [11:0]w_color;
+output reg [11:0]w_color;
 output reg[199:0]block_exist;
 
 wire [11:0]last_w_color; // redundant
@@ -814,6 +1758,8 @@ reg [1:0]status;
 reg [4:0]pos_x,pos_y;
 reg [4:0]last_pos_x,last_pos_y;
 reg start_write;
+reg block_settle ;
+reg write_new_block;
 
 reg [1:0]tmp_state;
 reg [2:0]tmp_block;
@@ -821,6 +1767,8 @@ reg [1:0]tmp_status;
 reg [4:0]tmp_pos_x,tmp_pos_y;
 reg [4:0]tmp_last_pos_x,tmp_last_pos_y;
 reg tmp_start_write;
+reg tmp_block_settle;
+reg tmp_write_new_block;
 
 wire [7:0] color_pos1;
 wire [7:0] color_pos2;
@@ -834,25 +1782,39 @@ wire [7:0] last_pos4;
 
 reg [3:0]write_state;
 
-wire block_settle ;
-assign block_settle = 0;
+wire one_pulse_BlockDown;
 
+wire left_en,right_en,down_en;
+
+wire [15:0] rondom_num;
+wire [11:0] tmp_w_color;
+
+reg write_complete;
 parameter [3:0] WAIT_WRITE = 4'b0000;
 parameter [3:0] WRITE_POS1 = 4'b0001;
 parameter [3:0] WRITE_POS2 = 4'b0010;
 parameter [3:0] WRITE_POS3 = 4'b0011;
 parameter [3:0] WRITE_POS4 = 4'b0100;
-parameter [3:0] ERASE_POS1 = 4'b0101;
-parameter [3:0] ERASE_POS2 = 4'b0110;
-parameter [3:0] ERASE_POS3 = 4'b0111;
-parameter [3:0] ERASE_POS4 = 4'b1000;
-parameter [3:0] SET_BLOCK_EXIST_ERASE = 4'b1001;
-parameter [3:0] SET_BLOCK_EXIST_WRITE = 4'b1010;
+parameter [3:0] WRITE_COMPLETE = 4'b0101;
+parameter [3:0] SET_BLOCK_EXIST1 = 4'b0110;
+parameter [3:0] SET_BLOCK_EXIST2 = 4'b0111;
 
-shape s_now  (.w_color(w_color),.color_pos1(color_pos1),.color_pos2(color_pos2),.color_pos3(color_pos3),
+parameter [3:0] TEST_STATE_1 = 4'b1000;
+parameter [3:0] TEST_STATE_2 = 4'b1001;
+parameter [3:0] TEST_STATE_3 = 4'b1010;
+parameter [3:0] TEST_STATE_4 = 4'b1011;
+
+shape s_now  (.w_color(tmp_w_color),.color_pos1(color_pos1),.color_pos2(color_pos2),.color_pos3(color_pos3),
               .color_pos4(color_pos4),.block(block),.status(status),.pos_x(pos_x),.pos_y(pos_y));
 shape s_last (.w_color(last_w_color),.color_pos1(last_pos1),.color_pos2(last_pos2),.color_pos3(last_pos3),
-              .color_pos4(last_pos4),.block(block),.status(status),.pos_x(tmp_last_pos_x),.pos_y(tmp_last_pos_y));
+              .color_pos4(last_pos4),.block(block),.status(status),.pos_x(last_pos_x),.pos_y(last_pos_y));
+
+one_pulse op1 (.push_onepulse(one_pulse_BlockDown),.rst(rst),.clk(clk),.push_debounced(clkBlockDown));
+
+judgeIFContinueShift jich (.left_en(left_en),.right_en(right_en),.down_en(down_en),.block(block),.status(status),
+                           .pos_x(pos_x),.pos_y(pos_y),.block_exist(block_exist));
+random_num_generator rng (.q(rondom_num),.clk(clk),.rst(rst));
+
 
 always@(posedge clk or posedge rst)begin
     if(rst)begin
@@ -864,6 +1826,8 @@ always@(posedge clk or posedge rst)begin
         start_write <=0;
         last_pos_x <=0;
         last_pos_y <=0;
+        block_settle <=0;
+        write_new_block <= 0;
     end
     else begin
         state <= tmp_state;
@@ -874,6 +1838,8 @@ always@(posedge clk or posedge rst)begin
         start_write <= tmp_start_write;
         last_pos_x <= tmp_last_pos_x;
         last_pos_y <= tmp_last_pos_y;
+        block_settle <= tmp_block_settle;
+        write_new_block <= tmp_write_new_block;
     end
 end
 
@@ -882,13 +1848,15 @@ always@(*)begin
         `WAIT_BLOCK_EN:begin
             if (generate_block)begin
                 tmp_state = `BLOCK_DOWN;
-                tmp_block = block_type;
-                tmp_status = block_status;
+                tmp_block = rondom_num%7;
+                tmp_status = rondom_num%4;
                 tmp_pos_x = 4;
-                tmp_pos_y = 9;
-                tmp_start_write = 1;
-                tmp_last_pos_x = last_pos_x;
-                tmp_last_pos_y = last_pos_y;
+                tmp_pos_y = 17;
+                tmp_start_write = 0;
+                tmp_last_pos_x = pos_x;
+                tmp_last_pos_y = pos_y;
+                tmp_block_settle = 1;
+                tmp_write_new_block = 1;
             end
             else begin
                 tmp_state = state;
@@ -899,38 +1867,72 @@ always@(*)begin
                 tmp_start_write = 0; 
                 tmp_last_pos_x = last_pos_x;
                 tmp_last_pos_y = last_pos_y;
+                tmp_block_settle = 0;
+                tmp_write_new_block = 0;
             end
         end
         `BLOCK_DOWN:begin
-            if (block_settle)begin
-                tmp_state = `BLOCK_SETTLE;
+            if(one_pulse_BlockDown)begin
+                tmp_state = (down_en)?`SET_START_WRITE0:`BLOCK_SETTLE;
                 tmp_block = block;
                 tmp_status = status;
                 tmp_pos_x = pos_x;
-                tmp_pos_y = pos_y;
-                tmp_start_write = 0; 
-                tmp_last_pos_x = last_pos_x;
-                tmp_last_pos_y = last_pos_y;
+                tmp_pos_y = (down_en)?pos_y-1:pos_y;                
+                tmp_start_write = (down_en)?1:0;
+                tmp_last_pos_x = pos_x;
+                tmp_last_pos_y = pos_y; 
+                tmp_block_settle = 0;
+                tmp_write_new_block = 0;
             end
             else if(shift_right)begin
                 tmp_state = `SET_START_WRITE0;
                 tmp_block = block;
                 tmp_status = status;
-                tmp_pos_x = pos_x+1;
+                tmp_pos_x = (right_en)?pos_x+1:pos_x;
                 tmp_pos_y = pos_y;                
                 tmp_start_write = 1;
                 tmp_last_pos_x = pos_x;
-                tmp_last_pos_y = pos_y;     
+                tmp_last_pos_y = pos_y; 
+                tmp_block_settle = 0;    
+                tmp_write_new_block = 0;
             end
             else if(shift_left)begin
                 tmp_state = `SET_START_WRITE0;
                 tmp_block = block;
                 tmp_status = status;
-                tmp_pos_x = pos_x-1;
+                tmp_pos_x = (left_en)?pos_x-1:pos_x;
                 tmp_pos_y = pos_y;
                 tmp_start_write = 1;
                 tmp_last_pos_x = pos_x;
                 tmp_last_pos_y = pos_y;
+                tmp_block_settle = 0;
+                tmp_write_new_block = 0;
+            end
+            else begin
+                tmp_state = state;
+                tmp_block = block;
+                tmp_status = status;
+                tmp_pos_x = pos_x;
+                tmp_pos_y = pos_y;
+                tmp_start_write = 0;
+                tmp_last_pos_x = pos_x;
+                tmp_last_pos_y = pos_y;
+                tmp_block_settle = 0;
+                tmp_write_new_block = 0;
+            end
+        end
+        `SET_START_WRITE0:begin
+            if(write_complete)begin
+                tmp_state = `BLOCK_DOWN;
+                tmp_block = block;
+                tmp_status = status;
+                tmp_pos_x = pos_x;
+                tmp_pos_y = pos_y;
+                tmp_start_write = 0;
+                tmp_last_pos_x = last_pos_x;
+                tmp_last_pos_y = last_pos_y;
+                tmp_block_settle = 0;
+                tmp_write_new_block = 0;
             end
             else begin
                 tmp_state = state;
@@ -941,20 +1943,22 @@ always@(*)begin
                 tmp_start_write = 0;
                 tmp_last_pos_x = last_pos_x;
                 tmp_last_pos_y = last_pos_y;
-            end
-        end
-        `SET_START_WRITE0:begin
-            tmp_state = `BLOCK_DOWN;
-            tmp_block = block;
-            tmp_status = status;
-            tmp_pos_x = pos_x;
-            tmp_pos_y = pos_y;
-            tmp_start_write = 0;
-            tmp_last_pos_x = last_pos_x;
-            tmp_last_pos_y = last_pos_y;
+                tmp_block_settle = 0;
+                tmp_write_new_block = 0;
+            end 
         end
         `BLOCK_SETTLE:begin
-            tmp_state = `WAIT_BLOCK_EN;
+                tmp_state = `WAIT_BLOCK_EN;
+                tmp_block = block;
+                tmp_status = status;
+                tmp_pos_x = pos_x;
+                tmp_pos_y = pos_y;                
+                tmp_start_write = 0;
+                tmp_last_pos_x = last_pos_x;
+                tmp_last_pos_y = last_pos_y; 
+                tmp_block_settle = 0;    
+                tmp_write_new_block = 0;
+            end
         end
         default:begin
         end
@@ -966,81 +1970,118 @@ always@(posedge clk or posedge rst)begin
         write_en <= 0;
         address <= 0;
         block_exist <= 0;
+        w_color <= 0;
+        write_complete<=0;
     end
     else begin
         write_state <= write_state;
         write_en <= write_en;
         address <= address;
         block_exist <= block_exist;
+        w_color <= w_color;
+        write_complete <= write_complete;
         case(write_state)
             WAIT_WRITE:begin
                 if(start_write)begin
-                    write_state <= SET_BLOCK_EXIST_ERASE;
+                    write_state <= SET_BLOCK_EXIST1;
                     write_en <= 0;
+                    address <= 0;
+                    w_color <= 0;
+                    write_complete <= 0;
+                end
+                else if(write_new_block)begin
+                    write_state <= SET_BLOCK_EXIST2;
+                    write_en <= 0;
+                    address <= 0;
+                    w_color <= 0;
+                    write_complete <= 0;
                 end
                 else begin
                     write_state <= WAIT_WRITE;
                     write_en <= 0;
+                    address <= 0;
+                    w_color <= 0;
+                    write_complete <= 0;
                 end      
             end
-            SET_BLOCK_EXIST_ERASE:begin
-                write_state <= ERASE_POS1;
-                write_en <= 0;
-                address <= 0;
-                block_exist[last_pos1] <= 0;
-                block_exist[last_pos2] <= 0;
-                block_exist[last_pos3] <= 0;
-                block_exist[last_pos4] <= 0;
-            end
-            ERASE_POS1:begin
-                write_state <= ERASE_POS2;
-                write_en <= 1;
-                address <= last_pos1;
-            end
-            ERASE_POS2:begin
-                write_state <= ERASE_POS3;
-                write_en <= 1;
-                address <= last_pos2;
-            end
-            ERASE_POS3:begin
-                write_state <= ERASE_POS4;
-                write_en <= 1;
-                address <= last_pos3;
-            end
-            ERASE_POS4:begin
-                write_state <= SET_BLOCK_EXIST_WRITE;
-                write_en <= 1;
-                address <= last_pos4;
-            end
-            SET_BLOCK_EXIST_WRITE:begin
+            SET_BLOCK_EXIST1:begin
                 write_state <= WRITE_POS1;
-                write_en <= 0;
-                address <= 0;
+                block_exist[last_pos1] <=  0;
+                block_exist[last_pos2] <=  0;
+                block_exist[last_pos3] <=  0;
+                block_exist[last_pos4] <=  0;
                 block_exist[color_pos1] <= 1;
                 block_exist[color_pos2] <= 1;
                 block_exist[color_pos3] <= 1;
                 block_exist[color_pos4] <= 1;
             end
-            WRITE_POS1:begin
-                write_state <= WRITE_POS2;
-                write_en <= 1;
+            SET_BLOCK_EXIST2:begin
+                write_state <= TEST_STATE_1;
+                block_exist[last_pos1] <=  1;
+                block_exist[last_pos2] <=  1;
+                block_exist[last_pos3] <=  1;
+                block_exist[last_pos4] <=  1;
+                block_exist[color_pos1] <= 1;
+                block_exist[color_pos2] <= 1;
+                block_exist[color_pos3] <= 1;
+                block_exist[color_pos4] <= 1;
+            end
+            TEST_STATE_1:begin
+                write_state <= WRITE_POS1;
+                write_en<=0;
                 address <= color_pos1;
             end
-            WRITE_POS2:begin
-                write_state <= WRITE_POS3;
+            WRITE_POS1:begin
+                write_state <= TEST_STATE_2;
                 write_en <= 1;
+               // address <= color_pos1;
+                w_color <=tmp_w_color;
+                write_complete <= 0;
+            end
+            TEST_STATE_2:begin
+                write_state <= WRITE_POS2;
+                write_en<=0;
                 address <= color_pos2;
             end
-            WRITE_POS3:begin
-                write_state <= WRITE_POS4;
+            WRITE_POS2:begin
+                write_state <= TEST_STATE_3;
                 write_en <= 1;
+                //address <= color_pos2;
+                w_color <=tmp_w_color;
+                write_complete <= 0;
+            end
+            TEST_STATE_3:begin
+                write_state <= WRITE_POS3;
+                write_en<=0
                 address <= color_pos3;
             end
-            WRITE_POS4:begin
-                write_state <= WAIT_WRITE;
+            WRITE_POS3:begin
+                write_state <= TEST_STATE_4;
                 write_en <= 1;
+                //address <= color_pos3;
+                w_color <=tmp_w_color;
+                write_complete <= 0;
+            end
+            TEST_STATE_4:begin
+                write_state <= WRITE_POS4;
+                write_en<=0
                 address <= color_pos4;
             end
+            WRITE_POS4:begin
+                write_state <= WRITE_COMPLETE;
+                write_en <= 1;
+                //address <= color_pos4;
+                w_color <=tmp_w_color;
+                write_complete <= 0;
+            end
+            WRITE_COMPLETE:begin
+                write_state <= WAIT_WRITE;
+                write_en <= 0;
+                address <= 0;
+                w_color <= 0;
+                write_complete<=1;
+            end
+
             default:begin end
         endcase
     end
@@ -1735,14 +2776,12 @@ input clk;
 output clk1;
 output clk22;
 output clkBlockDown;
-reg [21:0] num;
-wire [21:0] next_num;
+reg [27:0] num;
+wire [27:0] next_num;
 
 always @(posedge clk) begin
   num <= next_num;
 end
-
-
 assign next_num = num + 1'b1;
 assign clk1 = num[1];
 assign clk22 = num[21];
