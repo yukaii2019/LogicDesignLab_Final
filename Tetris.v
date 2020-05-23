@@ -1972,6 +1972,7 @@ always@(posedge clk or posedge rst)begin
         block_exist <= 0;
         w_color <= 0;
         write_complete<=0;
+        
     end
     else begin
         write_state <= write_state;
