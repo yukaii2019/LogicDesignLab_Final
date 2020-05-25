@@ -66,15 +66,17 @@ wire [11:0] w_color;
 wire [7:0]address;
 wire [199:0]block_exist;
 wire [199:0]change_en;
-
-
+wire [11:0]read_addr_color;
+wire [7:0]read_addr;
 clock_divisor clk_wiz_0_inst(.clk(clk),.clk1(clk_25MHz),.clk22(clk_22),.clkBlockDown(clkBlockDown));
 pixel_gen pg (.vgaRed(vgaRed),.vgaGreen(vgaGreen),.vgaBlue(vgaBlue),.h_cnt(h_cnt),.v_cnt(v_cnt),.valid(valid),.color(color));
 vga_controller vga_inst(.pclk(clk_25MHz),.reset(rst),.hsync(hsync),.vsync(vsync),.valid(valid),.h_cnt(h_cnt),.v_cnt(v_cnt));
-BackGroundMemory bm (.color(color),.clk(clk),.rst(rst),.write_en(write_en),.address(address),.w_color(w_color),.block_exist(block_exist),.change_en(change_en));
+BackGroundMemory bm (.read_addr_color(read_addr_color),.color(color),.clk(clk),.rst(rst),.write_en(write_en),.address(address),.w_color(w_color),
+                     .block_exist(block_exist),.change_en(change_en),.read_address(read_addr));
 putBlock pb (.write_en(write_en),.address(address),.w_color(w_color),.block_exist(block_exist),.generate_block(generate_block),
              .block_type(`BLOCK_J),.block_status(`BLOCK_STATUS_0),.rst(rst),.clk(clk),.turn_right(op_btn_U),.turn_left(op_btn_D),
-             .shift_left(op_btn_L),.shift_right(op_btn_R),.clkBlockDown(clkBlockDown),.change_en(change_en),.color(color),.led(led));
+             .shift_left(op_btn_L),.shift_right(op_btn_R),.clkBlockDown(clkBlockDown),.change_en(change_en),.led(led),
+             .read_addr_color(read_addr_color),.read_addr(read_addr));
 //putblock pb (.outBackground(),.blockType(),.R_rotate(),.L_rotate(),.blockState(),.rst(),.clk(),.background(),.clkBlockDown(),.start_position());
 
 endmodule
@@ -984,7 +986,7 @@ always@(*)begin
 end
 endmodule
 
-/*module blockDownCAL(b1,b2,b3,b4,CALfinish,clk,rst,row1,row2,row3,row4,blockDownCAL_en);
+module blockDownCAL(b1,b2,b3,b4,CALfinish,clk,rst,row1,row2,row3,row4,blockDownCAL_en);
 output reg[199:0]b1,b2,b3,b4;
 output reg CALfinish;
 input clk,rst;
@@ -1303,48 +1305,48 @@ module erased_row_block_pos(p0,p1,p2,p3,p4,p5,p6,p7,p8,p9,p10,p11,p12,p13,p14,p1
 
 output [7:0]p0,p1,p2,p3,p4,p5,p6,p7,p8,p9,p10,p11,p12,p13,p14,p15,p16,p17,p18,p19,p20,p21,p22,p23,p24,p25,p26,p27,p28,p29,p30,p31,p32,p33,p34,p35,p36,p37,p38,p39;
 input [4:0]row1,row2,row3,row4;
-assign p0 = (row1 == 20)?row1*10+0:200;
-assign p1 = (row1 == 20)?row1*10+1:200;
-assign p2 = (row1 == 20)?row1*10+2:200;
-assign p3 = (row1 == 20)?row1*10+3:200;
-assign p4 = (row1 == 20)?row1*10+4:200;
-assign p5 = (row1 == 20)?row1*10+5:200;
-assign p6 = (row1 == 20)?row1*10+6:200;
-assign p7 = (row1 == 20)?row1*10+7:200;
-assign p8 = (row1 == 20)?row1*10+8:200;
-assign p9 = (row1 == 20)?row1*10+9:200;
-assign p10 = (row2 == 20)?row2*10+0:200;
-assign p11 = (row2 == 20)?row2*10+1:200;
-assign p12 = (row2 == 20)?row2*10+2:200;
-assign p13 = (row2 == 20)?row2*10+3:200;
-assign p14 = (row2 == 20)?row2*10+4:200;
-assign p15 = (row2 == 20)?row2*10+5:200;
-assign p16 = (row2 == 20)?row2*10+6:200;
-assign p17 = (row2 == 20)?row2*10+7:200;
-assign p18 = (row2 == 20)?row2*10+8:200;
-assign p19 = (row2 == 20)?row2*10+9:200;
-assign p20 = (row3 == 20)?row3*10+0:200;
-assign p21 = (row3 == 20)?row3*10+1:200;
-assign p22 = (row3 == 20)?row3*10+2:200;
-assign p23 = (row3 == 20)?row3*10+3:200;
-assign p24 = (row3 == 20)?row3*10+4:200;
-assign p25 = (row3 == 20)?row3*10+5:200;
-assign p26 = (row3 == 20)?row3*10+6:200;
-assign p27 = (row3 == 20)?row3*10+7:200;
-assign p28 = (row3 == 20)?row3*10+8:200;
-assign p29 = (row3 == 20)?row3*10+9:200;
-assign p30 = (row4 == 20)?row4*10+0:200;
-assign p31 = (row4 == 20)?row4*10+1:200;
-assign p32 = (row4 == 20)?row4*10+2:200;
-assign p33 = (row4 == 20)?row4*10+3:200;
-assign p34 = (row4 == 20)?row4*10+4:200;
-assign p35 = (row4 == 20)?row4*10+5:200;
-assign p36 = (row4 == 20)?row4*10+6:200;
-assign p37 = (row4 == 20)?row4*10+7:200;
-assign p38 = (row4 == 20)?row4*10+8:200;
-assign p39 = (row4 == 20)?row4*10+9:200;
+assign p0 = (row1 != 20)?row1*10+0:200;
+assign p1 = (row1 != 20)?row1*10+1:200;
+assign p2 = (row1 != 20)?row1*10+2:200;
+assign p3 = (row1 != 20)?row1*10+3:200;
+assign p4 = (row1 != 20)?row1*10+4:200;
+assign p5 = (row1 != 20)?row1*10+5:200;
+assign p6 = (row1 != 20)?row1*10+6:200;
+assign p7 = (row1 != 20)?row1*10+7:200;
+assign p8 = (row1 != 20)?row1*10+8:200;
+assign p9 = (row1 != 20)?row1*10+9:200;
+assign p10 = (row2 != 20)?row2*10+0:200;
+assign p11 = (row2 != 20)?row2*10+1:200;
+assign p12 = (row2 != 20)?row2*10+2:200;
+assign p13 = (row2 != 20)?row2*10+3:200;
+assign p14 = (row2 != 20)?row2*10+4:200;
+assign p15 = (row2 != 20)?row2*10+5:200;
+assign p16 = (row2 != 20)?row2*10+6:200;
+assign p17 = (row2 != 20)?row2*10+7:200;
+assign p18 = (row2 != 20)?row2*10+8:200;
+assign p19 = (row2 != 20)?row2*10+9:200;
+assign p20 = (row3 != 20)?row3*10+0:200;
+assign p21 = (row3 != 20)?row3*10+1:200;
+assign p22 = (row3 != 20)?row3*10+2:200;
+assign p23 = (row3 != 20)?row3*10+3:200;
+assign p24 = (row3 != 20)?row3*10+4:200;
+assign p25 = (row3 != 20)?row3*10+5:200;
+assign p26 = (row3 != 20)?row3*10+6:200;
+assign p27 = (row3 != 20)?row3*10+7:200;
+assign p28 = (row3 != 20)?row3*10+8:200;
+assign p29 = (row3 != 20)?row3*10+9:200;
+assign p30 = (row4 != 20)?row4*10+0:200;
+assign p31 = (row4 != 20)?row4*10+1:200;
+assign p32 = (row4 != 20)?row4*10+2:200;
+assign p33 = (row4 != 20)?row4*10+3:200;
+assign p34 = (row4 != 20)?row4*10+4:200;
+assign p35 = (row4 != 20)?row4*10+5:200;
+assign p36 = (row4 != 20)?row4*10+6:200;
+assign p37 = (row4 != 20)?row4*10+7:200;
+assign p38 = (row4 != 20)?row4*10+8:200;
+assign p39 = (row4 != 20)?row4*10+9:200;
 endmodule
-
+/*
 module cal_down_new_position(
 np10,np11,np12,np13,np14,np15,np16,np17,np18,np19,
 np20,np21,np22,np23,np24,np25,np26,np27,np28,np29,np30,np31,np32,np33,np34,np35,np36,np37,np38,np39,
@@ -1564,7 +1566,7 @@ assign np199 = 199-(b1[199]+b2[199]+b3[199]+b4[199])*10;
 endmodule
 */
 
-module putBlock(change_en,write_en,address,w_color,block_exist,generate_block,block_type,block_status,rst,clk,turn_right,turn_left,shift_left,shift_right,clkBlockDown,color,led);
+module putBlock(read_addr,change_en,write_en,address,w_color,block_exist,generate_block,block_type,block_status,rst,clk,turn_right,turn_left,shift_left,shift_right,clkBlockDown,led,read_addr_color);
 input generate_block;
 input rst;
 input clk;
@@ -1573,12 +1575,14 @@ input [1:0]block_status;
 input turn_right,turn_left;
 input shift_right,shift_left;
 input clkBlockDown;
-input [2399:0]color;
+//input [2399:0]color;
+input [11:0]read_addr_color;
 output reg[199:0]change_en;
 output reg write_en;
 output reg [7:0]address;
 output reg [11:0]w_color;
 output reg[199:0]block_exist;
+output reg [7:0]read_addr;
 
 wire [11:0]last_w_color; // redundant
 reg [2:0]state;
@@ -1655,7 +1659,7 @@ parameter [8:0] ERASE_ROW1 = 9'b00000_1100;
 parameter [8:0] ERASE_ROW2 = 9'b00000_1101;
 parameter [8:0] ERASE_ROW3 = 9'b00000_1110;
 parameter [8:0] ERASE_ROW4 = 9'b00000_1111;
-
+/*
 parameter [8:0] DOWN_POS10 = 9'b000010000;
 parameter [8:0] DOWN_POS11 = 9'b000010001;
 parameter [8:0] DOWN_POS12 = 9'b000010010;
@@ -2036,9 +2040,13 @@ parameter [8:0] SETTING_ADDRESS_POS195 = 9'b110000111;
 parameter [8:0] SETTING_ADDRESS_POS196 = 9'b110001000;
 parameter [8:0] SETTING_ADDRESS_POS197 = 9'b110001001;
 parameter [8:0] SETTING_ADDRESS_POS198 = 9'b110001010;
-parameter [8:0] SETTING_ADDRESS_POS199 = 9'b110001011;
-parameter [8:0] DOWN_COMPLETE = 9'b110001100;
+parameter [8:0] SETTING_ADDRESS_POS199 = 9'b110001011;*/
 
+parameter [8:0] DOWN_COMPLETE = 9'b110001100;
+parameter [8:0] SETTING_CHANGE_EN = 9'b110001101;
+parameter [8:0] CLOSE_CHANGE_EN = 9'b110001110;
+parameter [8:0] SETTING_ADDRESS_POS = 9'b110001111;
+parameter [8:0] DOWN_POS = 9'b110010000;
 shape s_now  (.w_color(block_color),.color_pos1(color_pos1),.color_pos2(color_pos2),.color_pos3(color_pos3),
               .color_pos4(color_pos4),.block(block),.status(status),.pos_x(pos_x),.pos_y(pos_y));
 shape s_last (.w_color(last_w_color),.color_pos1(last_pos1),.color_pos2(last_pos2),.color_pos3(last_pos3),
@@ -2057,19 +2065,19 @@ wire [199:0]b1,b2,b3,b4;
 wire CALfinish;
 reg blockDownCAL_en;
 reg tmp_blockDownCAL_en;
-//blockDownCAL bdc (.b1(b1),.b2(b2),.b3(b3),.b4(b4),.CALfinish(CALfinish),.clk(clk),.rst(rst),.row1(er1),.row2(er2),.row3(er3),.row4(er4),.blockDownCAL_en(blockDownCAL_en));
+blockDownCAL bdc (.b1(b1),.b2(b2),.b3(b3),.b4(b4),.CALfinish(CALfinish),.clk(clk),.rst(rst),.row1(er1),.row2(er2),.row3(er3),.row4(er4),.blockDownCAL_en(blockDownCAL_en));
 
 reg start_eraseROW;
 reg tmp_start_eraseROW;
 
-/*
+
 wire [7:0]p0,p1,p2,p3,p4,p5,p6,p7,p8,p9,p10,p11,p12,p13,p14,p15,p16,p17,p18,p19,p20,p21,p22,p23,p24,p25,p26,p27,p28,p29,p30,p31,p32,p33,p34,p35,p36,p37,p38,p39;
 
 erased_row_block_pos erbp(.p0(p0),.p1(p1),.p2(p2),.p3(p3),.p4(p4),.p5(p5),.p6(p6),.p7(p7),.p8(p8),.p9(p9),.p10(p10),.p11(p11),.p12(p12),
                           .p13(p13),.p14(p14),.p15(p15),.p16(p16),.p17(p17),.p18(p18),.p19(p19),.p20(p20),.p21(p21),.p22(p22),.p23(p23),
                           .p24(p24),.p25(p25),.p26(p26),.p27(p27),.p28(p28),.p29(p29),.p30(p30),.p31(p31),.p32(p32),.p33(p33),.p34(p34),
                           .p35(p35),.p36(p36),.p37(p37),.p38(p38),.p39(p39),.row1(er1),.row2(er2),.row3(er3),.row4(er4));
-
+/*
 wire[7:0]np10,np11,np12,np13,np14,np15,np16,np17,np18,np19;
 wire[7:0]np20,np21,np22,np23,np24,np25,np26,np27,np28,np29,np30,np31,np32,np33,np34,np35,np36,np37,np38,np39;
 wire[7:0]np40,np41,np42,np43,np44,np45,np46,np47,np48,np49,np50,np51,np52,np53,np54,np55,np56,np57,np58,np59;
@@ -2101,6 +2109,10 @@ cal_down_new_position cdnp(
 .np180(np180),.np181(np181),.np182(np182),.np183(np183),.np184(np184),.np185(np185),.np186(np186),.np187(np187),.np188(np188),.np189(np189),
 .np190(np190),.np191(np191),.np192(np192),.np193(np193),.np194(np194),.np195(np195),.np196(np196),.np197(np197),.np198(np198),.np199(np199),
 .b1(b1),.b2(b2),.b3(b3),.b4(b4));*/
+
+reg [7:0]downCount;
+wire [7:0]down_addr;
+assign down_addr = read_addr-(b1[read_addr]+b2[read_addr]+b3[read_addr]+b4[read_addr])*10;
 
 always@(posedge clk or posedge rst)begin
     if(rst)begin
@@ -2261,7 +2273,7 @@ always@(*)begin
         end
         `BLOCK_SETTLE:begin
             if(check_finish)begin
-                tmp_state = `WAIT_BLOCK_EN;
+                tmp_state = `CAL_BLOCKDOWN;
                 tmp_blockDownCAL_en = 1;
             end
             else begin
@@ -2300,6 +2312,8 @@ always@(posedge clk or posedge rst)begin
         w_color <= 0;
         write_complete<=0;
         change_en <= 0;
+        downCount <=0;
+        read_addr <= 0;
     end
     else begin
         write_state <= write_state;
@@ -2309,6 +2323,8 @@ always@(posedge clk or posedge rst)begin
         w_color <= w_color;
         write_complete <= write_complete;
         change_en <= change_en;
+        downCount <= downCount;
+        read_addr <= read_addr;
         case(write_state)
             WAIT_WRITE:begin
                 if(start_write)begin
@@ -2328,6 +2344,8 @@ always@(posedge clk or posedge rst)begin
                 else if (start_eraseROW)begin
                     write_state <= ERASE_ROW1;
                     write_complete <= 0;
+                    downCount <=0;
+                    read_addr <= 0;
                 end
                 else begin
                     write_state <= WAIT_WRITE;
@@ -2422,8 +2440,6 @@ always@(posedge clk or posedge rst)begin
                 w_color <= 0;
                 write_complete<=1;
             end
-
-/*
             ERASE_ROW1:begin
                 write_state <= ERASE_ROW2;
                 if(er1!=20)begin
@@ -2470,7 +2486,7 @@ always@(posedge clk or posedge rst)begin
                 end
             end
             ERASE_ROW4:begin
-                write_state <= SETTING_ADDRESS_POS10;
+                write_state <= SETTING_ADDRESS_POS;
                 if(er4!=20)begin
                     block_exist[p30] <= 0;
                     block_exist[p31] <= 0;
@@ -2484,20 +2500,45 @@ always@(posedge clk or posedge rst)begin
                     block_exist[p39] <= 0;
                 end
             end
-            
-SETTING_ADDRESS_POS10:begin
-    write_state <= DOWN_POS10;
-    write_en<=0;
-    change_en[np10] <= 1;
-    address <= np10;
-end
-DOWN_POS10:begin
-    write_state <= SETTING_ADDRESS_POS11;
-    write_en <= (block_exist[10])?1:0;
-    w_color <= color[131:120];
-    block_exist[10] <= 0;
-    block_exist[np10]<= (block_exist[10])?1:0;
-end
+            SETTING_ADDRESS_POS:begin
+                write_state <= SETTING_CHANGE_EN;
+                write_en<=0;
+                read_addr <= downCount+10; 
+                //address <= downCount+10;          
+            end
+            SETTING_CHANGE_EN:begin
+                write_state <= DOWN_POS;
+                change_en[down_addr] <= 1;
+                address <=  down_addr;
+                block_exist[down_addr] <= (block_exist[read_addr])?1:0;
+            end
+            DOWN_POS:begin
+                write_state <= CLOSE_CHANGE_EN;
+                write_en <= (block_exist[read_addr])?1:0;
+                w_color <= read_addr_color;
+                downCount <= downCount+1;
+            end
+            CLOSE_CHANGE_EN:begin
+                write_state <= (read_addr==199)?DOWN_COMPLETE:SETTING_ADDRESS_POS;
+                write_en<=0;
+                //block_exist[address] <= (block_exist[address]==1&&address!=down_addr)?0:block_exist[address];
+                change_en[down_addr] <= 0;
+            end
+            /*
+            SETTING_ADDRESS_POS10:begin
+                write_state <= DOWN_POS10;
+                write_en<=0;
+                change_en[np10] <= 1;
+                address <= np10;
+            end
+            DOWN_POS10:begin
+                write_state <= SETTING_ADDRESS_POS11;
+                write_en <= (block_exist[10])?1:0;
+                w_color <= color[131:120];
+                block_exist[10] <= 0;
+                block_exist[np10]<= (block_exist[10])?1:0;
+            end
+
 SETTING_ADDRESS_POS11:begin
     write_state <= DOWN_POS11;
     write_en<=0;
@@ -4954,17 +4995,16 @@ DOWN_POS199:begin
     w_color <= color[2399:2388];
     block_exist[199] <= 0;
     block_exist[np199]<= (block_exist[199])?1:0;
-end
+end*/
 DOWN_COMPLETE:begin
-    write_state <=
-    change_en[np199] <= 0;
+    //change_en[np199] <= 0;
     write_state <= WAIT_WRITE;
     write_en <= 0;
     address <= 0;
     w_color <= 0;
     write_complete<=1;
 end
-      */      
+           
             default:begin end
         endcase
     end

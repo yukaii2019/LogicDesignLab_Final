@@ -1,5 +1,6 @@
-module BackGroundMemory(color,clk,rst,write_en,address,w_color,block_exist,change_en);
+module BackGroundMemory(read_addr_color,color,clk,rst,write_en,address,w_color,block_exist,change_en,read_address);
 output reg [2399:0]color;
+output reg [11:0] read_addr_color;
 input clk;
 input rst;
 input write_en;
@@ -7,9 +8,218 @@ input [7:0]address;
 input [11:0]w_color;
 input [199:0]block_exist;
 input [199:0]change_en;
+input [7:0]read_address;
 reg [2399:0]tmp_color;
+reg [11:0]tmp_read_addr_color;
+
 
 always@(*)begin
+    tmp_read_addr_color = read_addr_color;
+    case(read_address)
+        0 : begin tmp_read_addr_color = color[11:0]; end
+        1 : begin tmp_read_addr_color = color[23:12]; end
+        2 : begin tmp_read_addr_color = color[35:24]; end
+        3 : begin tmp_read_addr_color = color[47:36]; end
+        4 : begin tmp_read_addr_color = color[59:48]; end
+        5 : begin tmp_read_addr_color = color[71:60]; end
+        6 : begin tmp_read_addr_color = color[83:72]; end
+        7 : begin tmp_read_addr_color = color[95:84]; end
+        8 : begin tmp_read_addr_color = color[107:96]; end
+        9 : begin tmp_read_addr_color = color[119:108]; end
+        10 : begin tmp_read_addr_color = color[131:120]; end
+        11 : begin tmp_read_addr_color = color[143:132]; end
+        12 : begin tmp_read_addr_color = color[155:144]; end
+        13 : begin tmp_read_addr_color = color[167:156]; end
+        14 : begin tmp_read_addr_color = color[179:168]; end
+        15 : begin tmp_read_addr_color = color[191:180]; end
+        16 : begin tmp_read_addr_color = color[203:192]; end
+        17 : begin tmp_read_addr_color = color[215:204]; end
+        18 : begin tmp_read_addr_color = color[227:216]; end
+        19 : begin tmp_read_addr_color = color[239:228]; end
+        20 : begin tmp_read_addr_color = color[251:240]; end
+        21 : begin tmp_read_addr_color = color[263:252]; end
+        22 : begin tmp_read_addr_color = color[275:264]; end
+        23 : begin tmp_read_addr_color = color[287:276]; end
+        24 : begin tmp_read_addr_color = color[299:288]; end
+        25 : begin tmp_read_addr_color = color[311:300]; end
+        26 : begin tmp_read_addr_color = color[323:312]; end
+        27 : begin tmp_read_addr_color = color[335:324]; end
+        28 : begin tmp_read_addr_color = color[347:336]; end
+        29 : begin tmp_read_addr_color = color[359:348]; end
+        30 : begin tmp_read_addr_color = color[371:360]; end
+        31 : begin tmp_read_addr_color = color[383:372]; end
+        32 : begin tmp_read_addr_color = color[395:384]; end
+        33 : begin tmp_read_addr_color = color[407:396]; end
+        34 : begin tmp_read_addr_color = color[419:408]; end
+        35 : begin tmp_read_addr_color = color[431:420]; end
+        36 : begin tmp_read_addr_color = color[443:432]; end
+        37 : begin tmp_read_addr_color = color[455:444]; end
+        38 : begin tmp_read_addr_color = color[467:456]; end
+        39 : begin tmp_read_addr_color = color[479:468]; end
+        40 : begin tmp_read_addr_color = color[491:480]; end
+        41 : begin tmp_read_addr_color = color[503:492]; end
+        42 : begin tmp_read_addr_color = color[515:504]; end
+        43 : begin tmp_read_addr_color = color[527:516]; end
+        44 : begin tmp_read_addr_color = color[539:528]; end
+        45 : begin tmp_read_addr_color = color[551:540]; end
+        46 : begin tmp_read_addr_color = color[563:552]; end
+        47 : begin tmp_read_addr_color = color[575:564]; end
+        48 : begin tmp_read_addr_color = color[587:576]; end
+        49 : begin tmp_read_addr_color = color[599:588]; end
+        50 : begin tmp_read_addr_color = color[611:600]; end
+        51 : begin tmp_read_addr_color = color[623:612]; end
+        52 : begin tmp_read_addr_color = color[635:624]; end
+        53 : begin tmp_read_addr_color = color[647:636]; end
+        54 : begin tmp_read_addr_color = color[659:648]; end
+        55 : begin tmp_read_addr_color = color[671:660]; end
+        56 : begin tmp_read_addr_color = color[683:672]; end
+        57 : begin tmp_read_addr_color = color[695:684]; end
+        58 : begin tmp_read_addr_color = color[707:696]; end
+        59 : begin tmp_read_addr_color = color[719:708]; end
+        60 : begin tmp_read_addr_color = color[731:720]; end
+        61 : begin tmp_read_addr_color = color[743:732]; end
+        62 : begin tmp_read_addr_color = color[755:744]; end
+        63 : begin tmp_read_addr_color = color[767:756]; end
+        64 : begin tmp_read_addr_color = color[779:768]; end
+        65 : begin tmp_read_addr_color = color[791:780]; end
+        66 : begin tmp_read_addr_color = color[803:792]; end
+        67 : begin tmp_read_addr_color = color[815:804]; end
+        68 : begin tmp_read_addr_color = color[827:816]; end
+        69 : begin tmp_read_addr_color = color[839:828]; end
+        70 : begin tmp_read_addr_color = color[851:840]; end
+        71 : begin tmp_read_addr_color = color[863:852]; end
+        72 : begin tmp_read_addr_color = color[875:864]; end
+        73 : begin tmp_read_addr_color = color[887:876]; end
+        74 : begin tmp_read_addr_color = color[899:888]; end
+        75 : begin tmp_read_addr_color = color[911:900]; end
+        76 : begin tmp_read_addr_color = color[923:912]; end
+        77 : begin tmp_read_addr_color = color[935:924]; end
+        78 : begin tmp_read_addr_color = color[947:936]; end
+        79 : begin tmp_read_addr_color = color[959:948]; end
+        80 : begin tmp_read_addr_color = color[971:960]; end
+        81 : begin tmp_read_addr_color = color[983:972]; end
+        82 : begin tmp_read_addr_color = color[995:984]; end
+        83 : begin tmp_read_addr_color = color[1007:996]; end
+        84 : begin tmp_read_addr_color = color[1019:1008]; end
+        85 : begin tmp_read_addr_color = color[1031:1020]; end
+        86 : begin tmp_read_addr_color = color[1043:1032]; end
+        87 : begin tmp_read_addr_color = color[1055:1044]; end
+        88 : begin tmp_read_addr_color = color[1067:1056]; end
+        89 : begin tmp_read_addr_color = color[1079:1068]; end
+        90 : begin tmp_read_addr_color = color[1091:1080]; end
+        91 : begin tmp_read_addr_color = color[1103:1092]; end
+        92 : begin tmp_read_addr_color = color[1115:1104]; end
+        93 : begin tmp_read_addr_color = color[1127:1116]; end
+        94 : begin tmp_read_addr_color = color[1139:1128]; end
+        95 : begin tmp_read_addr_color = color[1151:1140]; end
+        96 : begin tmp_read_addr_color = color[1163:1152]; end
+        97 : begin tmp_read_addr_color = color[1175:1164]; end
+        98 : begin tmp_read_addr_color = color[1187:1176]; end
+        99 : begin tmp_read_addr_color = color[1199:1188]; end
+        100 : begin tmp_read_addr_color = color[1211:1200]; end
+        101 : begin tmp_read_addr_color = color[1223:1212]; end
+        102 : begin tmp_read_addr_color = color[1235:1224]; end
+        103 : begin tmp_read_addr_color = color[1247:1236]; end
+        104 : begin tmp_read_addr_color = color[1259:1248]; end
+        105 : begin tmp_read_addr_color = color[1271:1260]; end
+        106 : begin tmp_read_addr_color = color[1283:1272]; end
+        107 : begin tmp_read_addr_color = color[1295:1284]; end
+        108 : begin tmp_read_addr_color = color[1307:1296]; end
+        109 : begin tmp_read_addr_color = color[1319:1308]; end
+        110 : begin tmp_read_addr_color = color[1331:1320]; end
+        111 : begin tmp_read_addr_color = color[1343:1332]; end
+        112 : begin tmp_read_addr_color = color[1355:1344]; end
+        113 : begin tmp_read_addr_color = color[1367:1356]; end
+        114 : begin tmp_read_addr_color = color[1379:1368]; end
+        115 : begin tmp_read_addr_color = color[1391:1380]; end
+        116 : begin tmp_read_addr_color = color[1403:1392]; end
+        117 : begin tmp_read_addr_color = color[1415:1404]; end
+        118 : begin tmp_read_addr_color = color[1427:1416]; end
+        119 : begin tmp_read_addr_color = color[1439:1428]; end
+        120 : begin tmp_read_addr_color = color[1451:1440]; end
+        121 : begin tmp_read_addr_color = color[1463:1452]; end
+        122 : begin tmp_read_addr_color = color[1475:1464]; end
+        123 : begin tmp_read_addr_color = color[1487:1476]; end
+        124 : begin tmp_read_addr_color = color[1499:1488]; end
+        125 : begin tmp_read_addr_color = color[1511:1500]; end
+        126 : begin tmp_read_addr_color = color[1523:1512]; end
+        127 : begin tmp_read_addr_color = color[1535:1524]; end
+        128 : begin tmp_read_addr_color = color[1547:1536]; end
+        129 : begin tmp_read_addr_color = color[1559:1548]; end
+        130 : begin tmp_read_addr_color = color[1571:1560]; end
+        131 : begin tmp_read_addr_color = color[1583:1572]; end
+        132 : begin tmp_read_addr_color = color[1595:1584]; end
+        133 : begin tmp_read_addr_color = color[1607:1596]; end
+        134 : begin tmp_read_addr_color = color[1619:1608]; end
+        135 : begin tmp_read_addr_color = color[1631:1620]; end
+        136 : begin tmp_read_addr_color = color[1643:1632]; end
+        137 : begin tmp_read_addr_color = color[1655:1644]; end
+        138 : begin tmp_read_addr_color = color[1667:1656]; end
+        139 : begin tmp_read_addr_color = color[1679:1668]; end
+        140 : begin tmp_read_addr_color = color[1691:1680]; end
+        141 : begin tmp_read_addr_color = color[1703:1692]; end
+        142 : begin tmp_read_addr_color = color[1715:1704]; end
+        143 : begin tmp_read_addr_color = color[1727:1716]; end
+        144 : begin tmp_read_addr_color = color[1739:1728]; end
+        145 : begin tmp_read_addr_color = color[1751:1740]; end
+        146 : begin tmp_read_addr_color = color[1763:1752]; end
+        147 : begin tmp_read_addr_color = color[1775:1764]; end
+        148 : begin tmp_read_addr_color = color[1787:1776]; end
+        149 : begin tmp_read_addr_color = color[1799:1788]; end
+        150 : begin tmp_read_addr_color = color[1811:1800]; end
+        151 : begin tmp_read_addr_color = color[1823:1812]; end
+        152 : begin tmp_read_addr_color = color[1835:1824]; end
+        153 : begin tmp_read_addr_color = color[1847:1836]; end
+        154 : begin tmp_read_addr_color = color[1859:1848]; end
+        155 : begin tmp_read_addr_color = color[1871:1860]; end
+        156 : begin tmp_read_addr_color = color[1883:1872]; end
+        157 : begin tmp_read_addr_color = color[1895:1884]; end
+        158 : begin tmp_read_addr_color = color[1907:1896]; end
+        159 : begin tmp_read_addr_color = color[1919:1908]; end
+        160 : begin tmp_read_addr_color = color[1931:1920]; end
+        161 : begin tmp_read_addr_color = color[1943:1932]; end
+        162 : begin tmp_read_addr_color = color[1955:1944]; end
+        163 : begin tmp_read_addr_color = color[1967:1956]; end
+        164 : begin tmp_read_addr_color = color[1979:1968]; end
+        165 : begin tmp_read_addr_color = color[1991:1980]; end
+        166 : begin tmp_read_addr_color = color[2003:1992]; end
+        167 : begin tmp_read_addr_color = color[2015:2004]; end
+        168 : begin tmp_read_addr_color = color[2027:2016]; end
+        169 : begin tmp_read_addr_color = color[2039:2028]; end
+        170 : begin tmp_read_addr_color = color[2051:2040]; end
+        171 : begin tmp_read_addr_color = color[2063:2052]; end
+        172 : begin tmp_read_addr_color = color[2075:2064]; end
+        173 : begin tmp_read_addr_color = color[2087:2076]; end
+        174 : begin tmp_read_addr_color = color[2099:2088]; end
+        175 : begin tmp_read_addr_color = color[2111:2100]; end
+        176 : begin tmp_read_addr_color = color[2123:2112]; end
+        177 : begin tmp_read_addr_color = color[2135:2124]; end
+        178 : begin tmp_read_addr_color = color[2147:2136]; end
+        179 : begin tmp_read_addr_color = color[2159:2148]; end
+        180 : begin tmp_read_addr_color = color[2171:2160]; end
+        181 : begin tmp_read_addr_color = color[2183:2172]; end
+        182 : begin tmp_read_addr_color = color[2195:2184]; end
+        183 : begin tmp_read_addr_color = color[2207:2196]; end
+        184 : begin tmp_read_addr_color = color[2219:2208]; end
+        185 : begin tmp_read_addr_color = color[2231:2220]; end
+        186 : begin tmp_read_addr_color = color[2243:2232]; end
+        187 : begin tmp_read_addr_color = color[2255:2244]; end
+        188 : begin tmp_read_addr_color = color[2267:2256]; end
+        189 : begin tmp_read_addr_color = color[2279:2268]; end
+        190 : begin tmp_read_addr_color = color[2291:2280]; end
+        191 : begin tmp_read_addr_color = color[2303:2292]; end
+        192 : begin tmp_read_addr_color = color[2315:2304]; end
+        193 : begin tmp_read_addr_color = color[2327:2316]; end
+        194 : begin tmp_read_addr_color = color[2339:2328]; end
+        195 : begin tmp_read_addr_color = color[2351:2340]; end
+        196 : begin tmp_read_addr_color = color[2363:2352]; end
+        197 : begin tmp_read_addr_color = color[2375:2364]; end
+        198 : begin tmp_read_addr_color = color[2387:2376]; end
+        199 : begin tmp_read_addr_color = color[2399:2388]; end
+    endcase
+end
+always@(*)begin
+    tmp_color = color;
     if(write_en)begin
         case(address)
             0 : begin tmp_color[11:0] = (change_en[0])?w_color:color[11:0]; end
@@ -420,6 +630,7 @@ always@(*)begin
 end
 always@(posedge clk or posedge rst)begin
     if(rst)begin
+        read_addr_color <= 12'h000;
         color[11:0]<=12'h000;
         color[23:12]<=12'h222;
         color[35:24]<=12'h000;
@@ -623,6 +834,7 @@ always@(posedge clk or posedge rst)begin
         
     end
     else begin
+        read_addr_color <= tmp_read_addr_color;
         color[11:0]<=tmp_color[11:0];
         color[23:12]<=tmp_color[23:12];
         color[35:24]<=tmp_color[35:24];
