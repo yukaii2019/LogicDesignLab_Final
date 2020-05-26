@@ -82,10 +82,10 @@ for i in range (1,21):
     print("end")
 '''
 '''
-for i in range (0,20):
+for i in range (0,23):
     print("%d:begin"%i)
-    print("    tmp_b1[199:%d] = %d'b"%((i+1)*10,200-(i+1)*10),end='')
-    for j in range (0,200-(i+1)*10):
+    print("    tmp_b4[239:%d] = %d'b"%((i+1)*10,240-(i+1)*10),end='')
+    for j in range (0,240-(i+1)*10):
         print("1",end = "")
     print(";")
     print("end")
@@ -126,6 +126,7 @@ for i in range(10,200):
 for i in range(10,200):
     print("assign c%d = color[%d:%d];"%(i,(i+1)*12-1,i*12))
 '''
+'''
 for i in range (10,200):
     print("SETTING_ADDRESS_POS%d:begin"%i)
     print("    write_state <= DOWN_POS%d;"%i)
@@ -140,3 +141,14 @@ for i in range (10,200):
     print("    block_exist[%d] <= 0;"%i)
     print("    block_exist[np%d]<= (block_exist[%d])?1:0;"%(i,i))
     print("end")
+'''
+'''
+for i in range(200,240):
+    print("color[%d:%d]<=tmp_color[%d:%d];"%(i*12+11,i*12,i*12+11,i*12))
+    '''
+'''
+for i in range(1,21):
+    print("judgeIFContinueShift j%d(.left_en(l_en%d),.right_en(r_en%d),.down_en(d_en%d),.block(block),.status(status),.pos_x(pos_x),.pos_y(%d),.block_exist(block_exist));"%(i,i,i,i,(i-1)))
+'''
+for i in range(1,20):
+    print("(d_en%d==0)?%d:"%(21-i,20-i))
