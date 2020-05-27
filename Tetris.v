@@ -310,7 +310,7 @@ always@(*)begin
             tmp_cal_rotate_en = 0;
             tmp_left_or_right = 0;
             tmp_space_is_press = 0;
-            block_exist_exclude = block_exist;
+            tmp_block_exist_exclude = block_exist;
         end
         `SET_INIT_XY:begin
             tmp_state = `BLOCK_DOWN;
@@ -347,32 +347,32 @@ always@(*)begin
                 tmp_state = `DET_ROTATE;
                 tmp_cal_rotate_en = 1;
                 tmp_left_or_right = 1;
-                block_exist_exclude[color_pos1] = 0;
-                block_exist_exclude[color_pos2] = 0;
-                block_exist_exclude[color_pos3] = 0;
-                block_exist_exclude[color_pos4] = 0;
+                tmp_block_exist_exclude[color_pos1] = 0;
+                tmp_block_exist_exclude[color_pos2] = 0;
+                tmp_block_exist_exclude[color_pos3] = 0;
+                tmp_block_exist_exclude[color_pos4] = 0;
             end
             else if(rotate_left)begin
                 tmp_state = `DET_ROTATE;
                 tmp_cal_rotate_en = 1;
                 tmp_left_or_right = 0;
-                block_exist_exclude[color_pos1] = 0;
-                block_exist_exclude[color_pos2] = 0;
-                block_exist_exclude[color_pos3] = 0;
-                block_exist_exclude[color_pos4] = 0;
+                tmp_block_exist_exclude[color_pos1] = 0;
+                tmp_block_exist_exclude[color_pos2] = 0;
+                tmp_block_exist_exclude[color_pos3] = 0;
+                tmp_block_exist_exclude[color_pos4] = 0;
             end
             else if(space)begin
                 tmp_state = `WRITE_SPACE;
-                block_exist_exclude[color_pos1] = 0;
-                block_exist_exclude[color_pos2] = 0;
-                block_exist_exclude[color_pos3] = 0;
-                block_exist_exclude[color_pos4] = 0;
+                tmp_block_exist_exclude[color_pos1] = 0;
+                tmp_block_exist_exclude[color_pos2] = 0;
+                tmp_block_exist_exclude[color_pos3] = 0;
+                tmp_block_exist_exclude[color_pos4] = 0;
             end
             else begin
                 tmp_start_write = 0;
                 tmp_last_pos_x = pos_x;
                 tmp_last_pos_y = pos_y;
-                block_exist_exclude = block_exist;
+                tmp_block_exist_exclude = block_exist;
             end
         end
         `WRITE_SPACE:begin
