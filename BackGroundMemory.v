@@ -1474,6 +1474,9 @@ store[299:288]<=12'h222;
     end
     else begin
         read_addr_color <= tmp_read_addr_color;
+        color = tmp_color;
+        foresee = tmp_foresee;
+        /*
         color[11:0]<=tmp_color[11:0];
         color[23:12]<=tmp_color[23:12];
         color[35:24]<=tmp_color[35:24];
@@ -1839,32 +1842,33 @@ foresee[1463:1452]<=tmp_foresee[1463:1452];
 foresee[1475:1464]<=tmp_foresee[1475:1464];
 foresee[1487:1476]<=tmp_foresee[1487:1476];
 foresee[1499:1488]<=tmp_foresee[1499:1488];
-
-store[11:0]<=tmp_store[11:0];
-store[23:12]<=tmp_store[23:12];
-store[35:24]<=tmp_store[35:24];
-store[47:36]<=tmp_store[47:36];
-store[59:48]<=tmp_store[59:48];
-store[71:60]<=tmp_store[71:60];
-store[83:72]<=tmp_store[83:72];
-store[95:84]<=tmp_store[95:84];
-store[107:96]<=tmp_store[107:96];
-store[119:108]<=tmp_store[119:108];
-store[131:120]<=tmp_store[131:120];
-store[143:132]<=tmp_store[143:132];
-store[155:144]<=tmp_store[155:144];
-store[167:156]<=tmp_store[167:156];
-store[179:168]<=tmp_store[179:168];
-store[191:180]<=tmp_store[191:180];
-store[203:192]<=tmp_store[203:192];
-store[215:204]<=tmp_store[215:204];
-store[227:216]<=tmp_store[227:216];
-store[239:228]<=tmp_store[239:228];
-store[251:240]<=tmp_store[251:240];
-store[263:252]<=tmp_store[263:252];
-store[275:264]<=tmp_store[275:264];
-store[287:276]<=tmp_store[287:276];
-store[299:288]<=tmp_store[299:288];
+*/
+// store[11:0]<=tmp_store[11:0];
+// store[23:12]<=tmp_store[23:12];
+// store[35:24]<=tmp_store[35:24];
+// store[47:36]<=tmp_store[47:36];
+// store[59:48]<=tmp_store[59:48];
+// store[71:60]<=tmp_store[71:60];
+// store[83:72]<=tmp_store[83:72];
+// store[95:84]<=tmp_store[95:84];
+// store[107:96]<=tmp_store[107:96];
+// store[119:108]<=tmp_store[119:108];
+// store[131:120]<=tmp_store[131:120];
+// store[143:132]<=tmp_store[143:132];
+// store[155:144]<=tmp_store[155:144];
+// store[167:156]<=tmp_store[167:156];
+// store[179:168]<=tmp_store[179:168];
+// store[191:180]<=tmp_store[191:180];
+// store[203:192]<=tmp_store[203:192];
+// store[215:204]<=tmp_store[215:204];
+// store[227:216]<=tmp_store[227:216];
+// store[239:228]<=tmp_store[239:228];
+// store[251:240]<=tmp_store[251:240];
+// store[263:252]<=tmp_store[263:252];
+// store[275:264]<=tmp_store[275:264];
+// store[287:276]<=tmp_store[287:276];
+// store[299:288]<=tmp_store[299:288];
+store <= tmp_store;
     end
 end
 endmodule

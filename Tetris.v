@@ -21,21 +21,6 @@ wire valid;
 wire [9:0] h_cnt; //640
 wire [9:0] v_cnt;  //480
 
-// input btn_L,btn_R,btn_U,btn_D;
-// wire db_btn_L,db_btn_R,db_btn_U,db_btn_D;
-// wire op_btn_L,op_btn_R,op_btn_U,op_btn_D;
-
-
-
-// debounce db0 (.pb_debounced(db_btn_L),.pb(btn_L),.clk(clk));
-// debounce db1 (.pb_debounced(db_btn_R),.pb(btn_R),.clk(clk));
-// debounce db2 (.pb_debounced(db_btn_U),.pb(btn_U),.clk(clk));
-// debounce db3 (.pb_debounced(db_btn_D),.pb(btn_D),.clk(clk));
-// one_pulse op0 (.push_onepulse(op_btn_L),.rst(rst),.clk(clk),.push_debounced(db_btn_L));
-// one_pulse op1 (.push_onepulse(op_btn_R),.rst(rst),.clk(clk),.push_debounced(db_btn_R));
-// one_pulse op2 (.push_onepulse(op_btn_U),.rst(rst),.clk(clk),.push_debounced(db_btn_U));
-// one_pulse op3 (.push_onepulse(op_btn_D),.rst(rst),.clk(clk),.push_debounced(db_btn_D));
-
 
 inout  PS2_DATA;
 inout  PS2_CLK;
@@ -52,7 +37,6 @@ one_pulse op1 (.push_onepulse(op_right),.rst(rst),.clk(clk),.push_debounced(righ
 one_pulse op2 (.push_onepulse(op_left),.rst(rst),.clk(clk),.push_debounced(left));
 one_pulse op3 (.push_onepulse(op_up),.rst(rst),.clk(clk),.push_debounced(up));
 one_pulse op4 (.push_onepulse(op_shift),.rst(rst),.clk(clk),.push_debounced(shift));
-//one_pulse op4 (.push_onepulse(op_down),.rst(rst),.clk(clk),.push_debounced(down));
 
 
 keyboardSignal ks (.shift(shift),.space(space),.right(right),.left(left),.up(up),.down(down),.clk(clk),.rst(rst),.PS2_DATA(PS2_DATA),.PS2_CLK(PS2_CLK));
@@ -74,23 +58,27 @@ wire reset_store;
 wire write_store_en;
 wire [299:0]store;
 wire [9:0]score;
+wire gameover;
 assign clkBlockDown =(down)?clkBlockDown_fast:clkBlockDown_slow;
 
+
+wire [9:0] leddddd;
 clock_divisor clk_wiz_0_inst(.clk(clk),.clk1(clk_25MHz),.clk22(clk_22),.clkBlockDown_fast(clkBlockDown_fast),.clkBlockDown_slow(clkBlockDown_slow));
-pixel_gen pg (.vgaRed(vgaRed),.vgaGreen(vgaGreen),.vgaBlue(vgaBlue),.h_cnt(h_cnt),.v_cnt(v_cnt),.valid(valid),.color(color),.foresee(foresee),.store(store));
+pixel_gen pg (.vgaRed(vgaRed),.vgaGreen(vgaGreen),.vgaBlue(vgaBlue),.h_cnt(h_cnt),.v_cnt(v_cnt),.valid(valid),.color(color[2399:0]),.foresee(foresee),.store(store));
 vga_controller vga_inst(.pclk(clk_25MHz),.reset(rst),.hsync(hsync),.vsync(vsync),.valid(valid),.h_cnt(h_cnt),.v_cnt(v_cnt));
 BackGroundMemory bm (.read_addr_color(read_addr_color),.color(color),.clk(clk),.rst(rst),.write_en(write_en),.address(address),.w_color(w_color),
                      .block_exist(block_exist),.read_address(read_addr),.foresee(foresee),.write_foresee_en(write_foresee_en),.reset_foresee(reset_foresee),.store(store),
                      .reset_store(reset_store),.write_store_en(write_store_en));
 putBlock pb (.write_en(write_en),.address(address),.w_color(w_color),.block_exist(block_exist),.generate_block(generate_block),
              .rst(rst),.clk(clk),.rotate_right(op_up),.rotate_left(op_down),
-             .shift_left(op_left),.shift_right(op_right),.clkBlockDown(clkBlockDown),.led(led),
+             .shift_left(op_left),.shift_right(op_right),.clkBlockDown(clkBlockDown),.led(leddddd),
              .read_addr_color(read_addr_color),.read_addr(read_addr),.space(op_space),.gameStart(gameStart),.keyboard_shift(op_shift),
              .write_foresee_en(write_foresee_en),.reset_foresee(reset_foresee),.reset_store(reset_store),.write_store_en(write_store_en)
-             ,.score(score));
+             ,.score(score),.gameover(gameover));
+assign led = (gameover)?10'b11111_11111:0;
 endmodule
 
-module putBlock(read_addr,write_en,address,w_color,block_exist,generate_block,rst,clk,space,rotate_right,rotate_left,shift_left,shift_right,clkBlockDown,led,read_addr_color,gameStart,write_foresee_en,reset_foresee,keyboard_shift,reset_store,write_store_en,score);
+module putBlock(read_addr,write_en,address,w_color,block_exist,generate_block,rst,clk,space,rotate_right,rotate_left,shift_left,shift_right,clkBlockDown,led,read_addr_color,gameStart,write_foresee_en,reset_foresee,keyboard_shift,reset_store,write_store_en,score,gameover);
 input generate_block;
 input rst;
 input clk;
@@ -105,6 +93,7 @@ output reg write_foresee_en;
 output reg [4:0]reset_foresee;
 output reg write_store_en;
 output reg reset_store;
+output reg gameover;
 
 output reg write_en;
 output reg [7:0]address;
@@ -115,7 +104,7 @@ output reg [7:0]read_addr;
 output reg [9:0]score;
 
 wire [11:0]last_w_color; // redundant
-reg [3:0]state;
+reg [4:0]state;
 reg [2:0]block;
 reg [1:0]status;
 reg [4:0]pos_x,pos_y;
@@ -124,13 +113,14 @@ reg start_write;
 reg [1:0]new_status;
 
 
-reg [3:0]tmp_state;
+reg [4:0]tmp_state;
 reg [2:0]tmp_block;
 reg [1:0]tmp_status;
 reg [4:0]tmp_pos_x,tmp_pos_y;
 reg [4:0]tmp_last_pos_x,tmp_last_pos_y;
 reg tmp_start_write;
 reg [1:0]tmp_new_status;
+reg tmp_gameover;
 
 wire [7:0] color_pos1;
 wire [7:0] color_pos2;
@@ -261,7 +251,7 @@ reg [2:0]now_writing_foresee_block;
 reg [1:0]now_writing_foresee_block_status;
 reg [4:0]now_writing_foresee_pos_x,now_writing_foresee_pos_y;
 reg [2:0]write_foreseeCount;
-shape_for_foresee foresee1(.w_color(foresee_color),.color_pos1(foresee_block_pos_1),.color_pos2(foresee_block_pos_2),.color_pos3(foresee_block_pos_3),
+shape_for_foresee_and_store foresee1(.w_color(foresee_color),.color_pos1(foresee_block_pos_1),.color_pos2(foresee_block_pos_2),.color_pos3(foresee_block_pos_3),
                            .color_pos4(foresee_block_pos_4),.block(now_writing_foresee_block),.status(now_writing_foresee_block_status),
                            .pos_x(now_writing_foresee_pos_x),.pos_y(now_writing_foresee_pos_y));
 
@@ -282,13 +272,13 @@ reg not_first_time_store_block;
 reg tmp_not_first_time_store_block;
 
 reg [2:0]last_store_block;
-reg [1:0]tmp_last_store_block;
-reg [2:0]last_store_block_status;
+reg [2:0]tmp_last_store_block;
+reg [1:0]last_store_block_status;
 reg [1:0]tmp_last_store_block_status;
 
 reg back_from_store_state;
 reg tmp_back_from_store_state;
-shape_for_foresee store(.w_color(store_color),.color_pos1(store_block_pos1),.color_pos2(store_block_pos2),.color_pos3(store_block_pos3),
+shape_for_foresee_and_store store(.w_color(store_color),.color_pos1(store_block_pos1),.color_pos2(store_block_pos2),.color_pos3(store_block_pos3),
                            .color_pos4(store_block_pos4),.block(now_writing_store_block),.status(now_writing_store_block_status),
                            .pos_x(2),.pos_y(2));
 
@@ -350,7 +340,15 @@ wire [4:0]bottom_y;
 
 reg space_is_press;
 reg tmp_space_is_press;
-PRESS_SPACE_POS psp (.bottom_y(bottom_y),.block(block),.status(status),.pos_x(pos_x),.pos_y(pos_y),.block_exist(block_exist_exclude));
+reg cal_bottom_en;
+reg tmp_cal_bottom_en;
+wire finish_cal_bottom;
+//PRESS_SPACE_POS psp (.bottom_y(bottom_y),.block(block),.status(status),.pos_x(pos_x),.pos_y(pos_y),.block_exist(block_exist_exclude));
+PRESS_SPACE_POS psp (.bottom_y(bottom_y),.block(block),.status(status),.pos_x(pos_x),.block_exist(block_exist_exclude),
+                     .clk(clk),.rst(rst),.cal_bottom_en(cal_bottom_en),.finish_cal_bottom(finish_cal_bottom));
+
+wire gameover_or_not;
+determine_gameover dg (.gameover_or_not(gameover_or_not),.block_exist(block_exist),.block(block),.status(status),.pos_x(pos_x),.pos_y(pos_y));
 always@(posedge clk or posedge rst)begin
     if(rst)begin
         state <= `WAIT_GAME_START;
@@ -390,6 +388,8 @@ always@(posedge clk or posedge rst)begin
         last_store_block <= 0;
         last_store_block_status <= 0;
         back_from_store_state <= 0;
+        gameover <= 0;
+        cal_bottom_en <= 0;
     end
     else begin
         state <= tmp_state;
@@ -433,6 +433,8 @@ always@(posedge clk or posedge rst)begin
         last_store_block <= tmp_last_store_block;
         last_store_block_status <= tmp_last_store_block_status; 
         back_from_store_state <= tmp_back_from_store_state;
+        gameover <= tmp_gameover;
+        cal_bottom_en <= tmp_cal_bottom_en;
     end
 end
 
@@ -480,6 +482,9 @@ always@(*)begin
 
     tmp_back_from_store_state = back_from_store_state;
 
+    tmp_gameover = gameover;
+
+    tmp_cal_bottom_en = cal_bottom_en;
     case(state)
         `WAIT_GAME_START:begin
             tmp_state = (gameStart)?`WAIT_BLOCK_EN:`WAIT_GAME_START;
@@ -520,6 +525,11 @@ always@(*)begin
 
             tmp_back_from_store_state = 0;
 
+            tmp_cal_bottom_en = 0;
+
+            if(back_from_store_state && !not_first_time_store_block)begin
+                tmp_not_first_time_store_block = 1;
+            end
             if(!(back_from_store_state&&not_first_time_store_block))begin
                 tmp_foreseeBlock1 = (generate_block)?foreseeBlock2:foreseeBlock1;
                 tmp_foreseeBlock2 = (generate_block)?foreseeBlock3:foreseeBlock2;
@@ -582,13 +592,17 @@ always@(*)begin
             tmp_state = (write_complete)?`SET_INIT_XY:`WRITE_FORESEE_BLOCK;
             tmp_start_write_foreseeBlock = 0;
         end
+        
         `SET_INIT_XY:begin
-            tmp_state = `BLOCK_DOWN;
+            tmp_state = `CHECK_GAMEOVER;
             tmp_pos_x = init_pos_x;
             tmp_pos_y = init_pos_y;
             tmp_last_pos_x = pos_x;
-            tmp_last_pos_y = pos_y;
-            tmp_start_write = 1;
+            tmp_last_pos_y = pos_y;   
+        end
+        `CHECK_GAMEOVER:begin
+            tmp_state = (gameover_or_not)?`GAMEOVER:`BLOCK_DOWN;
+            tmp_start_write = (gameover_or_not)?0:1;
         end
         `BLOCK_DOWN:begin
             if(one_pulse_BlockDown)begin
@@ -632,11 +646,12 @@ always@(*)begin
                 tmp_block_exist_exclude[color_pos4] = 0;
             end
             else if(space)begin
-                tmp_state = `WRITE_SPACE;
+                tmp_state = `CAL_BOTTOM_Y;
                 tmp_block_exist_exclude[color_pos1] = 0;
                 tmp_block_exist_exclude[color_pos2] = 0;
                 tmp_block_exist_exclude[color_pos3] = 0;
                 tmp_block_exist_exclude[color_pos4] = 0;
+                tmp_cal_bottom_en = 1;
             end
             else if(keyboard_shift)begin
                 tmp_state = (store_block_flg == 0)?`SET_START_STORE_BLOCK:`BLOCK_DOWN;
@@ -649,18 +664,25 @@ always@(*)begin
             end
         end
         `SET_START_STORE_BLOCK:begin
-            //tmp_state = `STORE_BLOCK;
-            tmp_start_store_block = 1;
+            tmp_state = `SET_START_STORE_BLOCK_TO1;
             tmp_now_writing_store_block_status = status;
             tmp_now_writing_store_block = block;
             tmp_last_store_block = now_writing_store_block;
             tmp_last_store_block_status = now_writing_store_block_status;
+        end
+        `SET_START_STORE_BLOCK_TO1:begin
+            tmp_state = `STORE_BLOCK;
+            tmp_start_store_block = 1;
         end
         `STORE_BLOCK:begin
             tmp_state = (write_complete)?`WAIT_BLOCK_EN:`STORE_BLOCK;
             tmp_start_store_block = 0;
             tmp_store_block_flg = 1;
             tmp_back_from_store_state = 1;
+        end
+        `CAL_BOTTOM_Y:begin
+            tmp_state = (finish_cal_bottom)?`WRITE_SPACE:`CAL_BOTTOM_Y;
+            tmp_cal_bottom_en = 0;
         end
         `WRITE_SPACE:begin
                 tmp_state = `SET_START_WRITE0;
@@ -675,8 +697,8 @@ always@(*)begin
             tmp_start_write = (cal_rotate_complete)?1:0;
             tmp_pos_x = (cal_rotate_complete)?rotate_addr%10:pos_x;
             tmp_pos_y = (cal_rotate_complete)?rotate_addr/10:pos_y;
-            tmp_last_pos_x = (cal_rotate_complete)?pos_x:tmp_last_pos_x;
-            tmp_last_pos_y = (cal_rotate_complete)?pos_y:tmp_last_pos_y;
+            tmp_last_pos_x = (cal_rotate_complete)?pos_x:last_pos_x;
+            tmp_last_pos_y = (cal_rotate_complete)?pos_y:last_pos_y;
             tmp_cal_rotate_en = 0;
             tmp_new_status = (cal_rotate_complete)?rotate_status:new_status;
         end
@@ -700,6 +722,10 @@ always@(*)begin
         `ERASE_STATE:begin
             tmp_state = (write_complete)?`WAIT_BLOCK_EN:`ERASE_STATE;
             tmp_start_eraseROW = 0;
+        end
+        `GAMEOVER:begin
+            tmp_state = `GAMEOVER;
+            tmp_gameover = 1;
         end
         default:begin
         end
@@ -727,6 +753,7 @@ always@(posedge clk or posedge rst)begin
         write_store_en <= 0;
         reset_store <= 0;
         erase_row_count <= 0;
+        score <= 0;
     end
     else begin
         write_state <= write_state;
@@ -749,6 +776,7 @@ always@(posedge clk or posedge rst)begin
         write_store_en <= write_store_en;
         reset_store <= reset_store;
         erase_row_count <= erase_row_count;
+        score <= score;
         case(write_state)
             WAIT_WRITE:begin
                 write_en <= 0;
@@ -907,59 +935,24 @@ always@(posedge clk or posedge rst)begin
                 block_exist[color_pos3] <= 1;
                 block_exist[color_pos4] <= 1;
             end
-            /*
-            TEST_STATE_1:begin
-                write_state <= WRITE_POS1;
-                write_en<=0;
-                change_en[color_pos1] <= 1;
-                address <= color_pos1;
-            end
-            */
             WRITE_POS1:begin
                 write_state <= WRITE_POS2;
                 write_en <= 1;
                 w_color <= block_color;
                 address <= color_pos1;
             end
-            /*
-            TEST_STATE_2:begin
-                write_state <= WRITE_POS2;
-                write_en<=0;
-                change_en[color_pos1] <= 0;
-                change_en[color_pos2] <= 1;
-                address <= color_pos2;
-            end
-            */
             WRITE_POS2:begin
                 write_state <= WRITE_POS3;
                 write_en <= 1;
                 w_color <=block_color;
                 address <= color_pos2;
             end
-            /*
-            TEST_STATE_3:begin
-                write_state <= WRITE_POS3;
-                write_en<=0;
-                change_en[color_pos2] <= 0;
-                change_en[color_pos3] <= 1;
-                address <= color_pos3;
-            end
-            */
             WRITE_POS3:begin
                 write_state <= WRITE_POS4;
                 write_en <= 1;
                 w_color <=block_color;
                 address <= color_pos3;
             end
-            /*
-            TEST_STATE_4:begin
-                write_state <= WRITE_POS4;
-                write_en<=0;
-                change_en[color_pos3] <= 0;
-                change_en[color_pos4] <= 1;
-                address <= color_pos4;
-            end
-            */
             WRITE_POS4:begin
                 write_state <= WRITE_COMPLETE;
                 write_en <= 1;
@@ -967,75 +960,26 @@ always@(posedge clk or posedge rst)begin
                 address <= color_pos4;
             end
             WRITE_COMPLETE:begin
-                //change_en[color_pos4] <= 0;
                 write_state <= WAIT_WRITE;
                 write_en <= 0;
                 write_complete<=1;
             end
-            /*
-            ERASE_ROW1:begin
-                write_state <= ERASE_ROW2;
-                if(er1!=25)begin
-                    block_exist[p0] <= 0;
-                    block_exist[p1] <= 0;
-                    block_exist[p2] <= 0;
-                    block_exist[p3] <= 0;
-                    block_exist[p4] <= 0;
-                    block_exist[p5] <= 0;
-                    block_exist[p6] <= 0;
-                    block_exist[p7] <= 0;
-                    block_exist[p8] <= 0;
-                    block_exist[p9] <= 0;
-                end
-            end
-            ERASE_ROW2:begin
-                write_state <= ERASE_ROW3;
-                if(er2!=25)begin
-                    block_exist[p10] <= 0;
-                    block_exist[p11] <= 0;
-                    block_exist[p12] <= 0;
-                    block_exist[p13] <= 0;
-                    block_exist[p14] <= 0;
-                    block_exist[p15] <= 0;
-                    block_exist[p16] <= 0;
-                    block_exist[p17] <= 0;
-                    block_exist[p18] <= 0;
-                    block_exist[p19] <= 0;
-                end
-            end
-            ERASE_ROW3:begin
-                write_state <= ERASE_ROW4;
-                if(er3!=25)begin
-                    block_exist[p20] <= 0;
-                    block_exist[p21] <= 0;
-                    block_exist[p22] <= 0;
-                    block_exist[p23] <= 0;
-                    block_exist[p24] <= 0;
-                    block_exist[p25] <= 0;
-                    block_exist[p26] <= 0;
-                    block_exist[p27] <= 0;
-                    block_exist[p28] <= 0;
-                    block_exist[p29] <= 0;
-                end
-            end
-            ERASE_ROW4:begin
-                write_state <= SETTING_READ_ADDRESS;
-                if(er4!=25)begin
-                    block_exist[p30] <= 0;
-                    block_exist[p31] <= 0;
-                    block_exist[p32] <= 0;
-                    block_exist[p33] <= 0;
-                    block_exist[p34] <= 0;
-                    block_exist[p35] <= 0;
-                    block_exist[p36] <= 0;
-                    block_exist[p37] <= 0;
-                    block_exist[p38] <= 0;
-                    block_exist[p39] <= 0;
-                end
-            end
-            */
             ERASE_ROW1:begin
                 write_state <= (erase_row_count == 5000000)?ERASE_ROW2:ERASE_ROW1;
+                if(erase_row_count == 1)begin   
+                    if(er1!=25)begin
+                        score <= score+1;
+                        if(er2!=25)begin
+                            score <= score+2;
+                            if(er3!=25)begin
+                                score <= score+3;
+                                if(er4!=25)begin
+                                    score <= score+4;
+                                end
+                            end
+                        end
+                    end
+                end
                 if(er1!=25)begin
                     block_exist[p4] <= 0;
                     block_exist[p5] <= 0;
@@ -1167,799 +1111,45 @@ always@(posedge clk or posedge rst)begin
 end
 endmodule
 
-module rotate(cal_rotate_complete,final_addr,final_status,block,status,left_OR_right,block_exist,clk,rst,pos_x,pos_y,cal_rotate_en);
-output reg[7:0] final_addr;
-output reg[1:0]final_status;
-output reg cal_rotate_complete;
-input [2:0]block;
-input [1:0]status;
-input left_OR_right;
+module determine_gameover(gameover_or_not,block_exist,block,status,pos_x,pos_y);
 input [239:0]block_exist;
-input clk;
-input rst;
-input [4:0]pos_x;
-input [4:0]pos_y;
-input cal_rotate_en;
-reg tmp_cal_rotate_complete;
-reg [7:0] tmp_final_addr;
-reg [1:0] tmp_final_status;
-
-wire[7:0]point1,point2,point3,point4;
-
-reg [5:0] state;
-reg [5:0] tmp_state;
-parameter [5:0] INIT = 6'b000000;
-parameter [5:0] CHECK_OFFSET_JLSTZ_1 = 6'b000001;
-parameter [5:0] CHECK_OFFSET_JLSTZ_2 = 6'b000010;
-parameter [5:0] CHECK_OFFSET_JLSTZ_3 = 6'b000011;
-parameter [5:0] CHECK_OFFSET_JLSTZ_4 = 6'b000100;
-parameter [5:0] CHECK_OFFSET_JLSTZ_5 = 6'b000101;
-parameter [5:0] CHECK_OFFSET_I_1 = 6'b000110;
-parameter [5:0] CHECK_OFFSET_I_2 = 6'b000111;
-parameter [5:0] CHECK_OFFSET_I_3 = 6'b001000;
-parameter [5:0] CHECK_OFFSET_I_4 = 6'b001001;
-parameter [5:0] CHECK_OFFSET_I_5 = 6'b001010;
-parameter [5:0] CHECK_OFFSET_O_1 = 6'b001011;
-parameter [5:0] COMPLETE_SUCCESS = 6'b001100;
-
-parameter [5:0] SET_OFFSET_JLSTZ_1 = 6'b001101;
-parameter [5:0] SET_OFFSET_JLSTZ_2 = 6'b001110;
-parameter [5:0] SET_OFFSET_JLSTZ_3 = 6'b001111;
-parameter [5:0] SET_OFFSET_JLSTZ_4 = 6'b010000;
-parameter [5:0] SET_OFFSET_JLSTZ_5 = 6'b010001;
-parameter [5:0] COMPLETE_FAIL = 6'b010010;
-
-parameter [5:0] SET_OFFSET_I_1 = 6'b010011;
-parameter [5:0] SET_OFFSET_I_2 = 6'b010100;
-parameter [5:0] SET_OFFSET_I_3 = 6'b010101;
-parameter [5:0] SET_OFFSET_I_4 = 6'b010110;
-parameter [5:0] SET_OFFSET_I_5 = 6'b010111;
-
-parameter [5:0] SET_OFFSET_O_1 = 6'b011000;
-
-
-wire [11:0] w_color; // redundant
-reg [4:0]check_pos_x,tmp_check_pos_x;
-reg [4:0]check_pos_y,tmp_check_pos_y;
-reg signed[5:0]signed_check_pos_x,tmp_signed_check_pos_x;
-reg signed[5:0]signed_check_pos_y,tmp_signed_check_pos_y;
-reg [1:0]check_status;
-
-reg [4:0]offset_data_x_1,offset_data_x_2,offset_data_x_3,offset_data_x_4,offset_data_x_5;
-reg [4:0]offset_data_y_1,offset_data_y_2,offset_data_y_3,offset_data_y_4,offset_data_y_5;
-
-wire exceed;
-always@(*)begin
-    if(block == `BLOCK_I)begin
-        case(status)
-            `BLOCK_STATUS_0:begin
-                check_status = (left_OR_right)?`BLOCK_STATUS_R:`BLOCK_STATUS_L; //1 is right
-                if(left_OR_right)begin
-                    offset_data_x_1 =  0;offset_data_x_2 = -2;offset_data_x_3 =  1;offset_data_x_4 = -2;offset_data_x_5 =  1;
-                    offset_data_y_1 =  0;offset_data_y_2 =  0;offset_data_y_3 =  0;offset_data_y_4 = -1;offset_data_y_5 =  2;
-                end
-                else begin
-                    offset_data_x_1 =  0;offset_data_x_2 =  2;offset_data_x_3 = -1;offset_data_x_4 =  2;offset_data_x_5 = -1;
-                    offset_data_y_1 =  0;offset_data_y_2 =  0;offset_data_y_3 =  0;offset_data_y_4 =  1;offset_data_y_5 = -2;
-                end
-            end
-            `BLOCK_STATUS_R:begin
-                check_status = (left_OR_right)?`BLOCK_STATUS_2:`BLOCK_STATUS_0;
-                if(left_OR_right)begin
-                    offset_data_x_1 =  0;offset_data_x_2 = -1;offset_data_x_3 =  2;offset_data_x_4 = -1;offset_data_x_5 =  2;
-                    offset_data_y_1 =  0;offset_data_y_2 =  0;offset_data_y_3 =  0;offset_data_y_4 =  2;offset_data_y_5 = -1;
-                end
-                else begin
-                    offset_data_x_1 =  0;offset_data_x_2 =  1;offset_data_x_3 = -2;offset_data_x_4 =  1;offset_data_x_5 = -2;
-                    offset_data_y_1 =  0;offset_data_y_2 =  0;offset_data_y_3 =  0;offset_data_y_4 = -2;offset_data_y_5 =  1;
-                end
-            end
-            `BLOCK_STATUS_2:begin
-                check_status = (left_OR_right)?`BLOCK_STATUS_L:`BLOCK_STATUS_R;
-                if(left_OR_right)begin
-                    offset_data_x_1 =  0;offset_data_x_2 =  2;offset_data_x_3 = -1;offset_data_x_4 =  2;offset_data_x_5 = -1;
-                    offset_data_y_1 =  0;offset_data_y_2 =  0;offset_data_y_3 =  0;offset_data_y_4 =  1;offset_data_y_5 = -2;
-                end
-                else begin
-                    offset_data_x_1 =  0;offset_data_x_2 = -2;offset_data_x_3 =  1;offset_data_x_4 = -2;offset_data_x_5 =  1;
-                    offset_data_y_1 =  0;offset_data_y_2 =  0;offset_data_y_3 =  0;offset_data_y_4 = -1;offset_data_y_5 =  2;
-                end
-            end
-            `BLOCK_STATUS_L:begin
-                check_status = (left_OR_right)?`BLOCK_STATUS_0:`BLOCK_STATUS_2;
-                if(left_OR_right)begin
-                    offset_data_x_1 =  0;offset_data_x_2 =  1;offset_data_x_3 = -2;offset_data_x_4 =  1;offset_data_x_5 = -2;
-                    offset_data_y_1 =  0;offset_data_y_2 =  0;offset_data_y_3 =  0;offset_data_y_4 = -2;offset_data_y_5 =  1;
-                end
-                else begin
-                    offset_data_x_1 =  0;offset_data_x_2 = -1;offset_data_x_3 =  2;offset_data_x_4 = -1;offset_data_x_5 =  2;
-                    offset_data_y_1 =  0;offset_data_y_2 =  0;offset_data_y_3 =  0;offset_data_y_4 =  2;offset_data_y_5 = -1;
-                end
-            end
-            default:begin
-            end
-        endcase
-    end
-    else if (block == `BLOCK_O)begin
-        case(status)
-            `BLOCK_STATUS_0:begin
-                check_status = (left_OR_right)?`BLOCK_STATUS_R:`BLOCK_STATUS_L; //1 is right
-                if(left_OR_right)begin
-                    offset_data_x_1 =  0;
-                    offset_data_y_1 =  1;
-                end
-                else begin
-                    offset_data_x_1 =  0;
-                    offset_data_y_1 = -1;
-                end
-            end
-            `BLOCK_STATUS_R:begin
-                check_status = (left_OR_right)?`BLOCK_STATUS_2:`BLOCK_STATUS_0;
-                if(left_OR_right)begin
-                    offset_data_x_1 =  1;
-                    offset_data_y_1 =  0;
-                end
-                else begin
-                    offset_data_x_1 = -1;
-                    offset_data_y_1 =  0;
-                end
-            end
-            `BLOCK_STATUS_2:begin
-                check_status = (left_OR_right)?`BLOCK_STATUS_L:`BLOCK_STATUS_R;
-                if(left_OR_right)begin
-                    offset_data_x_1 =  0;
-                    offset_data_y_1 = -1;
-                end
-                else begin
-                    offset_data_x_1 =  0;
-                    offset_data_y_1 =  1;
-                end
-            end
-            `BLOCK_STATUS_L:begin
-                check_status = (left_OR_right)?`BLOCK_STATUS_0:`BLOCK_STATUS_2;
-                if(left_OR_right)begin
-                    offset_data_x_1 = -1;
-                    offset_data_y_1 =  0;
-                end
-                else begin
-                    offset_data_x_1 =  1;
-                    offset_data_y_1 =  0;
-                end
-            end
-            default:begin
-            end
-        endcase
-    end
-    else begin
-        case(status)
-            `BLOCK_STATUS_0:begin
-                check_status = (left_OR_right)?`BLOCK_STATUS_R:`BLOCK_STATUS_L; //1 is right
-                if(left_OR_right)begin
-                    offset_data_x_1 =  0;offset_data_x_2 = -1;offset_data_x_3 = -1;offset_data_x_4 =  0;offset_data_x_5 = -1;
-                    offset_data_y_1 =  0;offset_data_y_2 =  0;offset_data_y_3 =  1;offset_data_y_4 = -2;offset_data_y_5 = -2;
-                end
-                else begin
-                    offset_data_x_1 =  0;offset_data_x_2 =  1;offset_data_x_3 =  1;offset_data_x_4 =  0;offset_data_x_5 =  1;
-                    offset_data_y_1 =  0;offset_data_y_2 =  0;offset_data_y_3 = -1;offset_data_y_4 =  2;offset_data_y_5 =  2;
-                end
-            end
-            `BLOCK_STATUS_R:begin
-                check_status = (left_OR_right)?`BLOCK_STATUS_2:`BLOCK_STATUS_0;
-                if(left_OR_right)begin
-                    offset_data_x_1 =  0;offset_data_x_2 =  1;offset_data_x_3 =  1;offset_data_x_4 =  0;offset_data_x_5 =  1;
-                    offset_data_y_1 =  0;offset_data_y_2 =  0;offset_data_y_3 = -1;offset_data_y_4 =  2;offset_data_y_5 =  2;
-                end
-                else begin
-                    offset_data_x_1 =  0;offset_data_x_2 = -1;offset_data_x_3 = -1;offset_data_x_4 =  0;offset_data_x_5 = -1;
-                    offset_data_y_1 =  0;offset_data_y_2 =  0;offset_data_y_3 =  1;offset_data_y_4 = -2;offset_data_y_5 = -2;
-                end
-            end
-            `BLOCK_STATUS_2:begin
-                check_status = (left_OR_right)?`BLOCK_STATUS_L:`BLOCK_STATUS_R;
-                if(left_OR_right)begin
-                    offset_data_x_1 =  0;offset_data_x_2 =  1;offset_data_x_3 =  1;offset_data_x_4 =  0;offset_data_x_5 =  1;
-                    offset_data_y_1 =  0;offset_data_y_2 =  0;offset_data_y_3 =  1;offset_data_y_4 = -2;offset_data_y_5 = -2;
-                end
-                else begin
-                    offset_data_x_1 =  0;offset_data_x_2 = -1;offset_data_x_3 = -1;offset_data_x_4 =  0;offset_data_x_5 = -1;
-                    offset_data_y_1 =  0;offset_data_y_2 =  0;offset_data_y_3 = -1;offset_data_y_4 =  2;offset_data_y_5 =  2;
-                end
-            end
-            `BLOCK_STATUS_L:begin
-                check_status = (left_OR_right)?`BLOCK_STATUS_0:`BLOCK_STATUS_2;
-                if(left_OR_right)begin
-                    offset_data_x_1 =  0;offset_data_x_2 = -1;offset_data_x_3 = -1;offset_data_x_4 =  0;offset_data_x_5 = -1;
-                    offset_data_y_1 =  0;offset_data_y_2 =  0;offset_data_y_3 = -1;offset_data_y_4 =  2;offset_data_y_5 =  2;
-                end
-                else begin
-                    offset_data_x_1 =  0;offset_data_x_2 =  1;offset_data_x_3 =  1;offset_data_x_4 =  0;offset_data_x_5 =  1;
-                    offset_data_y_1 =  0;offset_data_y_2 =  0;offset_data_y_3 =  1;offset_data_y_4 = -2;offset_data_y_5 = -2;
-                end
-            end
-            default:begin
-            end
-        endcase
-    end
-end
-wire [4:0] init_pos_x,init_pos_y;
-shape s(.init_pos_x(init_pos_x),.init_pos_y(init_pos_y),.exceed(exceed),.w_color(w_color),.color_pos1(point1),.color_pos2(point2),.color_pos3(point3),.color_pos4(point4),.block(block),.status(check_status),.pos_x(check_pos_x),.pos_y(check_pos_y));
-
-always@(posedge clk or posedge rst)begin
-    if(rst)begin
-        final_addr <= 0;
-        final_status <= 0;
-        state <= INIT;
-        check_pos_x <= 0;
-        check_pos_y <= 0;
-        cal_rotate_complete <=0;
-        signed_check_pos_x <= 0;
-        signed_check_pos_y <=0;
-    end
-    else begin
-        final_addr <= tmp_final_addr;
-        final_status <= tmp_final_status;
-        state <= tmp_state;
-        check_pos_x <= tmp_check_pos_x;
-        check_pos_y <= tmp_check_pos_y;
-        cal_rotate_complete <= tmp_cal_rotate_complete;
-        signed_check_pos_x <= tmp_signed_check_pos_x;
-        signed_check_pos_y <= tmp_signed_check_pos_y;
-    end
-end
-always@(*)begin
-    tmp_final_addr = final_addr;
-    tmp_final_status = final_status;
-    tmp_state = state;
-    tmp_check_pos_x = check_pos_x;
-    tmp_check_pos_y = check_pos_y;
-    tmp_cal_rotate_complete = cal_rotate_complete;
-    tmp_signed_check_pos_x = signed_check_pos_x;
-    tmp_signed_check_pos_y = signed_check_pos_y;
-    case(state)
-        INIT:begin
-            tmp_final_status = (cal_rotate_en)?0:final_status;
-            tmp_final_addr = (cal_rotate_en)? 0 :final_addr;
-            tmp_cal_rotate_complete = 0;
-            if(cal_rotate_en)begin
-                if(block == `BLOCK_I)begin
-                    tmp_state = SET_OFFSET_I_1;
-                end
-                else if (block == `BLOCK_O)begin
-                    tmp_state = SET_OFFSET_O_1;
-                end
-                else begin
-                    tmp_state = SET_OFFSET_JLSTZ_1;
-                end
-            end
-        end
-        SET_OFFSET_JLSTZ_1:begin
-            tmp_state = CHECK_OFFSET_JLSTZ_1;
-            tmp_check_pos_x = pos_x + offset_data_x_1;
-            tmp_check_pos_y = pos_y + offset_data_y_1;
-            tmp_signed_check_pos_x = pos_x + offset_data_x_1;
-            tmp_signed_check_pos_y = pos_y + offset_data_y_1;
-        end
-        CHECK_OFFSET_JLSTZ_1:begin
-            //if((pos_x+offset_data_x_1)<0 ||(pos_x+offset_data_x_1)>9||(pos_y+offset_data_y_1)<0||exceed == 1)begin
-            if(signed_check_pos_x<0 ||signed_check_pos_x>9||signed_check_pos_y<0||exceed == 1)begin
-                tmp_state = SET_OFFSET_JLSTZ_2;
-            end
-            else begin
-                if(block_exist[point1] == 0 && block_exist[point2] == 0 && block_exist[point3] == 0 && block_exist[point4] == 0)begin
-                    tmp_state = COMPLETE_SUCCESS;
-                end
-                else begin
-                    tmp_state = SET_OFFSET_JLSTZ_2;
-                end
-            end
-        end
-
-        SET_OFFSET_JLSTZ_2:begin
-            tmp_state = CHECK_OFFSET_JLSTZ_2;
-            tmp_check_pos_x = pos_x + offset_data_x_2;
-            tmp_check_pos_y = pos_y + offset_data_y_2;
-            tmp_signed_check_pos_x = pos_x + offset_data_x_1;
-            tmp_signed_check_pos_y = pos_y + offset_data_y_1;
-        end
-        CHECK_OFFSET_JLSTZ_2:begin
-            //if((pos_x+offset_data_x_2)<0 ||(pos_x+offset_data_x_2)>9||(pos_y+offset_data_y_2)<0||exceed == 1)begin
-            if(signed_check_pos_x<0 ||signed_check_pos_x>9||signed_check_pos_y<0||exceed == 1)begin
-                tmp_state = SET_OFFSET_JLSTZ_3;
-            end
-            else begin
-                if(block_exist[point1] == 0 && block_exist[point2] == 0 && block_exist[point3] == 0 && block_exist[point4] == 0)begin
-                    tmp_state = COMPLETE_SUCCESS;
-                end
-                else begin
-                    tmp_state = SET_OFFSET_JLSTZ_3;
-                end
-            end
-        end
-
-        SET_OFFSET_JLSTZ_3:begin
-            tmp_state = CHECK_OFFSET_JLSTZ_3;
-            tmp_check_pos_x = pos_x + offset_data_x_3;
-            tmp_check_pos_y = pos_y + offset_data_y_3;
-            tmp_signed_check_pos_x = pos_x + offset_data_x_1;
-            tmp_signed_check_pos_y = pos_y + offset_data_y_1;
-        end
-        CHECK_OFFSET_JLSTZ_3:begin
-            //if((pos_x+offset_data_x_3)<0 ||(pos_x+offset_data_x_3)>9||(pos_y+offset_data_y_3)<0||exceed == 1)begin
-            if(signed_check_pos_x<0 ||signed_check_pos_x>9||signed_check_pos_y<0||exceed == 1)begin
-                tmp_state = SET_OFFSET_JLSTZ_4;
-            end
-            else begin
-                if(block_exist[point1] == 0 && block_exist[point2] == 0 && block_exist[point3] == 0 && block_exist[point4] == 0)begin
-                    tmp_state = COMPLETE_SUCCESS;
-                end
-                else begin
-                    tmp_state = SET_OFFSET_JLSTZ_4;
-                end
-            end
-        end
-
-        SET_OFFSET_JLSTZ_4:begin
-            tmp_state = CHECK_OFFSET_JLSTZ_4;
-            tmp_check_pos_x = pos_x + offset_data_x_4;
-            tmp_check_pos_y = pos_y + offset_data_y_4;
-            tmp_signed_check_pos_x = pos_x + offset_data_x_1;
-            tmp_signed_check_pos_y = pos_y + offset_data_y_1;
-        end
-        CHECK_OFFSET_JLSTZ_4:begin
-            //if((pos_x+offset_data_x_4)<0 ||(pos_x+offset_data_x_4)>9||(pos_y+offset_data_y_4)<0||exceed == 1)begin
-            if(signed_check_pos_x<0 ||signed_check_pos_x>9||signed_check_pos_y<0||exceed == 1)begin
-                tmp_state = SET_OFFSET_JLSTZ_5;
-            end
-            else begin
-                if(block_exist[point1] == 0 && block_exist[point2] == 0 && block_exist[point3] == 0 && block_exist[point4] == 0)begin
-                    tmp_state = COMPLETE_SUCCESS;
-                end
-                else begin
-                    tmp_state = SET_OFFSET_JLSTZ_5;
-                end
-            end
-        end
-
-        SET_OFFSET_JLSTZ_5:begin
-            tmp_state = CHECK_OFFSET_JLSTZ_5;
-            tmp_check_pos_x = pos_x + offset_data_x_5;
-            tmp_check_pos_y = pos_y + offset_data_y_5;
-            tmp_signed_check_pos_x = pos_x + offset_data_x_1;
-            tmp_signed_check_pos_y = pos_y + offset_data_y_1;
-        end
-        CHECK_OFFSET_JLSTZ_5:begin
-            //if((pos_x+offset_data_x_5)<0 ||(pos_x+offset_data_x_5)>9||(pos_y+offset_data_y_5)<0||exceed == 1)begin
-            if(signed_check_pos_x<0 ||signed_check_pos_x>9||signed_check_pos_y<0||exceed == 1)begin
-                tmp_state = COMPLETE_FAIL;
-            end
-            else begin
-                if(block_exist[point1] == 0 && block_exist[point2] == 0 && block_exist[point3] == 0 && block_exist[point4] == 0)begin
-                    tmp_state = COMPLETE_SUCCESS;
-                end
-                else begin
-                    tmp_state = COMPLETE_FAIL;
-                end
-            end
-        end
-
-        SET_OFFSET_I_1:begin
-            tmp_state = CHECK_OFFSET_I_1;
-            tmp_check_pos_x = pos_x + offset_data_x_1;
-            tmp_check_pos_y = pos_y + offset_data_y_1;
-            tmp_signed_check_pos_x = pos_x + offset_data_x_1;
-            tmp_signed_check_pos_y = pos_y + offset_data_y_1;
-        end
-        CHECK_OFFSET_I_1:begin
-            //if((pos_x+offset_data_x_1)<0 ||(pos_x+offset_data_x_1)>9||(pos_y+offset_data_y_1)<0||exceed == 1)begin
-            if(signed_check_pos_x<0 ||signed_check_pos_x>9||signed_check_pos_y<0||exceed == 1)begin
-                tmp_state = SET_OFFSET_I_2;
-            end
-            else begin
-                if(block_exist[point1] == 0 && block_exist[point2] == 0 && block_exist[point3] == 0 && block_exist[point4] == 0)begin
-                    tmp_state = COMPLETE_SUCCESS;
-                end
-                else begin
-                    tmp_state = SET_OFFSET_I_2;
-                end
-            end
-        end
-
-        SET_OFFSET_I_2:begin
-            tmp_state = CHECK_OFFSET_I_2;
-            tmp_check_pos_x = pos_x + offset_data_x_2;
-            tmp_check_pos_y = pos_y + offset_data_y_2;
-            tmp_signed_check_pos_x = pos_x + offset_data_x_1;
-            tmp_signed_check_pos_y = pos_y + offset_data_y_1;
-        end
-        CHECK_OFFSET_I_2:begin
-            //if((pos_x+offset_data_x_2)<0 ||(pos_x+offset_data_x_2)>9||(pos_y+offset_data_y_2)<0||exceed == 1)begin
-            if(signed_check_pos_x<0 ||signed_check_pos_x>9||signed_check_pos_y<0||exceed == 1)begin
-                tmp_state = SET_OFFSET_I_3;
-            end
-            else begin
-                if(block_exist[point1] == 0 && block_exist[point2] == 0 && block_exist[point3] == 0 && block_exist[point4] == 0)begin
-                    tmp_state = COMPLETE_SUCCESS;
-                end
-                else begin
-                    tmp_state = SET_OFFSET_I_3;
-                end
-            end
-        end
-
-        SET_OFFSET_I_3:begin
-            tmp_state = CHECK_OFFSET_I_3;
-            tmp_check_pos_x = pos_x + offset_data_x_3;
-            tmp_check_pos_y = pos_y + offset_data_y_3;
-            tmp_signed_check_pos_x = pos_x + offset_data_x_1;
-            tmp_signed_check_pos_y = pos_y + offset_data_y_1;
-        end
-        CHECK_OFFSET_I_3:begin
-            //if((pos_x+offset_data_x_3)<0 ||(pos_x+offset_data_x_3)>9||(pos_y+offset_data_y_3)<0||exceed == 1)begin
-            if(signed_check_pos_x<0 ||signed_check_pos_x>9||signed_check_pos_y<0||exceed == 1)begin
-                tmp_state = SET_OFFSET_I_4;
-            end
-            else begin
-                if(block_exist[point1] == 0 && block_exist[point2] == 0 && block_exist[point3] == 0 && block_exist[point4] == 0)begin
-                    tmp_state = COMPLETE_SUCCESS;
-                end
-                else begin
-                    tmp_state = SET_OFFSET_I_4;
-                end
-            end
-        end
-
-        SET_OFFSET_I_4:begin
-            tmp_state = CHECK_OFFSET_I_4;
-            tmp_check_pos_x = pos_x + offset_data_x_4;
-            tmp_check_pos_y = pos_y + offset_data_y_4;
-            tmp_signed_check_pos_x = pos_x + offset_data_x_1;
-            tmp_signed_check_pos_y = pos_y + offset_data_y_1;
-        end
-        CHECK_OFFSET_I_4:begin
-            //if((pos_x+offset_data_x_4)<0 ||(pos_x+offset_data_x_4)>9||(pos_y+offset_data_y_4)<0||exceed == 1)begin
-            if(signed_check_pos_x<0 ||signed_check_pos_x>9||signed_check_pos_y<0||exceed == 1)begin
-                tmp_state = SET_OFFSET_I_5;
-            end
-            else begin
-                if(block_exist[point1] == 0 && block_exist[point2] == 0 && block_exist[point3] == 0 && block_exist[point4] == 0)begin
-                    tmp_state = COMPLETE_SUCCESS;
-                end
-                else begin
-                    tmp_state = SET_OFFSET_I_5;
-                end
-            end
-        end
-
-        SET_OFFSET_I_5:begin
-            tmp_state = CHECK_OFFSET_I_5;
-            tmp_check_pos_x = pos_x + offset_data_x_5;
-            tmp_check_pos_y = pos_y + offset_data_y_5;
-            tmp_signed_check_pos_x = pos_x + offset_data_x_1;
-            tmp_signed_check_pos_y = pos_y + offset_data_y_1;
-        end
-        CHECK_OFFSET_I_5:begin
-            //if((pos_x+offset_data_x_5)<0 ||(pos_x+offset_data_x_5)>9||(pos_y+offset_data_y_5)<0||exceed == 1)begin
-            if(signed_check_pos_x<0 ||signed_check_pos_x>9||signed_check_pos_y<0||exceed == 1)begin
-                tmp_state = COMPLETE_FAIL;
-            end
-            else begin
-                if(block_exist[point1] == 0 && block_exist[point2] == 0 && block_exist[point3] == 0 && block_exist[point4] == 0)begin
-                    tmp_state = COMPLETE_SUCCESS;
-                end
-                else begin
-                    tmp_state = COMPLETE_FAIL;
-                end
-            end
-        end
-
-        SET_OFFSET_O_1:begin
-            tmp_state = CHECK_OFFSET_O_1;
-            tmp_check_pos_x = pos_x + offset_data_x_1;
-            tmp_check_pos_y = pos_y + offset_data_y_1;
-            tmp_signed_check_pos_x = pos_x + offset_data_x_1;
-            tmp_signed_check_pos_y = pos_y + offset_data_y_1;
-        end
-        CHECK_OFFSET_O_1:begin
-            //if((pos_x+offset_data_x_1)<0 ||(pos_x+offset_data_x_1)>9||(pos_y+offset_data_y_1)<0||exceed == 1)begin
-            if(signed_check_pos_x<0 ||signed_check_pos_x>9||signed_check_pos_y<0||exceed == 1)begin
-                tmp_state = COMPLETE_FAIL;
-            end
-            else begin
-                if(block_exist[point1] == 0 && block_exist[point2] == 0 && block_exist[point3] == 0 && block_exist[point4] == 0)begin
-                    tmp_state = COMPLETE_SUCCESS;
-                end
-                else begin
-                    tmp_state = COMPLETE_FAIL;
-                end
-            end
-        end
-        COMPLETE_SUCCESS:begin
-            tmp_state = INIT;
-            tmp_final_addr = check_pos_x + check_pos_y*10;
-            tmp_final_status = check_status;
-            tmp_cal_rotate_complete = 1;
-        end
-        COMPLETE_FAIL:begin
-            tmp_state = INIT;
-            tmp_final_addr = pos_x + pos_y*10;
-            tmp_final_status = status;
-            tmp_cal_rotate_complete = 1;
-        end
-        default:begin
-            
-        end 
-    endcase
-end
-endmodule
-
-module PRESS_SPACE_POS(bottom_y,block,status,pos_x,pos_y,block_exist);
-input [239:0] block_exist;
 input [2:0]block;
 input [1:0]status;
-input [4:0]pos_x;
-input [4:0]pos_y;
-output [4:0]bottom_y;
+output gameover_or_not;
+input [4:0] pos_y,pos_x;
 
-wire l_en1,l_en2,l_en3,l_en4,l_en5,l_en6,l_en7,l_en8,l_en9,l_en10,l_en11,l_en12,l_en13,l_en14,l_en15,l_en16,l_en17,l_en18,l_en19,l_en20;
-wire r_en1,r_en2,r_en3,r_en4,r_en5,r_en6,r_en7,r_en8,r_en9,r_en10,r_en11,r_en12,r_en13,r_en14,r_en15,r_en16,r_en17,r_en18,r_en19,r_en20;
-wire d_en1,d_en2,d_en3,d_en4,d_en5,d_en6,d_en7,d_en8,d_en9,d_en10,d_en11,d_en12,d_en13,d_en14,d_en15,d_en16,d_en17,d_en18,d_en19,d_en20;
+wire [4:0]init_x,init_y;
+wire exceed;
+wire [11:0]color;
+wire [7:0] pos1,pos2,pos3,pos4;
 
-judgeIFContinueShift j1(.left_en(l_en1),.right_en(r_en1),.down_en(d_en1),.block(block),.status(status),.pos_x(pos_x),.pos_y(0),.block_exist(block_exist));
-judgeIFContinueShift j2(.left_en(l_en2),.right_en(r_en2),.down_en(d_en2),.block(block),.status(status),.pos_x(pos_x),.pos_y(1),.block_exist(block_exist));
-judgeIFContinueShift j3(.left_en(l_en3),.right_en(r_en3),.down_en(d_en3),.block(block),.status(status),.pos_x(pos_x),.pos_y(2),.block_exist(block_exist));
-judgeIFContinueShift j4(.left_en(l_en4),.right_en(r_en4),.down_en(d_en4),.block(block),.status(status),.pos_x(pos_x),.pos_y(3),.block_exist(block_exist));
-judgeIFContinueShift j5(.left_en(l_en5),.right_en(r_en5),.down_en(d_en5),.block(block),.status(status),.pos_x(pos_x),.pos_y(4),.block_exist(block_exist));
-judgeIFContinueShift j6(.left_en(l_en6),.right_en(r_en6),.down_en(d_en6),.block(block),.status(status),.pos_x(pos_x),.pos_y(5),.block_exist(block_exist));
-judgeIFContinueShift j7(.left_en(l_en7),.right_en(r_en7),.down_en(d_en7),.block(block),.status(status),.pos_x(pos_x),.pos_y(6),.block_exist(block_exist));
-judgeIFContinueShift j8(.left_en(l_en8),.right_en(r_en8),.down_en(d_en8),.block(block),.status(status),.pos_x(pos_x),.pos_y(7),.block_exist(block_exist));
-judgeIFContinueShift j9(.left_en(l_en9),.right_en(r_en9),.down_en(d_en9),.block(block),.status(status),.pos_x(pos_x),.pos_y(8),.block_exist(block_exist));
-judgeIFContinueShift j10(.left_en(l_en10),.right_en(r_en10),.down_en(d_en10),.block(block),.status(status),.pos_x(pos_x),.pos_y(9),.block_exist(block_exist));
-judgeIFContinueShift j11(.left_en(l_en11),.right_en(r_en11),.down_en(d_en11),.block(block),.status(status),.pos_x(pos_x),.pos_y(10),.block_exist(block_exist));
-judgeIFContinueShift j12(.left_en(l_en12),.right_en(r_en12),.down_en(d_en12),.block(block),.status(status),.pos_x(pos_x),.pos_y(11),.block_exist(block_exist));
-judgeIFContinueShift j13(.left_en(l_en13),.right_en(r_en13),.down_en(d_en13),.block(block),.status(status),.pos_x(pos_x),.pos_y(12),.block_exist(block_exist));
-judgeIFContinueShift j14(.left_en(l_en14),.right_en(r_en14),.down_en(d_en14),.block(block),.status(status),.pos_x(pos_x),.pos_y(13),.block_exist(block_exist));
-judgeIFContinueShift j15(.left_en(l_en15),.right_en(r_en15),.down_en(d_en15),.block(block),.status(status),.pos_x(pos_x),.pos_y(14),.block_exist(block_exist));
-judgeIFContinueShift j16(.left_en(l_en16),.right_en(r_en16),.down_en(d_en16),.block(block),.status(status),.pos_x(pos_x),.pos_y(15),.block_exist(block_exist));
-judgeIFContinueShift j17(.left_en(l_en17),.right_en(r_en17),.down_en(d_en17),.block(block),.status(status),.pos_x(pos_x),.pos_y(16),.block_exist(block_exist));
-judgeIFContinueShift j18(.left_en(l_en18),.right_en(r_en18),.down_en(d_en18),.block(block),.status(status),.pos_x(pos_x),.pos_y(17),.block_exist(block_exist));
-judgeIFContinueShift j19(.left_en(l_en19),.right_en(r_en19),.down_en(d_en19),.block(block),.status(status),.pos_x(pos_x),.pos_y(18),.block_exist(block_exist));
-judgeIFContinueShift j20(.left_en(l_en20),.right_en(r_en20),.down_en(d_en20),.block(block),.status(status),.pos_x(pos_x),.pos_y(19),.block_exist(block_exist));
+reg block_overlapping;
+reg block_exceed_upper_bound;
 
-assign bottom_y = (d_en20==0)?19:
-                  (d_en19==0)?18:
-                  (d_en18==0)?17:
-                  (d_en17==0)?16:
-                  (d_en16==0)?15:
-                  (d_en15==0)?14:
-                  (d_en14==0)?13:
-                  (d_en13==0)?12:
-                  (d_en12==0)?11:
-                  (d_en11==0)?10:
-                  (d_en10==0)?9:
-                  (d_en9==0)?8:
-                  (d_en8==0)?7:
-                  (d_en7==0)?6:
-                  (d_en6==0)?5:
-                  (d_en5==0)?4:
-                  (d_en4==0)?3:
-                  (d_en3==0)?2:
-                  (d_en2==0)?1:
-                  (d_en1==0)?0:0;
-endmodule
+shape go (.init_pos_x(init_x),.init_pos_y(init_y),.exceed(exceed),.w_color(color),
+          .color_pos1(pos1),.color_pos2(pos2),.color_pos3(pos3),.color_pos4(pos4),
+          .block(block),.status(status),.pos_x(pos_x),.pos_y(pos_y));
 
-module shape_for_foresee (w_color,color_pos1,color_pos2,color_pos3,color_pos4,block,status,pos_x,pos_y);
-input [2:0] block;
-input [1:0] status;
-input [4:0] pos_x;
-input [4:0] pos_y;
-output reg [11:0] w_color;
-output reg[7:0] color_pos1,color_pos2,color_pos3,color_pos4;
 always@(*)begin
-    case(block)
-        `BLOCK_J:begin
-            w_color = `COLOR_J;
-            case(status)
-                `BLOCK_STATUS_0:begin 
-                    color_pos1 = (pos_y  )*5+pos_x  ;  //center
-                    color_pos2 = (pos_y+1)*5+pos_x-1; 
-                    color_pos3 = (pos_y  )*5+pos_x-1;
-                    color_pos4 = (pos_y  )*5+pos_x+1;
-                end 
-                `BLOCK_STATUS_R:begin 
-                    color_pos1 = (pos_y  )*5+pos_x  ;
-                    color_pos2 = (pos_y+1)*5+pos_x  ;
-                    color_pos3 = (pos_y+1)*5+pos_x+1;
-                    color_pos4 = (pos_y-1)*5+pos_x  ;
-                end
-                `BLOCK_STATUS_2:begin 
-                    color_pos1 = (pos_y  )*5+pos_x  ;
-                    color_pos2 = (pos_y  )*5+pos_x-1;
-                    color_pos3 = (pos_y  )*5+pos_x+1;
-                    color_pos4 = (pos_y-1)*5+pos_x+1;
-                end
-                `BLOCK_STATUS_L:begin 
-                    color_pos1 = (pos_y  )*5+pos_x  ;
-                    color_pos2 = (pos_y+1)*5+pos_x  ;
-                    color_pos3 = (pos_y-1)*5+pos_x-1;
-                    color_pos4 = (pos_y-1)*5+pos_x  ;
-                end
-            endcase
-        end
-        `BLOCK_L:begin
-            w_color = `COLOR_L;
-            case(status)
-                `BLOCK_STATUS_0:begin
-                    color_pos1 = (pos_y  )*5+pos_x  ;  //center
-                    color_pos2 = (pos_y+1)*5+pos_x+1; 
-                    color_pos3 = (pos_y  )*5+pos_x-1;
-                    color_pos4 = (pos_y  )*5+pos_x+1;
-                end 
-                `BLOCK_STATUS_R:begin 
-                    color_pos1 = (pos_y  )*5+pos_x  ;
-                    color_pos2 = (pos_y+1)*5+pos_x  ;
-                    color_pos3 = (pos_y-1)*5+pos_x  ;
-                    color_pos4 = (pos_y-1)*5+pos_x+1;
-                end
-                `BLOCK_STATUS_2:begin 
-                    color_pos1 = (pos_y  )*5+pos_x  ;
-                    color_pos2 = (pos_y  )*5+pos_x-1;
-                    color_pos3 = (pos_y  )*5+pos_x+1;
-                    color_pos4 = (pos_y-1)*5+pos_x-1;
-                end
-                `BLOCK_STATUS_L:begin 
-                    color_pos1 = (pos_y  )*5+pos_x  ;
-                    color_pos2 = (pos_y+1)*5+pos_x-1;
-                    color_pos3 = (pos_y+1)*5+pos_x  ;
-                    color_pos4 = (pos_y-1)*5+pos_x  ;
-                end
-            endcase
-        end
-        `BLOCK_S:begin
-            w_color = `COLOR_S;
-            case(status)
-                `BLOCK_STATUS_0:begin 
-                    color_pos1 = (pos_y  )*5+pos_x  ;  //center
-                    color_pos2 = (pos_y+1)*5+pos_x  ; 
-                    color_pos3 = (pos_y+1)*5+pos_x+1;
-                    color_pos4 = (pos_y  )*5+pos_x-1;
-                end 
-                `BLOCK_STATUS_R:begin 
-                    color_pos1 = (pos_y  )*5+pos_x  ;
-                    color_pos2 = (pos_y+1)*5+pos_x  ;
-                    color_pos3 = (pos_y  )*5+pos_x+1;
-                    color_pos4 = (pos_y-1)*5+pos_x+1;
-                end
-                `BLOCK_STATUS_2:begin 
-                    color_pos1 = (pos_y  )*5+pos_x  ;
-                    color_pos2 = (pos_y  )*5+pos_x+1;
-                    color_pos3 = (pos_y-1)*5+pos_x-1;
-                    color_pos4 = (pos_y-1)*5+pos_x  ;
-                end
-                `BLOCK_STATUS_L:begin 
-                    color_pos1 = (pos_y  )*5+pos_x  ;
-                    color_pos2 = (pos_y+1)*5+pos_x-1;
-                    color_pos3 = (pos_y  )*5+pos_x-1;
-                    color_pos4 = (pos_y-1)*5+pos_x  ;
-                end
-            endcase
-        end
-        `BLOCK_T:begin
-            w_color = `COLOR_T;
-            case(status)
-                `BLOCK_STATUS_0:begin 
-                    color_pos1 = (pos_y  )*5+pos_x  ;  //center
-                    color_pos2 = (pos_y+1)*5+pos_x  ; 
-                    color_pos3 = (pos_y  )*5+pos_x-1;
-                    color_pos4 = (pos_y  )*5+pos_x+1;
-                end 
-                `BLOCK_STATUS_R:begin 
-                    color_pos1 = (pos_y  )*5+pos_x  ;
-                    color_pos2 = (pos_y+1)*5+pos_x  ;
-                    color_pos3 = (pos_y  )*5+pos_x+1;
-                    color_pos4 = (pos_y-1)*5+pos_x  ;
-                end
-                `BLOCK_STATUS_2:begin 
-                    color_pos1 = (pos_y  )*5+pos_x  ;
-                    color_pos2 = (pos_y  )*5+pos_x-1;
-                    color_pos3 = (pos_y  )*5+pos_x+1;
-                    color_pos4 = (pos_y-1)*5+pos_x  ;
-                end
-                `BLOCK_STATUS_L:begin 
-                    color_pos1 = (pos_y  )*5+pos_x  ;
-                    color_pos2 = (pos_y+1)*5+pos_x  ;
-                    color_pos3 = (pos_y  )*5+pos_x-1;
-                    color_pos4 = (pos_y-1)*5+pos_x  ;
-                end
-            endcase
-        end
-        `BLOCK_Z:begin
-            w_color = `COLOR_Z;
-            case(status)
-                `BLOCK_STATUS_0:begin 
-                    color_pos1 = (pos_y  )*5+pos_x  ;  //center
-                    color_pos2 = (pos_y+1)*5+pos_x-1; 
-                    color_pos3 = (pos_y+1)*5+pos_x  ;
-                    color_pos4 = (pos_y  )*5+pos_x+1;
-                end 
-                `BLOCK_STATUS_R:begin 
-                    color_pos1 = (pos_y  )*5+pos_x  ;
-                    color_pos2 = (pos_y+1)*5+pos_x+1;
-                    color_pos3 = (pos_y  )*5+pos_x+1;
-                    color_pos4 = (pos_y-1)*5+pos_x  ;
-                end
-                `BLOCK_STATUS_2:begin 
-                    color_pos1 = (pos_y  )*5+pos_x  ;
-                    color_pos2 = (pos_y  )*5+pos_x-1;
-                    color_pos3 = (pos_y-1)*5+pos_x  ;
-                    color_pos4 = (pos_y-1)*5+pos_x+1;
-                end
-                `BLOCK_STATUS_L:begin 
-                    color_pos1 = (pos_y  )*5+pos_x  ;
-                    color_pos2 = (pos_y+1)*5+pos_x  ;
-                    color_pos3 = (pos_y  )*5+pos_x-1;
-                    color_pos4 = (pos_y-1)*5+pos_x-1;
-                end
-            endcase
-        end
-        `BLOCK_I:begin
-            w_color = `COLOR_I;
-            case(status)
-                `BLOCK_STATUS_0:begin 
-                    color_pos1 = (pos_y  )*5+pos_x  ;  //center
-                    color_pos2 = (pos_y  )*5+pos_x-1; 
-                    color_pos3 = (pos_y  )*5+pos_x+1;
-                    color_pos4 = (pos_y  )*5+pos_x+2;
-                end 
-                `BLOCK_STATUS_R:begin 
-                    color_pos1 = (pos_y  )*5+pos_x  ;
-                    color_pos2 = (pos_y+1)*5+pos_x  ;
-                    color_pos3 = (pos_y-1)*5+pos_x  ;
-                    color_pos4 = (pos_y-2)*5+pos_x  ;
-                end
-                `BLOCK_STATUS_2:begin 
-                    color_pos1 = (pos_y  )*5+pos_x  ;
-                    color_pos2 = (pos_y  )*5+pos_x-2;
-                    color_pos3 = (pos_y  )*5+pos_x-1;
-                    color_pos4 = (pos_y  )*5+pos_x+1;
-                end
-                `BLOCK_STATUS_L:begin 
-                    color_pos1 = (pos_y  )*5+pos_x  ;
-                    color_pos2 = (pos_y+2)*5+pos_x  ;
-                    color_pos3 = (pos_y+1)*5+pos_x  ;
-                    color_pos4 = (pos_y-1)*5+pos_x  ;
-                end
-            endcase
-        end
-        `BLOCK_O:begin
-            w_color = `COLOR_O;
-            case(status)
-                `BLOCK_STATUS_0:begin 
-                    color_pos1 = (pos_y  )*5+pos_x  ;  //center
-                    color_pos2 = (pos_y+1)*5+pos_x  ; 
-                    color_pos3 = (pos_y+1)*5+pos_x+1;
-                    color_pos4 = (pos_y  )*5+pos_x+1;
-                end 
-                `BLOCK_STATUS_R:begin 
-                    color_pos1 = (pos_y  )*5+pos_x  ;
-                    color_pos2 = (pos_y  )*5+pos_x+1;
-                    color_pos3 = (pos_y-1)*5+pos_x  ;
-                    color_pos4 = (pos_y-1)*5+pos_x+1;
-                end
-                `BLOCK_STATUS_2:begin 
-                    color_pos1 = (pos_y  )*5+pos_x  ;
-                    color_pos2 = (pos_y  )*5+pos_x-1;
-                    color_pos3 = (pos_y-1)*5+pos_x-1;
-                    color_pos4 = (pos_y-1)*5+pos_x  ;
-                end
-                `BLOCK_STATUS_L:begin 
-                    color_pos1 = (pos_y  )*5+pos_x  ;
-                    color_pos2 = (pos_y+1)*5+pos_x-1;
-                    color_pos3 = (pos_y+1)*5+pos_x  ;
-                    color_pos4 = (pos_y  )*5+pos_x-1;
-                end
-            endcase
-        end
-        default:begin end
-    endcase
+    if( block_exist[pos1]==1 || block_exist[pos2]==1 || block_exist[pos3]==1 || block_exist[pos4]==1 )begin
+        block_overlapping = 1;
+    end
+    else begin
+        block_overlapping = 0;
+    end
+    if(block_exist[200]||block_exist[201]||block_exist[202]||block_exist[203]||block_exist[204]||block_exist[205]||block_exist[206]||block_exist[207]||block_exist[208]||block_exist[209]||
+       block_exist[210]||block_exist[211]||block_exist[212]||block_exist[213]||block_exist[214]||block_exist[215]||block_exist[216]||block_exist[217]||block_exist[218]||block_exist[219]||
+       block_exist[220]||block_exist[221]||block_exist[222]||block_exist[223]||block_exist[224]||block_exist[225]||block_exist[226]||block_exist[227]||block_exist[228]||block_exist[229]||
+       block_exist[230]||block_exist[231]||block_exist[232]||block_exist[233]||block_exist[234]||block_exist[235]||block_exist[236]||block_exist[237]||block_exist[238]||block_exist[239])begin
+
+       block_exceed_upper_bound = 1;    
+    end
+    else begin
+        block_exceed_upper_bound = 0;
+    end
 end
+
+assign gameover_or_not = (block_overlapping || block_exceed_upper_bound)?1:0;
+//assign gameover_or_not = 0;
+
 endmodule

@@ -2,7 +2,7 @@ module pixel_gen(vgaRed,vgaGreen,vgaBlue,h_cnt,v_cnt,valid,color,foresee,store);
 input [9:0] h_cnt;
 input [9:0] v_cnt;
 input valid;
-input [2879:0] color;
+input [2399:0] color;
 input [1499:0]foresee;
 input [299:0]store;
 output reg [3:0] vgaRed;

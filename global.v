@@ -11,19 +11,23 @@
 `define BLOCK_STATUS_2 2'b10
 `define BLOCK_STATUS_L 2'b11
 
-`define WAIT_BLOCK_EN 4'b0000
-`define BLOCK_DOWN 4'b0001
-`define BLOCK_SETTLE 4'b0010
-`define SET_START_WRITE0 4'b0011
-`define ERASE_STATE 4'b0100
-`define CAL_BLOCKDOWN 4'b0101
-`define DET_ROTATE 4'b0110
-`define SET_INIT_XY 4'b0111
-`define WRITE_SPACE 4'b1000
-`define WAIT_GAME_START 4'b1001
-`define WRITE_FORESEE_BLOCK 4'b1010
-`define SET_START_STORE_BLOCK 4'b1011
-`define STORE_BLOCK 4'b1100
+`define WAIT_BLOCK_EN             5'b00000
+`define BLOCK_DOWN                5'b00001
+`define BLOCK_SETTLE              5'b00010
+`define SET_START_WRITE0          5'b00011
+`define ERASE_STATE               5'b00100
+`define CAL_BLOCKDOWN             5'b00101
+`define DET_ROTATE                5'b00110
+`define SET_INIT_XY               5'b00111
+`define WRITE_SPACE               5'b01000
+`define WAIT_GAME_START           5'b01001
+`define WRITE_FORESEE_BLOCK       5'b01010
+`define SET_START_STORE_BLOCK     5'b01011
+`define STORE_BLOCK               5'b01100
+`define SET_START_STORE_BLOCK_TO1 5'b01101
+`define CHECK_GAMEOVER            5'b01110
+`define GAMEOVER                  5'b01111
+`define CAL_BOTTOM_Y              5'b10000
 
 `define COLOR_J 12'h00f
 `define COLOR_L 12'hf60
