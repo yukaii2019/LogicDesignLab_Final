@@ -143,12 +143,75 @@ for i in range (10,200):
     print("end")
 '''
 '''
-for i in range(200,240):
-    print("color[%d:%d]<=tmp_color[%d:%d];"%(i*12+11,i*12,i*12+11,i*12))
+for i in range(0,125):
+    #print("color[%d:%d]<=tmp_color[%d:%d];"%(i*12+11,i*12,i*12+11,i*12))
+    if(i%2 == 1):
+        print("foresee[%d:%d]<=12'h111;"%(i*12+11,i*12))
+    elif(i%2 == 0):
+        print("foresee[%d:%d]<=12'h222;"%(i*12+11,i*12))
+    #print("%d : begin tmp_foresee[%d:%d] = w_color; end"%(i,12*i+11,12*i))
     '''
 '''
 for i in range(1,21):
     print("judgeIFContinueShift j%d(.left_en(l_en%d),.right_en(r_en%d),.down_en(d_en%d),.block(block),.status(status),.pos_x(pos_x),.pos_y(%d),.block_exist(block_exist));"%(i,i,i,i,(i-1)))
 '''
-for i in range(1,20):
+
+'''
+for i in range (1,20):
     print("(d_en%d==0)?%d:"%(21-i,20-i))
+    '''
+'''
+
+for i in range (0,125):
+    if(i<25):
+        if(i%2==1):
+            print("tmp_foresee[%d:%d] = (!reset_foresee[0])?foresee[%d:%d]:12'h000;"%(i*12+11,i*12,i*12+11,i*12))
+        else:
+            print("tmp_foresee[%d:%d] = (!reset_foresee[0])?foresee[%d:%d]:12'h222;"%(i*12+11,i*12,i*12+11,i*12))
+    elif(i<50):
+        if(i%2==1):
+            print("tmp_foresee[%d:%d] = (!reset_foresee[1])?foresee[%d:%d]:12'h000;"%(i*12+11,i*12,i*12+11,i*12))
+        else:
+            print("tmp_foresee[%d:%d] = (!reset_foresee[1])?foresee[%d:%d]:12'h222;"%(i*12+11,i*12,i*12+11,i*12))
+    elif(i<75):
+        if(i%2==1):
+            print("tmp_foresee[%d:%d] = (!reset_foresee[2])?foresee[%d:%d]:12'h000;"%(i*12+11,i*12,i*12+11,i*12))
+        else:
+            print("tmp_foresee[%d:%d] = (!reset_foresee[2])?foresee[%d:%d]:12'h222;"%(i*12+11,i*12,i*12+11,i*12))
+    elif(i<100):
+        if(i%2==1):
+            print("tmp_foresee[%d:%d] = (!reset_foresee[3])?foresee[%d:%d]:12'h000;"%(i*12+11,i*12,i*12+11,i*12))
+        else:
+            print("tmp_foresee[%d:%d] = (!reset_foresee[3])?foresee[%d:%d]:12'h222;"%(i*12+11,i*12,i*12+11,i*12))
+    elif(i<125):
+        if(i%2==1):
+            print("tmp_foresee[%d:%d] = (!reset_foresee[4])?foresee[%d:%d]:12'h000;"%(i*12+11,i*12,i*12+11,i*12))
+        else:
+            print("tmp_foresee[%d:%d] = (!reset_foresee[4])?foresee[%d:%d]:12'h222;"%(i*12+11,i*12,i*12+11,i*12))
+            '''
+"""      
+for i in range (10,35):
+    print("%d : begin"%(44-i))
+    print("    case(horizontal_mod_8)")
+    for j in range(51,56):
+        print("        %d : {vgaRed, vgaGreen, vgaBlue} = foresee[%d:%d];"%(j,((j-51)+(i-10)*5)*12+11,((j-51)+(i-10)*5)*12))
+    #print("        default:{vgaRed, vgaGreen, vgaBlue} = 12'hee8;")
+    print("    endcase")
+    print("end")
+"""
+'''
+for i in range(0,26):
+    print("%d : begin"%(80+i*8))
+    print("    case(h_cnt)")
+    for j in range(0,6):
+        print("        %d : {vgaRed, vgaGreen, vgaBlue} = 12'h000;"%(408+j*8))
+    print("    endcase")
+    print("end")
+'''
+for i in range(0,5):
+    print("%d : begin"%(408+8*i))
+    print("    if(v_cnt>=80 && v_cnt<=280)begin")
+    print("        {vgaRed, vgaGreen, vgaBlue} = 12'h000;")
+    print("    end")
+    print("    else begin end")
+    print("end")

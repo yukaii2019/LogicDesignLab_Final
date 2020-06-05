@@ -22,6 +22,8 @@ set_property PACKAGE_PIN U18 [get_ports rst]
 ## Switches
 set_property PACKAGE_PIN V17 [get_ports {generate_block}]					
 	set_property IOSTANDARD LVCMOS33 [get_ports {generate_block}]
+set_property PACKAGE_PIN V16 [get_ports {gameStart}]					
+	set_property IOSTANDARD LVCMOS33 [get_ports {gameStart}]
 ##VGA Connector
 set_property PACKAGE_PIN G19 [get_ports {vgaRed[0]}]
 set_property IOSTANDARD LVCMOS33 [get_ports {vgaRed[0]}]

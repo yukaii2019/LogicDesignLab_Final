@@ -1,10 +1,11 @@
 `include "C:\Users\ACER\Desktop\logic_design_lab\FINAL\FinalProjectRepo\global.v"
-module keyboardSignal(space,right,left,up,down,clk,rst,PS2_DATA,PS2_CLK);
+module keyboardSignal(shift,space,right,left,up,down,clk,rst,PS2_DATA,PS2_CLK);
 output reg right;
 output reg left;
 output reg up;
 output reg down;
 output reg space;
+output reg shift;
 input clk ,rst;
 inout PS2_DATA;
 inout PS2_CLK;
@@ -20,6 +21,7 @@ always@(posedge clk or posedge rst)begin
 		up <= 0;
 		down <= 0;
 		space <= 0;
+		shift <= 0;
 	end
 	else begin
 		right <= right;
@@ -27,12 +29,14 @@ always@(posedge clk or posedge rst)begin
 		up <= up;
 		down <= down;
 		space <= space;
+		shift <= shift;
 		if(ready)begin
 			up <= (now_pressing==`KEY_CODE_UP)?1:0;
 			down <= (now_pressing==`KEY_CODE_DOWN)?1:0;
 			left <= (now_pressing==`KEY_CODE_LEFT)?1:0;
 			right <=(now_pressing==`KEY_CODE_RIGHT)?1:0;
 			space <= (now_pressing==`KEY_CODE_SPACE)?1:0;
+			shift <= (now_pressing==`KEY_CODE_SHIFT)?1:0;
 		end
 		else begin 
 			up <= 0;
@@ -40,6 +44,7 @@ always@(posedge clk or posedge rst)begin
 			left <= 0;
 			right <= 0;
 			space <= 0;
+			shift <= 0;
 		end
 	end
 end
@@ -66,6 +71,7 @@ always@(*)begin
         `KEY_CODE_LEFT  : begin valid = 1;end
         `KEY_CODE_RIGHT : begin valid = 1;end
         `KEY_CODE_SPACE : begin valid = 1;end
+		`KEY_CODE_SHIFT : begin valid = 1;end
         default         : begin valid = 0;end 
     endcase
 end 

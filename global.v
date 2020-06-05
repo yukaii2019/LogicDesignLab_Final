@@ -20,6 +20,10 @@
 `define DET_ROTATE 4'b0110
 `define SET_INIT_XY 4'b0111
 `define WRITE_SPACE 4'b1000
+`define WAIT_GAME_START 4'b1001
+`define WRITE_FORESEE_BLOCK 4'b1010
+`define SET_START_STORE_BLOCK 4'b1011
+`define STORE_BLOCK 4'b1100
 
 `define COLOR_J 12'h00f
 `define COLOR_L 12'hf60
@@ -42,3 +46,4 @@
 `define KEY_CODE_LEFT 9'h06b
 `define KEY_CODE_RIGHT 9'h174
 `define KEY_CODE_SPACE 9'h029
+`define KEY_CODE_SHIFT 9'h012

@@ -70,10 +70,10 @@ always@(posedge clk or posedge rst)begin
     if(rst)begin
         state <= INIT;
         count <= 0;
-        row1 <= 20;
-        row2 <= 20;
-        row3 <= 20;
-        row4 <= 20;
+        row1 <= 25;
+        row2 <= 25;
+        row3 <= 25;
+        row4 <= 25;
         check_finish <= 0;
     end
     else begin
@@ -98,10 +98,10 @@ always@(*)begin
         INIT:begin
             tmp_state = (eraseROW_en)?CHECK_ROW1:INIT;
             tmp_count = (eraseROW_en)?0:count;
-            tmp_row1 = (eraseROW_en)?20:row1;
-            tmp_row2 = (eraseROW_en)?20:row2;
-            tmp_row3 = (eraseROW_en)?20:row3;
-            tmp_row4 = (eraseROW_en)?20:row4;
+            tmp_row1 = (eraseROW_en)?25:row1;
+            tmp_row2 = (eraseROW_en)?25:row2;
+            tmp_row3 = (eraseROW_en)?25:row3;
+            tmp_row4 = (eraseROW_en)?25:row4;
             tmp_check_finish = 0;
         end
         CHECK_ROW1:begin
@@ -377,44 +377,44 @@ module erased_row_block_pos(p0,p1,p2,p3,p4,p5,p6,p7,p8,p9,p10,p11,p12,p13,p14,p1
 
 output [7:0]p0,p1,p2,p3,p4,p5,p6,p7,p8,p9,p10,p11,p12,p13,p14,p15,p16,p17,p18,p19,p20,p21,p22,p23,p24,p25,p26,p27,p28,p29,p30,p31,p32,p33,p34,p35,p36,p37,p38,p39;
 input [4:0]row1,row2,row3,row4;
-assign p0 = (row1 != 20)?row1*10+0:200;
-assign p1 = (row1 != 20)?row1*10+1:200;
-assign p2 = (row1 != 20)?row1*10+2:200;
-assign p3 = (row1 != 20)?row1*10+3:200;
-assign p4 = (row1 != 20)?row1*10+4:200;
-assign p5 = (row1 != 20)?row1*10+5:200;
-assign p6 = (row1 != 20)?row1*10+6:200;
-assign p7 = (row1 != 20)?row1*10+7:200;
-assign p8 = (row1 != 20)?row1*10+8:200;
-assign p9 = (row1 != 20)?row1*10+9:200;
-assign p10 = (row2 != 20)?row2*10+0:200;
-assign p11 = (row2 != 20)?row2*10+1:200;
-assign p12 = (row2 != 20)?row2*10+2:200;
-assign p13 = (row2 != 20)?row2*10+3:200;
-assign p14 = (row2 != 20)?row2*10+4:200;
-assign p15 = (row2 != 20)?row2*10+5:200;
-assign p16 = (row2 != 20)?row2*10+6:200;
-assign p17 = (row2 != 20)?row2*10+7:200;
-assign p18 = (row2 != 20)?row2*10+8:200;
-assign p19 = (row2 != 20)?row2*10+9:200;
-assign p20 = (row3 != 20)?row3*10+0:200;
-assign p21 = (row3 != 20)?row3*10+1:200;
-assign p22 = (row3 != 20)?row3*10+2:200;
-assign p23 = (row3 != 20)?row3*10+3:200;
-assign p24 = (row3 != 20)?row3*10+4:200;
-assign p25 = (row3 != 20)?row3*10+5:200;
-assign p26 = (row3 != 20)?row3*10+6:200;
-assign p27 = (row3 != 20)?row3*10+7:200;
-assign p28 = (row3 != 20)?row3*10+8:200;
-assign p29 = (row3 != 20)?row3*10+9:200;
-assign p30 = (row4 != 20)?row4*10+0:200;
-assign p31 = (row4 != 20)?row4*10+1:200;
-assign p32 = (row4 != 20)?row4*10+2:200;
-assign p33 = (row4 != 20)?row4*10+3:200;
-assign p34 = (row4 != 20)?row4*10+4:200;
-assign p35 = (row4 != 20)?row4*10+5:200;
-assign p36 = (row4 != 20)?row4*10+6:200;
-assign p37 = (row4 != 20)?row4*10+7:200;
-assign p38 = (row4 != 20)?row4*10+8:200;
-assign p39 = (row4 != 20)?row4*10+9:200;
+assign p0 = (row1 != 25)?row1*10+0:240;
+assign p1 = (row1 != 25)?row1*10+1:240;
+assign p2 = (row1 != 25)?row1*10+2:240;
+assign p3 = (row1 != 25)?row1*10+3:240;
+assign p4 = (row1 != 25)?row1*10+4:240;
+assign p5 = (row1 != 25)?row1*10+5:240;
+assign p6 = (row1 != 25)?row1*10+6:240;
+assign p7 = (row1 != 25)?row1*10+7:240;
+assign p8 = (row1 != 25)?row1*10+8:240;
+assign p9 = (row1 != 25)?row1*10+9:240;
+assign p10 = (row2 != 25)?row2*10+0:240;
+assign p11 = (row2 != 25)?row2*10+1:240;
+assign p12 = (row2 != 25)?row2*10+2:240;
+assign p13 = (row2 != 25)?row2*10+3:240;
+assign p14 = (row2 != 25)?row2*10+4:240;
+assign p15 = (row2 != 25)?row2*10+5:240;
+assign p16 = (row2 != 25)?row2*10+6:240;
+assign p17 = (row2 != 25)?row2*10+7:240;
+assign p18 = (row2 != 25)?row2*10+8:240;
+assign p19 = (row2 != 25)?row2*10+9:240;
+assign p20 = (row3 != 25)?row3*10+0:240;
+assign p21 = (row3 != 25)?row3*10+1:240;
+assign p22 = (row3 != 25)?row3*10+2:240;
+assign p23 = (row3 != 25)?row3*10+3:240;
+assign p24 = (row3 != 25)?row3*10+4:240;
+assign p25 = (row3 != 25)?row3*10+5:240;
+assign p26 = (row3 != 25)?row3*10+6:240;
+assign p27 = (row3 != 25)?row3*10+7:240;
+assign p28 = (row3 != 25)?row3*10+8:240;
+assign p29 = (row3 != 25)?row3*10+9:240;
+assign p30 = (row4 != 25)?row4*10+0:240;
+assign p31 = (row4 != 25)?row4*10+1:240;
+assign p32 = (row4 != 25)?row4*10+2:240;
+assign p33 = (row4 != 25)?row4*10+3:240;
+assign p34 = (row4 != 25)?row4*10+4:240;
+assign p35 = (row4 != 25)?row4*10+5:240;
+assign p36 = (row4 != 25)?row4*10+6:240;
+assign p37 = (row4 != 25)?row4*10+7:240;
+assign p38 = (row4 != 25)?row4*10+8:240;
+assign p39 = (row4 != 25)?row4*10+9:240;
 endmodule
